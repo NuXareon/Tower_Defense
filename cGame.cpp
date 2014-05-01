@@ -91,6 +91,8 @@ bool cGame::Process()
 	if(keys[27])	res=false;	
 	if(keys['1'])	camera = 1;
 	if(keys['2'])	camera = 2;
+	if(keys['3'])	camera = 3;
+	if(keys['4'])	camera = 4;
 
 	// F1 to show debug info.
 	if(keys[GLUT_KEY_F1] && releaseF1)	
@@ -153,9 +155,11 @@ void cGame::Render()
 	glLoadIdentity();
 
 	if(camera == 1) gluLookAt(0.0,0.0,0.0, 0.0,0.0,-1.0, 0.0,1.0,0.0);
-	else if(camera == 2) gluLookAt(0.0,0.0,0.0, 0.0,0.0,-1.0, 0.0,-1.0,0.0);
+	else if(camera == 2) gluLookAt(0.0,50.0,-45.0, 0.0,0.0,-45.0, 0.0,0.0,-1.0);
+	else if(camera == 3) gluLookAt(40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
+	else if(camera == 4) gluLookAt(-40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
 
-	glTranslatef(-16.0f,-8.0f,-50.0f);
+	glTranslatef(-16.0f,-12.0f,-40.0f);
 	glRotatef(60,1.0f,0.0f,0.0f);
 
 	Scene.Draw(&Data);
