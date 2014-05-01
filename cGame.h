@@ -30,6 +30,8 @@ public:
 	void Render();
 
 	void render_string(void* font, const char* string);
+	void printCursorPosition();
+	void UpdateCursorPosition(int x, int y);
 
 private:
 	unsigned char keys[256];
@@ -37,4 +39,5 @@ private:
 	cData Data;
 	int camera;
 	int xx,yy;
+	bool debug,releaseF1;
 };
