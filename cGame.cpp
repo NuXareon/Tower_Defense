@@ -12,6 +12,22 @@ void cGame::render_string(void* font, const char* string)
 		glutBitmapCharacter(font, string[i]);
 }
 
+ void gl_selall(GLint hits, GLuint *buff)
+ {
+ 	GLuint *p;
+ 	int i;
+ 
+ 	//gl_draw();
+ 
+ 	p = buff;
+ 	for (i = 0; i < 6 * 4; i++)
+ 	{
+ 		printf("Slot %d: - Value: %d\n", i, p[i]);
+ 	}
+ 
+ 	printf("Buff size: %x\n", (GLbyte)buff[0]);
+ }
+
 bool cGame::Init()
 {
 	bool res=true;
@@ -23,7 +39,7 @@ bool cGame::Init()
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0,(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,0.1,100);
+	gluPerspective(45.0,(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,0.1,100);	// Si es modifica s'ha de modificar tambe a la funcio PrintCursorTile()
 	glMatrixMode(GL_MODELVIEW);
 	
 	glEnable(GL_DEPTH_TEST);
@@ -71,6 +87,13 @@ void cGame::ReadKeyboard(unsigned char key, int x, int y, bool press)
 
 void cGame::ReadMouse(int button, int state, int x, int y)
 {
+	if 	((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN))
+	{
+		GLuint buff[SELECT_BUF_SIZE] = {0};
+		GLuint hits = SelectCursorTile(x,SCREEN_HEIGHT-y,&buff);
+		if (hits == 0) Scene.setSelected(-1);
+		else Scene.setSelected(buff[3]);
+	}
 	xx = x;
 	yy = y;
 }
@@ -146,6 +169,79 @@ void cGame::printCursorPosition()
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 }
+
+void cGame::printSelectedTile()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	char buff[10];
+	int selected = Scene.getSelected();
+	itoa(selected,buff,10 );
+	char *s[]={	"Selected: ", buff
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+	glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			glRasterPos2f(-0.95f,0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+			glRasterPos2f(-0.75f,0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[1]);
+
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
+GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
+{
+	GLint hits, view[4];
+	int id;
+
+	glSelectBuffer(SELECT_BUF_SIZE,*buff);
+
+	glGetIntegerv(GL_VIEWPORT,view);
+
+	glRenderMode(GL_SELECT);
+
+	glInitNames();
+
+	glPushName(0);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+		glLoadIdentity();
+
+		gluPickMatrix(x,y,1.0,1.0,view);
+		gluPerspective(45.0,(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,0.1,100);
+
+		glMatrixMode(GL_MODELVIEW);
+
+		bool tmpDebug = debug;
+		debug = false;
+		Render();
+		debug = tmpDebug;
+
+		glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	hits = glRenderMode(GL_RENDER);
+
+	return hits;
+}
+
 //Output
 void cGame::Render()
 {
@@ -164,8 +260,11 @@ void cGame::Render()
 
 	Scene.Draw(&Data);
 
-	if (debug) printCursorPosition();
+	if (debug) 
+	{
+		printCursorPosition();
+		printSelectedTile();
+	}
 	
 	glutSwapBuffers();
 }
-

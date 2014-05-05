@@ -10,6 +10,7 @@ using namespace std;
 
 #define SCREEN_WIDTH	800
 #define SCREEN_HEIGHT	600
+#define SELECT_BUF_SIZE	16
 
 class cGame
 {
@@ -32,6 +33,10 @@ public:
 	void render_string(void* font, const char* string);
 	void printCursorPosition();
 	void UpdateCursorPosition(int x, int y);
+	GLuint SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE]);
+	void printSelectedTile();
+
+	int getSelected();
 
 private:
 	unsigned char keys[256];

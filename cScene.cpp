@@ -6,7 +6,9 @@ cScene::~cScene(void){}
 
 void cScene::Init()
 {
+	selected = -1;
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 }
 bool cScene::LoadLevel(int level)
 {
@@ -60,9 +62,14 @@ void cScene::Draw(cData *Data)
 		{
 			glPushMatrix();
 				glTranslatef(x,0,-z);
+				if (i*SCENE_WIDTH+j == selected) glColor3f(1.0f,0.0f,0.0f);
+				else glColor3f(1.0f,1.0f,1.0f);
+				glLoadName(i*SCENE_WIDTH+j);	// Name for render_mode(GL_SELECT) = position in map array. (clicking)
 				switch(map[(i*SCENE_WIDTH)+j])
 				{
-					case 0:	break;
+					case 0:	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
+							glCallList(dl_floor);
+							break;
 					case 1: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL1));
 							glCallList(dl_cube);
 							break;
@@ -77,12 +84,14 @@ void cScene::Draw(cData *Data)
 			x += TILE_SIZE;
 		}
 	}
-
+	/*
 	tw = (float)SCENE_WIDTH;
 	td = (float)SCENE_DEPTH;
 	w  = (float)SCENE_WIDTH*TILE_SIZE;
 	d  = (float)SCENE_DEPTH*TILE_SIZE;
+	*/
 	//Floor
+	/*
 	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
 	glBegin(GL_QUADS);
 		// Bottom Face
@@ -91,6 +100,7 @@ void cScene::Draw(cData *Data)
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0,-d);
 		glTexCoord2f(  tw, 0.0f); glVertex3f(0, 0,-d);
 	glEnd();
+	*/
 	//Roof
 	/*glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 	glBegin(GL_QUADS);
@@ -141,4 +151,26 @@ void cScene::MakeCubeDL(float w,float h,float d,float tw,float th,float td)
 			glTexCoord2f(  tw,   td); glVertex3f(w, h, -d);
 		glEnd();
 	glEndList();
+}
+
+void cScene::MakeFloorDL(float w,float d,float tw,float td)
+{
+	dl_floor = glGenLists(1);
+	glNewList(dl_floor,GL_COMPILE);
+		glBegin(GL_QUADS);
+			glTexCoord2f(  tw,   td); glVertex3f(0, 0, 0);
+			glTexCoord2f(0.0f,   td); glVertex3f(w, 0, 0);
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0,-d);
+			glTexCoord2f(  tw, 0.0f); glVertex3f(0, 0,-d);
+		glEnd();
+	glEndList();
+}
+
+void cScene::setSelected(int s) 
+{
+	selected = s;
+}
+int cScene::getSelected()
+{
+	return selected;
 }
