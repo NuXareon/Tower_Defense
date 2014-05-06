@@ -9,6 +9,7 @@ void cScene::Init()
 	selected = -1;
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
+	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 }
 bool cScene::LoadLevel(int level)
 {
@@ -62,8 +63,17 @@ void cScene::Draw(cData *Data)
 		{
 			glPushMatrix();
 				glTranslatef(x,0,-z);
-				if (i*SCENE_WIDTH+j == selected) glColor3f(1.0f,0.0f,0.0f);
+				if (i*SCENE_WIDTH+j == selected) 
+				{
+					if (map[(i*SCENE_WIDTH)+j] == 0)
+					{
+						glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+						glCallList(dl_turret);
+					}
+					glColor3f(1.0f,0.0f,0.0f);
+				}
 				else glColor3f(1.0f,1.0f,1.0f);
+
 				glLoadName(i*SCENE_WIDTH+j);	// Name for render_mode(GL_SELECT) = position in map array. (clicking)
 				switch(map[(i*SCENE_WIDTH)+j])
 				{
@@ -163,6 +173,24 @@ void cScene::MakeFloorDL(float w,float d,float tw,float td)
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0,-d);
 			glTexCoord2f(  tw, 0.0f); glVertex3f(0, 0,-d);
 		glEnd();
+	glEndList();
+}
+
+void cScene::MakeTurretDL(float w,float h,float d)
+{
+	dl_turret = glGenLists(1);
+	glNewList(dl_turret,GL_COMPILE);
+		glPushMatrix();
+			glTranslatef(w/2.0f,1.0f+h,-d/2.0f);
+			glRotatef(90,1.0f,0.0f,0.0f);
+			GLUquadricObj *q = gluNewQuadric();
+			gluQuadricTexture (q, GL_TRUE);
+			gluCylinder(q, 0.3,0.95,5,16,16);
+			gluSphere(q, 0.8,16,16);
+			glRotatef(-90,1.0f,0.0f,0.0f);
+			gluCylinder(q, 0.2,0.2,1.5,16,16);
+			gluDeleteQuadric(q);
+		glPopMatrix();
 	glEndList();
 }
 
