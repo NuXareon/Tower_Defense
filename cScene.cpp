@@ -15,10 +15,6 @@ void cScene::updateMap(int pos, int value)
 {
 	map[pos] = value;
 }
-int *cScene::GetMap()
-{
-	return map;
-}
 bool cScene::LoadLevel(int level)
 {
 	FILE *fd;
