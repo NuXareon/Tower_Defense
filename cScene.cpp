@@ -123,6 +123,10 @@ void cScene::Draw(cData *Data)
 
 	glDisable(GL_TEXTURE_2D);
 }
+int* cScene::GetMap()
+{
+	return map;
+}
 
 void cScene::MakeCubeDL(float w,float h,float d,float tw,float th,float td)
 {
@@ -201,4 +205,4 @@ void cScene::setSelected(int s)
 int cScene::getSelected()
 {
 	return selected;
-}
+} 

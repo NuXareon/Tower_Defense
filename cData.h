@@ -12,6 +12,7 @@
 #define IMG_WALL3	2
 #define IMG_FLOOR	3
 #define IMG_ROOF	4
+#define IMG_MONSTRE 5
 
 class cData
 {

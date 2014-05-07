@@ -2,6 +2,8 @@
 
 #include "cScene.h"
 #include "cData.h"
+#include "cBicho.h"
+#include "cMonstre.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,4 +47,6 @@ private:
 	int camera;
 	int xx,yy;
 	bool debug,releaseF1;
+
+	cMonstre Monstre;
 };

@@ -32,4 +32,5 @@ private:
 	int dl_turret;
 	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
+	
 };
