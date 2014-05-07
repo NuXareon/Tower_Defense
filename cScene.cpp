@@ -11,6 +11,14 @@ void cScene::Init()
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 }
+void cScene::updateMap(int pos, int value)
+{
+	map[pos] = value;
+}
+int *cScene::GetMap()
+{
+	return map;
+}
 bool cScene::LoadLevel(int level)
 {
 	FILE *fd;
@@ -70,7 +78,7 @@ void cScene::Draw(cData *Data)
 						glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 						glCallList(dl_turret);
 					}
-					glColor3f(1.0f,0.0f,0.0f);
+					glColor3f(0.5f,1.0f,0.5f);
 				}
 				else glColor3f(1.0f,1.0f,1.0f);
 
@@ -89,6 +97,12 @@ void cScene::Draw(cData *Data)
 					case 3: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 							glCallList(dl_cube);
 							break;
+					case 9: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+							glCallList(dl_turret);
+							glColor3f(1.0f,0.2f,0.2f);
+							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
+							glCallList(dl_floor);
+							glColor3f(1.0f,1.0f,1.0f);
 				}
 			glPopMatrix();
 			x += TILE_SIZE;

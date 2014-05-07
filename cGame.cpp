@@ -93,10 +93,22 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 		GLuint buff[SELECT_BUF_SIZE] = {0};
 		GLuint hits = SelectCursorTile(x,SCREEN_HEIGHT-y,&buff);
 		if (hits == 0) Scene.setSelected(-1);
-		else Scene.setSelected(buff[3]);
+		else
+		{
+			if(Scene.GetMap()[buff[3]] == 0) Scene.updateMap(buff[3],TOWER_ID_1);
+			Scene.setSelected(buff[3]);
+		}
 	}
-	xx = x;
-	yy = y;
+	if 	((button == GLUT_RIGHT_BUTTON) && (state == GLUT_DOWN))
+	{
+		GLuint buff[SELECT_BUF_SIZE] = {0};
+		GLuint hits = SelectCursorTile(x,SCREEN_HEIGHT-y,&buff);
+		if (hits > 0) 
+		{
+			if(Scene.GetMap()[buff[3]] == TOWER_ID_1) Scene.updateMap(buff[3],0);
+			Scene.setSelected(-1);
+		}
+	}
 }
 
 void cGame::UpdateCursorPosition(int x, int y)
@@ -264,6 +276,8 @@ void cGame::Render()
 
 	Scene.Draw(&Data);
 	Monstre.Draw(&Data);
+
+	//printUI();
 
 	if (debug) 
 	{

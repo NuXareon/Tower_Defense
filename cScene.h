@@ -22,6 +22,7 @@ public:
 	int *GetMap();
 	void setSelected(int s);
 	int getSelected();
+	void updateMap(int pos, int value);
 
 private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);

@@ -13,6 +13,7 @@ using namespace std;
 #define SCREEN_WIDTH	800
 #define SCREEN_HEIGHT	600
 #define SELECT_BUF_SIZE	16
+#define TOWER_ID_1		9
 
 class cGame
 {
