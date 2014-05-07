@@ -58,6 +58,7 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_ROOF,"roof.png",GL_RGBA);
 	if(!res) return false;
 	Scene.Init();
+	Monstre.Init();
 	res = Scene.LoadLevel(1);
 	if(!res) return false;
 
@@ -126,6 +127,9 @@ bool cGame::Process()
 
 	//Game Logic
 	//...
+	 
+	Monstre.AI(Scene.GetMap());
+
 
 	return res;
 }
@@ -188,7 +192,7 @@ void cGame::printSelectedTile()
 
 	glColor3f(1.0f,1.0f,1.0f);
 
-	glDisable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_TEXTURE_2D);
 			glRasterPos2f(-0.95f,0.85f);
 			render_string(GLUT_BITMAP_9_BY_15,s[0]);
@@ -259,6 +263,7 @@ void cGame::Render()
 	glRotatef(60,1.0f,0.0f,0.0f);
 
 	Scene.Draw(&Data);
+	Monstre.Draw(&Data);
 
 	if (debug) 
 	{
