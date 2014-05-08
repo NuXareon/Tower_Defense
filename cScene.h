@@ -27,6 +27,8 @@ public:
 	void setMoseOverTile(int s);
 	void updateMap(int pos, int value);
 
+	int mouseOverTile;
+
 private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);
 	void MakeFloorDL(float w,float d,float tw,float td);
@@ -34,7 +36,7 @@ private:
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
-	int selected, mouseOverTile;
+	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
 	
 };

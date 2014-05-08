@@ -68,6 +68,7 @@ void cScene::Draw(cData *Data)
 		{
 			glPushMatrix();
 				glTranslatef(x,0,-z);
+				glLoadName(i*SCENE_WIDTH+j);	// Name for render_mode(GL_SELECT) = position in map array. (clicking)
 				if (i*SCENE_WIDTH+j == mouseOverTile && selected == SCENE_WIDTH*SCENE_DEPTH+1)
 				{
 					glColor3f(0.5f,0.50f,1.5f);
@@ -86,7 +87,6 @@ void cScene::Draw(cData *Data)
 				}
 				else glColor3f(1.0f,1.0f,1.0f);
 
-				glLoadName(i*SCENE_WIDTH+j);	// Name for render_mode(GL_SELECT) = position in map array. (clicking)
 				switch(map[(i*SCENE_WIDTH)+j])
 				{
 					case 0:	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));

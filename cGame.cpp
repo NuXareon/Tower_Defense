@@ -19,7 +19,8 @@ bool cGame::Init()
 	debug=false;
 	releaseF1=true;
 	showUI = true;
-	cdAi = 5;
+	cdCursorTile = 5;
+	cdAi = 3;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -131,6 +132,15 @@ bool cGame::Process()
 
 	//Game Logic
 	//...
+
+	if (cdCursorTile > 0) cdCursorTile--;
+	else {
+		cdCursorTile = 3;
+		GLuint buff[SELECT_BUF_SIZE] = {0};
+		GLuint hits = SelectCursorTile(xx,SCREEN_HEIGHT-yy,&buff);
+		if (hits <= 0) Scene.setMoseOverTile(-1);
+		else Scene.setMoseOverTile(buff[3]);
+	}
 	
 	if(cdAi>0) cdAi--;
 	else {
@@ -220,7 +230,8 @@ void cGame::printSelectedTile()
 	glLoadIdentity();
 
 	char buff[10];
-	int selected = Scene.getSelected();
+	//int selected = Scene.getSelected();
+	int selected = Scene.mouseOverTile;
 	itoa(selected,buff,10 );
 	char *s[]={	"Selected: ", buff
 				};

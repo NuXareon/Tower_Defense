@@ -53,4 +53,5 @@ private:
 
 	cMonstre Monstre;
 	int cdAi;
+	int cdCursorTile;
 };
