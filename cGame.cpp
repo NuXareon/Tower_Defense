@@ -146,6 +146,32 @@ bool cGame::Process()
 	return res;
 }
 
+void cGame::printUI()
+{
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glOrtho(-25, 25, -25, 25, 0, 10);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	Scene.DrawContainer(&Data);
+
+	glTranslatef(-19.0f,-23.5f,0.0f);
+
+	Scene.DrawTurretPanel(&Data);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	
+}
+
 void cGame::printCursorPosition()
 {	
 	glMatrixMode(GL_MODELVIEW);
@@ -271,19 +297,19 @@ void cGame::Render()
 	else if(camera == 3) gluLookAt(40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
 	else if(camera == 4) gluLookAt(-40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
 
-	glTranslatef(-16.0f,-12.0f,-40.0f);
+	glTranslatef(-16.0f,-10.0f,-38.0f);
 	glRotatef(60,1.0f,0.0f,0.0f);
 
 	Scene.Draw(&Data);
 	Monstre.Draw(&Data);
-
-	//printUI();
 
 	if (debug) 
 	{
 		printCursorPosition();
 		printSelectedTile();
 	}
+
+	printUI();
 	
 	glutSwapBuffers();
 }

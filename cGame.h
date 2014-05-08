@@ -38,6 +38,7 @@ public:
 	void UpdateCursorPosition(int x, int y);
 	GLuint SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE]);
 	void printSelectedTile();
+	void printUI();
 
 	int getSelected();
 

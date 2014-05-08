@@ -19,6 +19,8 @@ public:
 	void Init();
 	bool LoadLevel(int level);
 	void Draw(cData *Data);
+	void DrawTurretPanel(cData *Data);
+	void DrawContainer(cData *Data);
 	int *GetMap();
 	void setSelected(int s);
 	int getSelected();

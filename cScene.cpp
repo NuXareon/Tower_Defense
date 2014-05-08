@@ -133,6 +133,35 @@ void cScene::Draw(cData *Data)
 
 	glDisable(GL_TEXTURE_2D);
 }
+void cScene::DrawContainer(cData *Data)
+{
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL1));
+	glColor3f(0.4f,0.4f,0.4f);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f,   0.0f); glVertex3f(-20, -24.5, -6);
+		glTexCoord2f(0.0f,   1.0f); glVertex3f(-20, -16.5, -6);
+		glTexCoord2f(1.0f,   1.0f); glVertex3f(20, -16.5, -6);
+		glTexCoord2f(1.0f,   0.0f); glVertex3f(20, -24.5, -6);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
+void cScene::DrawTurretPanel(cData *Data)
+{
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+	glColor3f(0.8f,0.8f,0.8f);
+	glCallList(dl_turret);
+	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
+	glColor3f(1.0f,0.2f,0.2f);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
+		glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 6.5, -5);
+		glTexCoord2f(1.0f,   1.0f); glVertex3f(3.5, 6.5, -5);
+		glTexCoord2f(1.0f,   0.0f); glVertex3f(3.5, -0.5, -5);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
 int* cScene::GetMap()
 {
 	return map;
