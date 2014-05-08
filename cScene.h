@@ -24,6 +24,7 @@ public:
 	int *GetMap();
 	void setSelected(int s);
 	int getSelected();
+	void setMoseOverTile(int s);
 	void updateMap(int pos, int value);
 
 private:
@@ -33,7 +34,7 @@ private:
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
-	int selected;
+	int selected, mouseOverTile;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
 	
 };

@@ -12,28 +12,13 @@ void cGame::render_string(void* font, const char* string)
 		glutBitmapCharacter(font, string[i]);
 }
 
- void gl_selall(GLint hits, GLuint *buff)
- {
- 	GLuint *p;
- 	int i;
- 
- 	//gl_draw();
- 
- 	p = buff;
- 	for (i = 0; i < 6 * 4; i++)
- 	{
- 		printf("Slot %d: - Value: %d\n", i, p[i]);
- 	}
- 
- 	printf("Buff size: %x\n", (GLbyte)buff[0]);
- }
-
 bool cGame::Init()
 {
 	bool res=true;
 	camera = 1;
 	debug=false;
 	releaseF1=true;
+	showUI = true;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -84,6 +69,7 @@ void cGame::ReadKeyboard(unsigned char key, int x, int y, bool press)
 {
 	keys[key] = press;
 	if (key == GLUT_KEY_F1 && !press) releaseF1 = true;
+	if (key == 't' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+1);
 }
 
 void cGame::ReadMouse(int button, int state, int x, int y)
@@ -95,7 +81,7 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 		if (hits == 0) Scene.setSelected(-1);
 		else
 		{
-			if(Scene.GetMap()[buff[3]] == 0) Scene.updateMap(buff[3],TOWER_ID_1);
+			if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1 && Scene.GetMap()[buff[3]] == 0) Scene.updateMap(buff[3],TOWER_ID_1);
 			Scene.setSelected(buff[3]);
 		}
 	}
@@ -115,8 +101,13 @@ void cGame::UpdateCursorPosition(int x, int y)
 {
 	xx = x;
 	yy = y;
+	/*
+	GLuint buff[SELECT_BUF_SIZE] = {0};
+	GLuint hits = SelectCursorTile(xx,SCREEN_HEIGHT-yy,&buff);
+	if (hits <= 0) Scene.setMoseOverTile(-1);
+	else Scene.setMoseOverTile(buff[3]);
+	*/
 }
-
 
 //Process
 bool cGame::Process()
@@ -145,6 +136,7 @@ bool cGame::Process()
 
 	return res;
 }
+
 
 void cGame::printUI()
 {
@@ -273,13 +265,29 @@ GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 
 		bool tmpDebug = debug;
 		debug = false;
+		showUI = false;
 		Render();
+		showUI = true;
 		debug = tmpDebug;
 
 		glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
 	hits = glRenderMode(GL_RENDER);
+
+	if (hits == 0)
+	{
+		//glOrtho(-25, 25, -25, 25, 0, 10);
+		float posx = -25.0 + (float)x/SCREEN_WIDTH * 50;
+		float posy = -25.0 + (float)y/SCREEN_HEIGHT * 50;
+		if(posx >= -18.5 && posx <= -15.5 && posy >= -24.0 && posy <= -17.0) 
+		{
+			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+1;
+			hits = -1;
+		}
+		xx = posx;
+		yy = posy;
+	}
 
 	return hits;
 }
@@ -309,7 +317,7 @@ void cGame::Render()
 		printSelectedTile();
 	}
 
-	printUI();
+	if (showUI) printUI();
 	
 	glutSwapBuffers();
 }

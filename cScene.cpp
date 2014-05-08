@@ -7,6 +7,7 @@ cScene::~cScene(void){}
 void cScene::Init()
 {
 	selected = -1;
+	mouseOverTile = -1;
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
@@ -67,12 +68,18 @@ void cScene::Draw(cData *Data)
 		{
 			glPushMatrix();
 				glTranslatef(x,0,-z);
+				if (i*SCENE_WIDTH+j == mouseOverTile && selected == SCENE_WIDTH*SCENE_DEPTH+1)
+				{
+					glColor3f(0.5f,0.50f,1.5f);
+					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+					glCallList(dl_turret);
+				}
 				if (i*SCENE_WIDTH+j == selected) 
 				{
 					if (map[(i*SCENE_WIDTH)+j] == 0)
-					{
+					{/*
 						glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-						glCallList(dl_turret);
+						glCallList(dl_turret);*/
 					}
 					glColor3f(0.5f,1.0f,0.5f);
 				}
@@ -153,7 +160,8 @@ void cScene::DrawTurretPanel(cData *Data)
 	glColor3f(0.8f,0.8f,0.8f);
 	glCallList(dl_turret);
 	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-	glColor3f(1.0f,0.2f,0.2f);
+	if(selected == SCENE_WIDTH*SCENE_DEPTH+1) glColor3f(0.3f,1.0f,0.3f);
+	else glColor3f(1.0f,0.2f,0.2f);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
 		glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 6.5, -5);
@@ -245,3 +253,7 @@ int cScene::getSelected()
 {
 	return selected;
 } 
+void cScene::setMoseOverTile(int s)
+{
+	mouseOverTile = s;
+}

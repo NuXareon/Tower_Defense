@@ -48,6 +48,7 @@ private:
 	cData Data;
 	int camera;
 	int xx,yy;
+	bool showUI;
 	bool debug,releaseF1;
 
 	cMonstre Monstre;
