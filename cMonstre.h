@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <queue>
+using namespace std;
 
 #define MONSTRE_START_CX		3
 #define MONSTRE_START_CY		2
@@ -21,6 +23,10 @@ public:
 	void Init();
 	void Draw(cData *Data);
 	void AI(int *map);
+	int* BFS(int *map, int pos,int pI);
+	int* inimap(int length, int x);
+	void render_string(void* font, const char* string);
+	void printPos();
 	
 
 private:
@@ -28,5 +34,11 @@ private:
 	int dl_monstre;
 	int oldPos;
 	int pos;
+	int posFi;
+	int distAct;
+	int distR;
+	int distL;
+	int distUp;
+	int distDown;
 
 };
