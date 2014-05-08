@@ -19,6 +19,7 @@ bool cGame::Init()
 	debug=false;
 	releaseF1=true;
 	showUI = true;
+	cdAi = 5;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -130,8 +131,12 @@ bool cGame::Process()
 
 	//Game Logic
 	//...
-	 
-	Monstre.AI(Scene.GetMap());
+	
+	if(cdAi>0) cdAi--;
+	else {
+		cdAi=5;
+		Monstre.AI(Scene.GetMap());
+	}
 
 
 	return res;

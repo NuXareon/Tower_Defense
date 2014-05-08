@@ -80,6 +80,7 @@ void cScene::Draw(cData *Data)
 					{/*
 						glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 						glCallList(dl_turret);*/
+						//map[(i*SCENE_WIDTH)+j] = 5;
 					}
 					glColor3f(0.5f,1.0f,0.5f);
 				}

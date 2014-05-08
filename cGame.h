@@ -52,4 +52,5 @@ private:
 	bool debug,releaseF1;
 
 	cMonstre Monstre;
+	int cdAi;
 };
