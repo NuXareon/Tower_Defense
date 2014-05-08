@@ -69,7 +69,7 @@ void cScene::Draw(cData *Data)
 			glPushMatrix();
 				glTranslatef(x,0,-z);
 				glLoadName(i*SCENE_WIDTH+j);	// Name for render_mode(GL_SELECT) = position in map array. (clicking)
-				if (i*SCENE_WIDTH+j == mouseOverTile && selected == SCENE_WIDTH*SCENE_DEPTH+1)
+				if (i*SCENE_WIDTH+j == mouseOverTile && selected == SCENE_WIDTH*SCENE_DEPTH+1 && map[i*SCENE_WIDTH+j] == 0)
 				{
 					glColor3f(0.5f,0.50f,1.5f);
 					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
