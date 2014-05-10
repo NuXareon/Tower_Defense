@@ -48,6 +48,8 @@ bool cGame::Init()
 	Monstre.Init();
 	res = Scene.LoadLevel(1);
 	if(!res) return false;
+	res = Scene.LoadMonsters(1);
+	if(!res) return false;
 
 	return res;
 }
@@ -320,12 +322,14 @@ void cGame::Render()
 	else if(camera == 2) gluLookAt(0.0,50.0,-45.0, 0.0,0.0,-45.0, 0.0,0.0,-1.0);
 	else if(camera == 3) gluLookAt(40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
 	else if(camera == 4) gluLookAt(-40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
-
-	glTranslatef(-16.0f,-10.0f,-38.0f);
+	
+	//glTranslatef(-25.0f,-20.0f,-80.0f); // 16*16
+	glTranslatef(-16.0f,-10.0f,-38.0f); // 8*8
 	glRotatef(60,1.0f,0.0f,0.0f);
 
 	Scene.Draw(&Data);
 	Monstre.Draw(&Data);
+	//Scene.DrawMonsters(&Data);
 
 	if (debug) 
 	{

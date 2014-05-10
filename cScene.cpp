@@ -51,6 +51,47 @@ bool cScene::LoadLevel(int level)
 
 	return true;
 }
+bool cScene::LoadMonsters(int level) {
+	errno_t err;
+	bool res;
+	FILE *fd;
+	char file[16];
+	int pi,pf,n;
+	int i;
+	int tex;
+
+	res=true;
+
+	if(level<10) sprintf_s(file,"%s0%d%s",(char *)MONSTER_FILENAME,level,(char *)FILENAME_EXT);
+	else		 sprintf_s(file,"%s%d%s",(char *)MONSTER_FILENAME,level,(char *)FILENAME_EXT);
+
+	err=fopen_s(&fd,file,"r");
+	if(fd==NULL) return false;
+
+	while(fscanf_s(fd,"%d",&tex) > 0) // read texture (type of monster)
+	{ 
+		int a1 = fscanf_s(fd,"%d",&numMonstres);	// read num monstres
+		int b1 = fscanf_s(fd,"%d",&pi); // read position inicial
+		int c1 = fscanf_s(fd,"%d",&pf); // read y position final
+
+		
+
+		cMonstre* b = new cMonstre();
+		cMonstre bb = *b;
+		//bb.SetType(tex);
+		bb.SetPositionI(pi);
+		bb.SetPositionF(pf);
+		//bb.SetWidthHeight(32,32);
+		//bb.SetState(STATE_LOOKRIGHT);
+		for(i=0;i<numMonstres;++i){
+			monsters.push_back(bb);
+		}
+	}
+
+	return res;
+}
+
+
 void cScene::Draw(cData *Data)
 {
 	int i,j,x,z;
@@ -140,6 +181,13 @@ void cScene::Draw(cData *Data)
 	glEnd();*/
 
 	glDisable(GL_TEXTURE_2D);
+}
+void cScene::DrawMonsters(cData *Data){
+	unsigned int i;
+	for (i = 0; i < numMonstres; ++i)
+	{
+		monsters[i].Draw(Data);
+	}
 }
 void cScene::DrawContainer(cData *Data)
 {

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "cData.h"
+#include "cMonstre.h"
+#include <vector>
 
 #define SCENE_WIDTH		8	//#tiles
 #define SCENE_DEPTH		8
@@ -8,6 +10,7 @@
 #define TILE_SIZE		4	//space units
 
 #define FILENAME		"level"
+#define MONSTER_FILENAME	"monsters"
 #define FILENAME_EXT	".txt"
 
 class cScene
@@ -18,7 +21,9 @@ public:
 
 	void Init();
 	bool LoadLevel(int level);
+	bool LoadMonsters(int level);
 	void Draw(cData *Data);
+	void DrawMonsters(cData *Data);
 	void DrawTurretPanel(cData *Data);
 	void DrawContainer(cData *Data);
 	int *GetMap();
@@ -38,5 +43,7 @@ private:
 	int dl_turret;
 	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
+	std::vector<cMonstre> monsters;			//monster vector for each level
+	int numMonstres;
 	
 };

@@ -21,17 +21,26 @@ public:
 	~cMonstre();
 
 	void Init();
+	void SetPositionI(int p);
+	void GetPositionI(int *p);
+	void SetPositionF(int p);
+	void GetPositionF(int *p);
+
 	void Draw(cData *Data);
 	void AI(int *map);
 	int* BFS(int *map, int pos,int pI);
 	int* inimap(int length, int x);
 	void render_string(void* font, const char* string);
 	void printPos();
+
 	
 
 private:
 	void MakeMonstreDL(float w,float h,float d,float tw,float th,float td);
+	void MakeMonstre2DL(float w,float h,float d,float tw,float th,float td);
 	int dl_monstre;
+	int dl_monstre2;
+	int pi,pf;	// posició inicial d'on surten monstres, posició final
 	int oldPos;
 	int pos;
 	int posFi;

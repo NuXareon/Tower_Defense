@@ -17,6 +17,27 @@ cMonstre::~cMonstre(){}
 void cMonstre::Init()
 {
 	MakeMonstreDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+	MakeMonstre2DL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+}
+
+void cMonstre::SetPositionI(int p)
+{
+	pi = p;
+	pos = p;
+}
+void cMonstre::GetPositionI(int *p)
+{
+	*p = pi;
+}
+void cMonstre::SetPositionF(int p)
+{
+	pf = p;
+	posFi = p;
+
+}
+void cMonstre::GetPositionF(int *p)
+{
+	*p = pf;
 }
 
 void cMonstre::Draw(cData *Data)
@@ -37,12 +58,20 @@ void cMonstre::Draw(cData *Data)
 		{
 			glPushMatrix();
 				glTranslatef(x,0,-z);
-				if (i*SCENE_WIDTH+j == pos) // Posició d'on surten els monstres
+				if (i*SCENE_WIDTH+j == pos) // Posició dels monstres
 				{
 					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 					glCallList(dl_monstre);
 					glColor3f(1.0f,0.0f,0.0f);
 				}
+
+				if (i*SCENE_WIDTH+j == 10) // Posició dels monstres2
+				{
+					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
+					glCallList(dl_monstre2);
+					glColor3f(1.0f,0.0f,0.0f);
+				}
+
 				else glColor3f(1.0f,1.0f,1.0f);
 			glPopMatrix();
 			x += TILE_SIZE;
@@ -121,6 +150,23 @@ void cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
 	glEndList();
 }
 
+void cMonstre::MakeMonstre2DL(float w,float h,float d,float tw,float th,float td)
+{
+	dl_monstre2 = glGenLists(1);
+	glNewList(dl_monstre2,GL_COMPILE);
+			glPushMatrix();
+				glTranslatef(w/2.0f,3.0f,-d/2.0f);
+				//glRotatef(90,1.0f,0.0f,0.0f);
+				GLUquadricObj *q = gluNewQuadric();
+				gluQuadricTexture (q, GL_TRUE);
+				//gluCylinder(q, 0.3,0.95,5,16,16);
+				gluSphere(q, 2.0,16,16);
+				//glRotatef(-90,1.0f,0.0f,0.0f);
+				//gluCylinder(q, 0.2,0.2,1.5,16,16);
+				gluDeleteQuadric(q);
+			glPopMatrix();
+		glEndList();
+}
 int* cMonstre::BFS(int *map, int pF,int pI){
 	int dist[SCENE_WIDTH * SCENE_DEPTH];
 	for(int i=0;i< SCENE_WIDTH * SCENE_DEPTH;++i){
@@ -139,7 +185,7 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 		q.pop();
 
 		//if(aux == pI) return dist;
-		if(map[aux] == 0 && mapbool[aux] < 3){
+		if(map[aux] == 0 && mapbool[aux] < 4){
 			mapbool[aux] += 1;
 			//en creu
 			if(map[aux+1]==0 && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
