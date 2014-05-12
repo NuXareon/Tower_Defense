@@ -26,6 +26,8 @@ public:
 	void SetPositionF(int p);
 	int GetPositionF();
 	int GetPositionAct();
+	void SetErase(bool b);
+	int GetErase();
 
 	void Draw(cData *Data);
 	void AI(int *map);
@@ -43,6 +45,7 @@ private:
 	int dl_monstre;
 	int dl_monstre2;
 	int pi,pf;	// posició inicial d'on surten monstres, posició final
+	int elimina;
 	int oldPos;
 	int pos;
 	int posFi;
@@ -51,5 +54,7 @@ private:
 	int distL;
 	int distUp;
 	int distDown;
+	
+	bool borra;
 
 };

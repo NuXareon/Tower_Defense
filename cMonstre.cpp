@@ -11,6 +11,8 @@ cMonstre::cMonstre() {
 	distL = -1;
 	distUp = -1;
 	distDown = -1;
+	elimina = 0;
+	borra = false;
 }
 cMonstre::~cMonstre(){}
 
@@ -47,7 +49,16 @@ void cMonstre::setMonsterDl(int dl)
 {
 	dl_monstre=dl;
 }
-
+void cMonstre::SetErase(bool b)
+{
+	elimina = 1;
+	borra = b;	
+	int d=0;
+}
+int cMonstre::GetErase()
+{
+	return elimina;
+}
 void cMonstre::Draw(cData *Data)
 {	
 
@@ -65,7 +76,7 @@ void cMonstre::Draw(cData *Data)
 		{
 			glPushMatrix();
 				glTranslatef(x,0,-z);
-				if (i*SCENE_WIDTH+j == pos) // Posició dels monstres
+				if (i*SCENE_WIDTH+j == pos && elimina == 0) // Posició dels monstres
 				{
 					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 					glCallList(dl_monstre);

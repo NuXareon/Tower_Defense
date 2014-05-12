@@ -24,6 +24,8 @@ bool cGame::Init()
 	cdAi = 3;
 	gold = 1000;
 	vidas = 5;
+	cdSpawnM = 3;
+	numM = 1;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -163,7 +165,14 @@ bool cGame::Process()
 	if(cdAi>0) cdAi--;
 	else {
 		cdAi=5;
-		Scene.AI(Scene.GetMap());
+		if(cdSpawnM == 0){
+			if(Scene.GetMonsters().size()>numM){
+				numM++;
+				cdSpawnM = 3;
+			}
+		}
+		else cdSpawnM--;
+		Scene.AI(Scene.GetMap(),numM);
 	}
 	
 	//
@@ -171,6 +180,8 @@ bool cGame::Process()
 	for(int i=0; i<monsters.size(); ++i){
 		if(monsters[i].GetPositionF() == monsters[i].GetPositionAct()){
 			vidas--;
+			monsters[i].SetErase(true);
+			Scene.BorraMonstre(i);
 		}
 	}
 
@@ -432,7 +443,7 @@ void cGame::Render()
 
 	Scene.Draw(&Data);
 	//Monstre.Draw(&Data);
-	Scene.DrawMonsters(&Data);
+	Scene.DrawMonsters(&Data,numM);
 
 	if (debug) 
 	{

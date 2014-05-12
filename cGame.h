@@ -59,6 +59,9 @@ private:
 
 	int gold;
 	int vidas;
+	int numM;	//numero de monstres "instanciats"
+	int cdSpawnM;
+
 	void printGameInfo();
 	void printTurretInfo();
 };
