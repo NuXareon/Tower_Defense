@@ -26,7 +26,7 @@ public:
 	bool LoadLevel(int level);
 	bool LoadMonsters(int level);
 	void Draw(cData *Data);
-	void DrawMonsters(cData *Data);
+	void DrawMonsters(cData *Data,int n);
 	void DrawTurretPanel(cData *Data);
 	void DrawLifePanel(cData *Data);
 	void DrawContainer(cData *Data);
@@ -36,11 +36,12 @@ public:
 	void setMoseOverTile(int s);
 	void updateMap(int pos, int value);
 	void setDlMonstre(int mons);
-	void AI(int *map);
+	void AI(int *map, int n);
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
 	std::vector<cMonstre> GetMonsters();
 	cMonstre GetMonsters(int i);
+	void BorraMonstre(int i);
 
 	int mouseOverTile;
 	

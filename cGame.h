@@ -57,4 +57,6 @@ private:
 	int cdAi;
 	int cdCursorTile;
 	int vidas;
+	int numM;	//numero de monstres "instanciats"
+	int cdSpawnM;
 };

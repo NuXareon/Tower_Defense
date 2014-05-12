@@ -182,9 +182,9 @@ void cScene::Draw(cData *Data)
 
 	glDisable(GL_TEXTURE_2D);
 }
-void cScene::DrawMonsters(cData *Data){
+void cScene::DrawMonsters(cData *Data, int n){
 	int i;
-	for (i = 0; i < numMonstres; ++i)
+	for (i = 0; i < n; ++i)
 	{
 		monsters[i].Draw(Data);
 	}
@@ -324,12 +324,15 @@ void cScene::setMoseOverTile(int s)
 {
 	mouseOverTile = s;
 }
-void cScene::AI(int *map)
+void cScene::AI(int *map, int n)
 {
 	int i = 0;
-	for (i = 0; i < numMonstres; ++i)
+	for (i = 0; i < n; ++i)
 	{
 		monsters[i].AI(map);
+		if(i==1){
+			int c=1;
+		}
 	}
 }
 void cScene::addTurret(int type, int pos)
@@ -354,4 +357,16 @@ std::vector<cMonstre> cScene::GetMonsters()
 cMonstre cScene::GetMonsters(int i)
 {
 	return monsters[i];
+}
+bool eraseCondition(cMonstre m)
+{
+	return (m.GetErase()==1);
+}
+void cScene::BorraMonstre(int i){
+	//monsters.erase(monsters.begin()+i);
+	int n1 = monsters.size();
+	int b1 = monsters[i].GetErase();
+	monsters.erase(std::remove_if(monsters.begin(), monsters.end(),eraseCondition),monsters.end());
+	int n2 = monsters.size();
+	int zzz=1;
 }
