@@ -192,7 +192,7 @@ void cScene::DrawMonsters(cData *Data){
 void cScene::DrawContainer(cData *Data)
 {
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL1));
+	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL2));
 	glColor3f(0.4f,0.4f,0.4f);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0.0f,   0.0f); glVertex3f(-20, -24.5, -6);
@@ -205,18 +205,31 @@ void cScene::DrawContainer(cData *Data)
 void cScene::DrawTurretPanel(cData *Data)
 {
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-	glColor3f(0.8f,0.8f,0.8f);
-	glCallList(dl_turret);
-	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-	if(selected == SCENE_WIDTH*SCENE_DEPTH+1) glColor3f(0.3f,1.0f,0.3f);
-	else glColor3f(1.0f,0.2f,0.2f);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
-		glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 6.5, -5);
-		glTexCoord2f(1.0f,   1.0f); glVertex3f(3.5, 6.5, -5);
-		glTexCoord2f(1.0f,   0.0f); glVertex3f(3.5, -0.5, -5);
-	glEnd();
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+		glColor3f(0.8f,0.8f,0.8f);
+		glCallList(dl_turret);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
+		if(selected == SCENE_WIDTH*SCENE_DEPTH+1) glColor3f(0.3f,1.0f,0.3f);
+		else glColor3f(1.0f,0.2f,0.2f);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
+			glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 6.5, -5);
+			glTexCoord2f(1.0f,   1.0f); glVertex3f(3.5, 6.5, -5);
+			glTexCoord2f(1.0f,   0.0f); glVertex3f(3.5, -0.5, -5);
+		glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
+void cScene::DrawLifePanel(cData *Data){
+	glEnable(GL_TEXTURE_2D);
+		glTranslatef(30.0f,3.0f,0.0f); 	
+		glColor3f(1.0f,1.0f,1.0f);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_COR));
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
+			glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 3.0, -5);
+			glTexCoord2f(1.0f,   1.0f); glVertex3f(3.0, 3.0, -5);
+			glTexCoord2f(1.0f,   0.0f); glVertex3f(3.0, -0.5, -5);
+		glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
 void cScene::DrawInfoPanel(cData* Data)
@@ -347,4 +360,14 @@ void cScene::addTurret(int type, int pos)
 void cScene::destroyTurret(int pos)
 {
 	turrets.erase(pos);
+}
+
+std::vector<cMonstre> cScene::GetMonsters()
+{
+	return monsters;
+}
+
+cMonstre cScene::GetMonsters(int i)
+{
+	return monsters[i];
 }

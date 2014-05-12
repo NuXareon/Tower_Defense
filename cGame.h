@@ -42,6 +42,7 @@ public:
 	void printUI();
 
 	int getSelected();
+	int GetVida();
 
 private:
 	unsigned char keys[256];
@@ -57,7 +58,7 @@ private:
 	int cdCursorTile;
 
 	int gold;
-
+	int vidas;
 	void printGameInfo();
 	void printTurretInfo();
 };

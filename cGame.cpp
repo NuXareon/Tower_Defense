@@ -23,6 +23,7 @@ bool cGame::Init()
 	cdCursorTile = 5;
 	cdAi = 3;
 	gold = 1000;
+	vidas = 5;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -45,6 +46,8 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_FLOOR,"floor.png",GL_RGBA);
 	if(!res) return false;
 	res = Data.LoadImage(IMG_ROOF,"roof.png",GL_RGBA);
+	if(!res) return false;
+	res = Data.LoadImage(IMG_COR,"cor.png",GL_RGBA);
 	if(!res) return false;
 	Scene.Init();
 	int dl_mon = Monstre.Init();
@@ -162,7 +165,14 @@ bool cGame::Process()
 		cdAi=5;
 		Scene.AI(Scene.GetMap());
 	}
-
+	
+	//
+	std::vector<cMonstre> monsters = Scene.GetMonsters();
+	for(int i=0; i<monsters.size(); ++i){
+		if(monsters[i].GetPositionF() == monsters[i].GetPositionAct()){
+			vidas--;
+		}
+	}
 
 	return res;
 }
@@ -185,6 +195,7 @@ void cGame::printUI()
 	glTranslatef(-19.0f,-23.5f,0.0f);
 
 	Scene.DrawTurretPanel(&Data);
+	//Scene.DrawLifePanel(&Data);
 
 	glTranslatef(29.4f,0.0f,0.0f);
 
@@ -208,9 +219,11 @@ void cGame::printGameInfo()
 	glPushMatrix();
 	glLoadIdentity();
 
-	char buffg[10];
+	char buffg[10], buffl[10];
 	_itoa_s(gold,buffg,10 );
+	_itoa_s(vidas,buffl,10 );
 	char *s[]={	"Gold: ", buffg,
+				"Life: ", buffl
 				};
 
 	glColor3f(1.0f,1.0f,1.0f);
@@ -221,6 +234,11 @@ void cGame::printGameInfo()
 			render_string(GLUT_BITMAP_9_BY_15,s[0]);
 			glRasterPos2f(0.60f,-0.75f);
 			render_string(GLUT_BITMAP_9_BY_15,s[1]);
+
+			glRasterPos2f(0.45f,-0.80f);
+			render_string(GLUT_BITMAP_9_BY_15,s[2]);
+			glRasterPos2f(0.60f,-0.80f);
+			render_string(GLUT_BITMAP_9_BY_15,s[3]);
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 
@@ -429,4 +447,8 @@ void cGame::Render()
 	}
 	
 	glutSwapBuffers();
+}
+
+int cGame::GetVida(){
+	return vidas;
 }
