@@ -29,10 +29,12 @@ public:
 	void DrawMonsters(cData *Data);
 	void DrawTurretPanel(cData *Data);
 	void DrawContainer(cData *Data);
+	void DrawInfoPanel(cData *Data);
 	int *GetMap();
 	void setSelected(int s);
 	int getSelected();
 	void setMoseOverTile(int s);
+	int getMouseOverTile();
 	void updateMap(int pos, int value);
 	void setDlMonstre(int mons);
 	void AI(int *map);

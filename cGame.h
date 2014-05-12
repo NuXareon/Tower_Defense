@@ -14,6 +14,7 @@ using namespace std;
 #define SCREEN_HEIGHT	600
 #define SELECT_BUF_SIZE	16
 #define TOWER_ID_1		9
+#define COST_TURRET_1	100
 
 class cGame
 {
@@ -54,4 +55,9 @@ private:
 	cMonstre Monstre;
 	int cdAi;
 	int cdCursorTile;
+
+	int gold;
+
+	void printGameInfo();
+	void printTurretInfo();
 };

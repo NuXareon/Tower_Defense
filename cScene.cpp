@@ -219,6 +219,19 @@ void cScene::DrawTurretPanel(cData *Data)
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
+void cScene::DrawInfoPanel(cData* Data)
+{
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL1));
+	glColor3f(0.1f,0.1f,0.1f);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
+		glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 6.5, -5);
+		glTexCoord2f(1.0f,   1.0f); glVertex3f(9.5, 6.5, -5);
+		glTexCoord2f(1.0f,   0.0f); glVertex3f(9.5, -0.5, -5);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
 int* cScene::GetMap()
 {
 	return map;
@@ -309,6 +322,10 @@ int cScene::getSelected()
 void cScene::setMoseOverTile(int s)
 {
 	mouseOverTile = s;
+}
+int cScene::getMouseOverTile()
+{
+	return mouseOverTile;
 }
 void cScene::AI(int *map)
 {

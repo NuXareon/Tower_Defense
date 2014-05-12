@@ -22,6 +22,7 @@ bool cGame::Init()
 	showUI = true;
 	cdCursorTile = 5;
 	cdAi = 3;
+	gold = 1000;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -87,10 +88,11 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 		if (hits == 0) Scene.setSelected(-1);
 		else
 		{
-			if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1 && Scene.GetMap()[buff[3]] == 0) 
+			if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1 && Scene.GetMap()[buff[3]] == 0 && gold >= COST_TURRET_1) 
 			{
 				Scene.updateMap(buff[3],TOWER_ID_1);
 				Scene.addTurret(1,buff[3]);
+				gold -= COST_TURRET_1;
 			}
 			Scene.setSelected(buff[3]);
 		}
@@ -105,6 +107,7 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 			{
 				Scene.updateMap(buff[3],0);
 				Scene.destroyTurret(buff[3]);
+				gold += COST_TURRET_1/2;
 			}
 			Scene.setSelected(-1);
 		}
@@ -150,7 +153,7 @@ bool cGame::Process()
 		cdCursorTile = 3;
 		GLuint buff[SELECT_BUF_SIZE] = {0};
 		GLuint hits = SelectCursorTile(xx,SCREEN_HEIGHT-yy,&buff);
-		if (hits <= 0) Scene.setMoseOverTile(-1);
+		if (hits == 0) Scene.setMoseOverTile(-1);
 		else Scene.setMoseOverTile(buff[3]);
 	}
 	
@@ -183,12 +186,49 @@ void cGame::printUI()
 
 	Scene.DrawTurretPanel(&Data);
 
+	glTranslatef(29.4f,0.0f,0.0f);
+
+	Scene.DrawInfoPanel(&Data);
+
+	printGameInfo();
+
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
-	
+}
+void cGame::printGameInfo()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	char buffg[10];
+	_itoa_s(gold,buffg,10 );
+	char *s[]={	"Gold: ", buffg,
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+	glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			glRasterPos2f(0.45f,-0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+			glRasterPos2f(0.60f,-0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[1]);
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
 void cGame::printCursorPosition()
@@ -267,6 +307,43 @@ void cGame::printSelectedTile()
 	glPopMatrix();
 }
 
+void cGame::printTurretInfo()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	char buffg[10];
+	_itoa_s(COST_TURRET_1,buffg,10 );
+	char *s[]={	"Turret type 1",
+				"Cost: ", buffg
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			glRasterPos2f(-0.95f,0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+			glRasterPos2f(-0.95f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[1]);
+			glRasterPos2f(-0.80f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[2]);
+
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
 GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 {
 	GLint hits, view[4];
@@ -313,8 +390,6 @@ GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+1;
 			hits = -1;
 		}
-		xx = posx;
-		yy = posy;
 	}
 
 	return hits;
@@ -347,7 +422,11 @@ void cGame::Render()
 		printSelectedTile();
 	}
 
-	if (showUI) printUI();
+	if (showUI) 
+	{
+		printUI();
+		if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo();
+	}
 	
 	glutSwapBuffers();
 }
