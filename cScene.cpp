@@ -22,17 +22,17 @@ bool cScene::LoadLevel(int level)
 	char file[16],tile;
 	int i,j;
 
-	if(level<10) sprintf(file,"%s0%d%s",(char *)FILENAME,level,(char *)FILENAME_EXT);
-	else		 sprintf(file,"%s%d%s",(char *)FILENAME,level,(char *)FILENAME_EXT);
+	if(level<10) sprintf_s(file,"%s0%d%s",(char *)FILENAME,level,(char *)FILENAME_EXT);
+	else		 sprintf_s(file,"%s%d%s",(char *)FILENAME,level,(char *)FILENAME_EXT);
 
-	fd=fopen(file,"r");
+	fopen_s(&fd,file,"r");
 	if(fd==NULL) return false;
 
 	for(i=SCENE_DEPTH-1;i>=0;i--)
 	{
 		for(j=0;j<SCENE_WIDTH;j++)
 		{
-			fscanf(fd,"%c",&tile);
+			fscanf_s(fd,"%c",&tile);
 			if(tile==' ')
 			{
 				//Tiles must be != 0 !!!
@@ -44,7 +44,7 @@ bool cScene::LoadLevel(int level)
 				map[(i*SCENE_WIDTH)+j] = tile-48;
 			}
 		}
-		fscanf(fd,"%c",&tile); //pass enter
+		fscanf_s(fd,"%c",&tile); //pass enter
 	}
 
 	fclose(fd);
@@ -56,7 +56,7 @@ bool cScene::LoadMonsters(int level) {
 	bool res;
 	FILE *fd;
 	char file[16];
-	int pi,pf,n;
+	int pi,pf;
 	int i;
 	int tex;
 
@@ -73,7 +73,7 @@ bool cScene::LoadMonsters(int level) {
 		int a1 = fscanf_s(fd,"%d",&numMonstres);	// read num monstres
 		int b1 = fscanf_s(fd,"%d",&pi); // read position inicial
 		int c1 = fscanf_s(fd,"%d",&pf); // read y position final
-
+		
 		
 
 		cMonstre* b = new cMonstre();
@@ -96,7 +96,6 @@ bool cScene::LoadMonsters(int level) {
 void cScene::Draw(cData *Data)
 {
 	int i,j,x,z;
-	float w,d,tw,td;
 
 	glEnable(GL_TEXTURE_2D);
 	
@@ -184,7 +183,7 @@ void cScene::Draw(cData *Data)
 	glDisable(GL_TEXTURE_2D);
 }
 void cScene::DrawMonsters(cData *Data){
-	unsigned int i;
+	int i;
 	for (i = 0; i < numMonstres; ++i)
 	{
 		monsters[i].Draw(Data);
@@ -313,9 +312,22 @@ void cScene::setMoseOverTile(int s)
 }
 void cScene::AI(int *map)
 {
-	unsigned int i = 0;
+	int i = 0;
 	for (i = 0; i < numMonstres; ++i)
 	{
 		monsters[i].AI(map);
 	}
+}
+void cScene::addTurret(int type, int pos)
+{
+	cTurret* t = new cTurret();
+	cTurret tt = *t;
+
+	tt.Init(type);
+
+	turrets[pos] = tt;
+}
+void cScene::destroyTurret(int pos)
+{
+	turrets.erase(pos);
 }

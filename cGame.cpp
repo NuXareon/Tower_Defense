@@ -1,4 +1,5 @@
 #include "cGame.h"
+#include "cTurret.h"
 #include "Globals.h"
 
 
@@ -86,7 +87,11 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 		if (hits == 0) Scene.setSelected(-1);
 		else
 		{
-			if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1 && Scene.GetMap()[buff[3]] == 0) Scene.updateMap(buff[3],TOWER_ID_1);
+			if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1 && Scene.GetMap()[buff[3]] == 0) 
+			{
+				Scene.updateMap(buff[3],TOWER_ID_1);
+				Scene.addTurret(1,buff[3]);
+			}
 			Scene.setSelected(buff[3]);
 		}
 	}
@@ -96,7 +101,11 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 		GLuint hits = SelectCursorTile(x,SCREEN_HEIGHT-y,&buff);
 		if (hits > 0) 
 		{
-			if(Scene.GetMap()[buff[3]] == TOWER_ID_1) Scene.updateMap(buff[3],0);
+			if(Scene.GetMap()[buff[3]] == TOWER_ID_1) 
+			{
+				Scene.updateMap(buff[3],0);
+				Scene.destroyTurret(buff[3]);
+			}
 			Scene.setSelected(-1);
 		}
 	}
@@ -193,8 +202,8 @@ void cGame::printCursorPosition()
 	glLoadIdentity();
 
 	char buffx[10], buffy[10];
-	itoa(xx,buffx,10 );
-	itoa(yy,buffy,10 );
+	_itoa_s(xx,buffx,10 );
+	_itoa_s(yy,buffy,10 );
 	char *s[]={	"Pos X: ", buffx,
 				"Pos Y: ", buffy
 				};
@@ -235,7 +244,7 @@ void cGame::printSelectedTile()
 	char buff[10];
 	//int selected = Scene.getSelected();
 	int selected = Scene.mouseOverTile;
-	itoa(selected,buff,10 );
+	_itoa_s(selected,buff,10 );
 	char *s[]={	"Selected: ", buff
 				};
 

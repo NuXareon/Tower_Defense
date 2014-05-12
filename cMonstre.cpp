@@ -48,7 +48,6 @@ void cMonstre::Draw(cData *Data)
 {	
 
 	int i,j,x,z;
-	float w,d,tw,td;
 
 	glEnable(GL_TEXTURE_2D);
 	
@@ -249,13 +248,13 @@ void cMonstre::printPos()
 
 	char buffx[10], buffy[10];
 	char buffa[10], buffb[10],buffc[10], buffd[10],buffe[10];
-	itoa(pos,buffx,10 );
-	itoa(oldPos,buffy,10 );
-	itoa(distAct,buffa,10 );
-	itoa(distR,buffb,10 );
-	itoa(distL,buffb,10 );
-	itoa(distUp,buffb,10 );
-	itoa(distDown,buffb,10 );
+	_itoa_s(pos,buffx,10 );
+	_itoa_s(oldPos,buffy,10 );
+	_itoa_s(distAct,buffa,10 );
+	_itoa_s(distR,buffb,10 );
+	_itoa_s(distL,buffb,10 );
+	_itoa_s(distUp,buffb,10 );
+	_itoa_s(distDown,buffb,10 );
 	char *s[]={	"PosN: ", buffx,
 				"PosO: ", buffy,
 				buffa,buffb,buffc,buffd,buffe

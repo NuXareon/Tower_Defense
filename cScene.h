@@ -2,7 +2,10 @@
 
 #include "cData.h"
 #include "cMonstre.h"
+#include "cTurret.h"
 #include <vector>
+#include <iostream>
+#include <map>
 
 #define SCENE_WIDTH		8	//#tiles
 #define SCENE_DEPTH		8
@@ -33,6 +36,8 @@ public:
 	void updateMap(int pos, int value);
 	void setDlMonstre(int mons);
 	void AI(int *map);
+	void addTurret(int type, int pos);
+	void destroyTurret(int pos);
 
 	int mouseOverTile;
 
@@ -47,6 +52,7 @@ private:
 	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
 	std::vector<cMonstre> monsters;			//monster vector for each level
+	std::map<int,cTurret> turrets;			//Turret map, pos->turret
 	int numMonstres;
 	
 };
