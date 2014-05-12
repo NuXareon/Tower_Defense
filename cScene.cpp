@@ -83,6 +83,7 @@ bool cScene::LoadMonsters(int level) {
 		bb.SetPositionF(pf);
 		//bb.SetWidthHeight(32,32);
 		//bb.SetState(STATE_LOOKRIGHT);
+		bb.setMonsterDl(dl_monstre);
 		for(i=0;i<numMonstres;++i){
 			monsters.push_back(bb);
 		}
@@ -223,6 +224,10 @@ int* cScene::GetMap()
 {
 	return map;
 }
+void cScene::setDlMonstre(int mons)
+{
+	dl_monstre = mons;
+}
 
 void cScene::MakeCubeDL(float w,float h,float d,float tw,float th,float td)
 {
@@ -305,4 +310,12 @@ int cScene::getSelected()
 void cScene::setMoseOverTile(int s)
 {
 	mouseOverTile = s;
+}
+void cScene::AI(int *map)
+{
+	unsigned int i = 0;
+	for (i = 0; i < numMonstres; ++i)
+	{
+		monsters[i].AI(map);
+	}
 }

@@ -20,7 +20,7 @@ public:
 	cMonstre();
 	~cMonstre();
 
-	void Init();
+	int Init();
 	void SetPositionI(int p);
 	void GetPositionI(int *p);
 	void SetPositionF(int p);
@@ -32,11 +32,12 @@ public:
 	int* inimap(int length, int x);
 	void render_string(void* font, const char* string);
 	void printPos();
+	void setMonsterDl(int dl);
 
 	
 
 private:
-	void MakeMonstreDL(float w,float h,float d,float tw,float th,float td);
+	int MakeMonstreDL(float w,float h,float d,float tw,float th,float td);
 	void MakeMonstre2DL(float w,float h,float d,float tw,float th,float td);
 	int dl_monstre;
 	int dl_monstre2;

@@ -31,6 +31,8 @@ public:
 	int getSelected();
 	void setMoseOverTile(int s);
 	void updateMap(int pos, int value);
+	void setDlMonstre(int mons);
+	void AI(int *map);
 
 	int mouseOverTile;
 
@@ -41,6 +43,7 @@ private:
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
+	int dl_monstre;
 	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
 	std::vector<cMonstre> monsters;			//monster vector for each level

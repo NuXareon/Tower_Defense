@@ -45,7 +45,8 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_ROOF,"roof.png",GL_RGBA);
 	if(!res) return false;
 	Scene.Init();
-	Monstre.Init();
+	int dl_mon = Monstre.Init();
+	Scene.setDlMonstre(dl_mon);
 	res = Scene.LoadLevel(1);
 	if(!res) return false;
 	res = Scene.LoadMonsters(1);
@@ -147,7 +148,7 @@ bool cGame::Process()
 	if(cdAi>0) cdAi--;
 	else {
 		cdAi=5;
-		Monstre.AI(Scene.GetMap());
+		Scene.AI(Scene.GetMap());
 	}
 
 
@@ -328,8 +329,8 @@ void cGame::Render()
 	glRotatef(60,1.0f,0.0f,0.0f);
 
 	Scene.Draw(&Data);
-	Monstre.Draw(&Data);
-	//Scene.DrawMonsters(&Data);
+	//Monstre.Draw(&Data);
+	Scene.DrawMonsters(&Data);
 
 	if (debug) 
 	{

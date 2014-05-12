@@ -14,10 +14,10 @@ cMonstre::cMonstre() {
 }
 cMonstre::~cMonstre(){}
 
-void cMonstre::Init()
+int cMonstre::Init()
 {
-	MakeMonstreDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
-	MakeMonstre2DL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+	return MakeMonstreDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+	//MakeMonstre2DL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 }
 
 void cMonstre::SetPositionI(int p)
@@ -38,6 +38,10 @@ void cMonstre::SetPositionF(int p)
 void cMonstre::GetPositionF(int *p)
 {
 	*p = pf;
+}
+void cMonstre::setMonsterDl(int dl)
+{
+	dl_monstre=dl;
 }
 
 void cMonstre::Draw(cData *Data)
@@ -86,17 +90,34 @@ void cMonstre::AI(int *map)
 	int *dist = BFS(map,posFi,pos);
 	//pos adjacent mes propera
 	oldPos = pos;
-	int aux = pos+1;
-	int dmin = dist[pos+1];
+	int aux = pos;
+	int dmin = dist[pos];
 	distAct = dist[pos];
 	distR = dist[pos+1];
 	distL = dist[pos-1];
 	distUp = dist[pos+SCENE_WIDTH];
 	distDown = dist[pos-SCENE_WIDTH];
-	if(dmin > dist[pos+1]&& ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {dmin = dist[pos+1]; aux = pos+1;}
-	if(dmin > dist[pos-1]&& ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1 ) {dmin = dist[pos-1]; aux = pos-1;}
-	if(dmin > dist[pos+SCENE_WIDTH] && aux+SCENE_WIDTH<64) {dmin = dist[pos+SCENE_WIDTH]; aux = pos+SCENE_WIDTH;}
-	if(dmin > dist[pos-SCENE_WIDTH] && aux+SCENE_WIDTH<-1) {dmin = dist[pos-SCENE_WIDTH]; aux = pos-SCENE_WIDTH;}
+
+	if(dmin > distR && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) // R
+	{
+		dmin = dist[pos+1]; 
+		aux = pos+1;
+	} 	
+	if(dmin > distL && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1 ) // L
+	{
+		dmin = dist[pos-1]; 
+		aux = pos-1;
+	} 
+	if(dmin > distUp && aux+SCENE_WIDTH<64) //UP
+	{
+		dmin = dist[pos+SCENE_WIDTH]; 
+		aux = pos+SCENE_WIDTH;
+	}
+	if(dmin > distDown && aux+SCENE_WIDTH>-1) //DOWN
+	{
+		dmin = dist[pos-SCENE_WIDTH]; 
+		aux = pos-SCENE_WIDTH;
+	}
 
 	pos = aux;
 
@@ -111,7 +132,7 @@ void cMonstre::AI(int *map)
 	//SetPosition(3,3);
 }
 
-void cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
+int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
 {
 	dl_monstre = glGenLists(1);
 	glNewList(dl_monstre,GL_COMPILE);
@@ -148,6 +169,7 @@ void cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
 			glTexCoord2f(  tw,   td); glVertex3f(w, h, -d);
 		glEnd();
 	glEndList();
+	return dl_monstre;
 }
 
 void cMonstre::MakeMonstre2DL(float w,float h,float d,float tw,float th,float td)
