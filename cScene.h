@@ -28,6 +28,7 @@ public:
 	void Draw(cData *Data);
 	void DrawMonsters(cData *Data);
 	void DrawTurretPanel(cData *Data);
+	void DrawLifePanel(cData *Data);
 	void DrawContainer(cData *Data);
 	int *GetMap();
 	void setSelected(int s);
@@ -38,8 +39,12 @@ public:
 	void AI(int *map);
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
+	std::vector<cMonstre> GetMonsters();
+	cMonstre GetMonsters(int i);
 
 	int mouseOverTile;
+	
+	
 
 private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);

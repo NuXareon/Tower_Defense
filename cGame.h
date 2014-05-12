@@ -38,9 +38,11 @@ public:
 	void UpdateCursorPosition(int x, int y);
 	GLuint SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE]);
 	void printSelectedTile();
+	void printInfoGame();
 	void printUI();
 
 	int getSelected();
+	int GetVida();
 
 private:
 	unsigned char keys[256];
@@ -54,4 +56,5 @@ private:
 	cMonstre Monstre;
 	int cdAi;
 	int cdCursorTile;
+	int vidas;
 };

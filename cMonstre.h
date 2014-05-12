@@ -24,7 +24,8 @@ public:
 	void SetPositionI(int p);
 	void GetPositionI(int *p);
 	void SetPositionF(int p);
-	void GetPositionF(int *p);
+	int GetPositionF();
+	int GetPositionAct();
 
 	void Draw(cData *Data);
 	void AI(int *map);

@@ -35,9 +35,13 @@ void cMonstre::SetPositionF(int p)
 	posFi = p;
 
 }
-void cMonstre::GetPositionF(int *p)
+int cMonstre::GetPositionF()
 {
-	*p = pf;
+	return pf;
+}
+int cMonstre::GetPositionAct()
+{
+	return pos;
 }
 void cMonstre::setMonsterDl(int dl)
 {

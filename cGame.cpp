@@ -22,6 +22,7 @@ bool cGame::Init()
 	showUI = true;
 	cdCursorTile = 5;
 	cdAi = 3;
+	vidas = 5;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -44,6 +45,8 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_FLOOR,"floor.png",GL_RGBA);
 	if(!res) return false;
 	res = Data.LoadImage(IMG_ROOF,"roof.png",GL_RGBA);
+	if(!res) return false;
+	res = Data.LoadImage(IMG_COR,"cor.png",GL_RGBA);
 	if(!res) return false;
 	Scene.Init();
 	int dl_mon = Monstre.Init();
@@ -159,7 +162,14 @@ bool cGame::Process()
 		cdAi=5;
 		Scene.AI(Scene.GetMap());
 	}
-
+	
+	//
+	std::vector<cMonstre> monsters = Scene.GetMonsters();
+	for(int i=0; i<monsters.size(); ++i){
+		if(monsters[i].GetPositionF() == monsters[i].GetPositionAct()){
+			vidas--;
+		}
+	}
 
 	return res;
 }
@@ -182,6 +192,8 @@ void cGame::printUI()
 	glTranslatef(-19.0f,-23.5f,0.0f);
 
 	Scene.DrawTurretPanel(&Data);
+	//Scene.DrawLifePanel(&Data);
+	printInfoGame();
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -231,6 +243,41 @@ void cGame::printCursorPosition()
 	glPopMatrix();
 }
 
+
+void cGame::printInfoGame()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	char buff[10];
+	_itoa_s(vidas,buff,10 );
+	char *s[]={	"Life: ", buff
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			//glTranslatef(-19.0f,-23.5f,0.0f);
+			glRasterPos2f(0.60f,-0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+			glRasterPos2f(0.72f,-0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[1]);
+
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
 void cGame::printSelectedTile()
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -350,4 +397,8 @@ void cGame::Render()
 	if (showUI) printUI();
 	
 	glutSwapBuffers();
+}
+
+int cGame::GetVida(){
+	return vidas;
 }
