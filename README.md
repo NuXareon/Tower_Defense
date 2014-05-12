@@ -6,5 +6,15 @@ Tower_Defense
 	// shaders: gpugems, glsl (recommended), lighthouse3d (tutorials)
 
 Setmana del 5:
-	- CLicking + ficar torres
-	- Moviments enemics en path fixe
+	- Clicking + ficar torres
+	- Moviments enemics en BFS
+	
+Setmana del 12:
+	- Varis Monstres (temps)
+	- Destruir mostres al final
+	- Ficar vides player
+	- Ficar vida als monstres
+	- Torres: animació disparar
+	- Diners, cost de torre, upgrades
+	- Descripció torre
+	
