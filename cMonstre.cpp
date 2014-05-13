@@ -13,6 +13,7 @@ cMonstre::cMonstre() {
 	distDown = -1;
 	elimina = 0;
 	borra = false;
+	id = -1;
 }
 cMonstre::~cMonstre(){}
 
@@ -55,10 +56,19 @@ void cMonstre::SetErase(bool b)
 	borra = b;	
 	int d=0;
 }
-int cMonstre::GetErase()
+bool cMonstre::GetErase()
 {
-	return elimina;
+	return borra;
 }
+void cMonstre::setID(int i)
+{
+	id = i;
+}
+int cMonstre::getID()
+{
+	return id;
+}
+
 void cMonstre::Draw(cData *Data)
 {	
 

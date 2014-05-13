@@ -27,7 +27,7 @@ public:
 	int GetPositionF();
 	int GetPositionAct();
 	void SetErase(bool b);
-	int GetErase();
+	bool GetErase();
 
 	void Draw(cData *Data);
 	void AI(int *map);
@@ -36,6 +36,8 @@ public:
 	void render_string(void* font, const char* string);
 	void printPos();
 	void setMonsterDl(int dl);
+	void setID(int i);
+	int getID();
 
 	
 
@@ -54,6 +56,7 @@ private:
 	int distL;
 	int distUp;
 	int distDown;
+	int id;
 	
 	bool borra;
 

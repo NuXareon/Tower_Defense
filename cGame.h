@@ -5,6 +5,7 @@
 #include "cBicho.h"
 #include "cMonstre.h"
 
+#include <map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -15,6 +16,8 @@ using namespace std;
 #define SELECT_BUF_SIZE	16
 #define TOWER_ID_1		9
 #define COST_TURRET_1	100
+#define CD_IA_M			15
+#define CD_MONSTER		10
 
 class cGame
 {

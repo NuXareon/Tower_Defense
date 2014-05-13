@@ -81,11 +81,10 @@ bool cScene::LoadMonsters(int level) {
 		//bb.SetType(tex);
 		bb.SetPositionI(pi);
 		bb.SetPositionF(pf);
-		//bb.SetWidthHeight(32,32);
-		//bb.SetState(STATE_LOOKRIGHT);
 		bb.setMonsterDl(dl_monstre);
 		for(i=0;i<numMonstres;++i){
-			monsters.push_back(bb);
+			bb.setID(i);
+			monsters[i]= bb;
 		}
 	}
 
@@ -183,10 +182,9 @@ void cScene::Draw(cData *Data)
 	glDisable(GL_TEXTURE_2D);
 }
 void cScene::DrawMonsters(cData *Data, int n){
-	int i;
-	for (i = 0; i < n; ++i)
-	{
-		monsters[i].Draw(Data);
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
+		if(iter->second.getID() <n)	iter->second.Draw(Data);
 	}
 }
 void cScene::DrawContainer(cData *Data)
@@ -342,13 +340,9 @@ int cScene::getMouseOverTile()
 }
 void cScene::AI(int *map, int n)
 {
-	int i = 0;
-	for (i = 0; i < n; ++i)
-	{
-		monsters[i].AI(map);
-		if(i==1){
-			int c=1;
-		}
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
+		if(iter->second.getID() <n) iter->second.AI(map);
 	}
 }
 void cScene::addTurret(int type, int pos)
@@ -365,24 +359,24 @@ void cScene::destroyTurret(int pos)
 	turrets.erase(pos);
 }
 
-std::vector<cMonstre> cScene::GetMonsters()
+std::map<int,cMonstre> cScene::GetMonsters()
 {
 	return monsters;
 }
 
-cMonstre cScene::GetMonsters(int i)
+/*cMonstre cScene::GetMonsters(int i)
 {
 	return monsters[i];
 }
 bool eraseCondition(cMonstre m)
 {
-	return (m.GetErase()==1);
-}
-void cScene::BorraMonstre(int i){
-	//monsters.erase(monsters.begin()+i);
-	int n1 = monsters.size();
-	int b1 = monsters[i].GetErase();
-	monsters.erase(std::remove_if(monsters.begin(), monsters.end(),eraseCondition),monsters.end());
-	int n2 = monsters.size();
-	int zzz=1;
+	return m.GetErase();
+}*/
+void cScene::BorraMonstre(int id){
+	monsters.erase(id);
+	//int n1 = monsters.size();
+	//bool b1 = monsters[i].GetErase();
+	//monsters.erase(std::remove_if(monsters.begin(), monsters.end(),eraseCondition),monsters.end());
+	//int n2 = monsters.size();
+	//int zzz=1;
 }

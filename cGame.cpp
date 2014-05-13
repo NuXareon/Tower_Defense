@@ -164,7 +164,7 @@ bool cGame::Process()
 	
 	if(cdAi>0) cdAi--;
 	else {
-		cdAi=5;
+		cdAi=CD_IA_M;
 		if(cdSpawnM == 0){
 			if(Scene.GetMonsters().size()>numM){
 				numM++;
@@ -176,12 +176,13 @@ bool cGame::Process()
 	}
 	
 	//
-	std::vector<cMonstre> monsters = Scene.GetMonsters();
-	for(int i=0; i<monsters.size(); ++i){
-		if(monsters[i].GetPositionF() == monsters[i].GetPositionAct()){
+	std::map<int,cMonstre> monsters = Scene.GetMonsters();
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
+		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){
 			vidas--;
-			monsters[i].SetErase(true);
-			Scene.BorraMonstre(i);
+			//monsters[i].SetErase(true);
+			Scene.BorraMonstre(iter->first);
 		}
 	}
 

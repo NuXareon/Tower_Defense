@@ -41,8 +41,8 @@ public:
 	void AI(int *map, int n);
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
-	std::vector<cMonstre> GetMonsters();
-	cMonstre GetMonsters(int i);
+	std::map<int,cMonstre> GetMonsters();
+	//cMonstre GetMonsters(int i);
 	void BorraMonstre(int i);
 
 	int mouseOverTile;
@@ -59,7 +59,7 @@ private:
 	int dl_monstre;
 	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
-	std::vector<cMonstre> monsters;			//monster vector for each level
+	std::map<int,cMonstre> monsters;		//monster vector for each level
 	std::map<int,cTurret> turrets;			//Turret map, pos->turret
 	int numMonstres;
 	
