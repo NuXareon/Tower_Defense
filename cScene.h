@@ -42,8 +42,7 @@ public:
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
 	std::map<int,cMonstre> GetMonsters();
-	//cMonstre GetMonsters(int i);
-	void BorraMonstre(int i);
+	void BorraMonstre(int id);
 
 	int mouseOverTile;
 	

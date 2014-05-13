@@ -11,9 +11,8 @@ cMonstre::cMonstre() {
 	distL = -1;
 	distUp = -1;
 	distDown = -1;
-	elimina = 0;
-	borra = false;
 	id = -1;
+	vida = 10;
 }
 cMonstre::~cMonstre(){}
 
@@ -50,24 +49,6 @@ void cMonstre::setMonsterDl(int dl)
 {
 	dl_monstre=dl;
 }
-void cMonstre::SetErase(bool b)
-{
-	elimina = 1;
-	borra = b;	
-	int d=0;
-}
-bool cMonstre::GetErase()
-{
-	return borra;
-}
-void cMonstre::setID(int i)
-{
-	id = i;
-}
-int cMonstre::getID()
-{
-	return id;
-}
 
 void cMonstre::Draw(cData *Data)
 {	
@@ -86,17 +67,10 @@ void cMonstre::Draw(cData *Data)
 		{
 			glPushMatrix();
 				glTranslatef(x,0,-z);
-				if (i*SCENE_WIDTH+j == pos && elimina == 0) // Posició dels monstres
+				if (i*SCENE_WIDTH+j == pos) // Posició dels monstres
 				{
 					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 					glCallList(dl_monstre);
-					glColor3f(1.0f,0.0f,0.0f);
-				}
-
-				if (i*SCENE_WIDTH+j == 10) // Posició dels monstres2
-				{
-					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-					glCallList(dl_monstre2);
 					glColor3f(1.0f,0.0f,0.0f);
 				}
 
@@ -106,6 +80,24 @@ void cMonstre::Draw(cData *Data)
 		}
 	}
 	//printPos();
+	glDisable(GL_TEXTURE_2D);
+}
+void cMonstre::Draw2(cData *Data)
+{
+	int i,j,x,z;
+
+	glEnable(GL_TEXTURE_2D);
+	i = pos/8;
+	j = pos%8;
+	x = j * TILE_SIZE;
+	z = i * TILE_SIZE;
+	glPushMatrix();
+		glTranslatef(x,0,-z);
+		//glColor3f(1.0f,0.0f,0.0f);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
+		glCallList(dl_monstre);
+		//printVida();
+	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -144,16 +136,6 @@ void cMonstre::AI(int *map)
 	}
 
 	pos = aux;
-
-	/*if(map[pos+1] == 0) pos = pos+1;
-	else if(map[pos+8] == 0) pos = pos+8;
-	else{}*/
-
-	int x,y;
-	GetPosition(&x,&y);
-
-	int v=0;
-	//SetPosition(3,3);
 }
 
 int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
@@ -309,6 +291,40 @@ void cMonstre::printPos()
 			render_string(GLUT_BITMAP_9_BY_15,s[5]);
 			glRasterPos2f(-0.95f,0.60f);
 			render_string(GLUT_BITMAP_9_BY_15,s[8]);
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
+void cMonstre::printVida()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	char buffx[10];
+	_itoa_s(vida,buffx,10 );
+	char *s[]={	"Vida: ", buffx
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+	glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			//glRasterPos2f(-0.95f,0.80f);
+			glTranslatef(10,0,40);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+			//glRasterPos2f(-0.80f,0.80f);
+			render_string(GLUT_BITMAP_9_BY_15,s[1]);
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 

@@ -25,7 +25,7 @@ bool cGame::Init()
 	gold = 1000;
 	vidas = 5;
 	cdSpawnM = 3;
-	numM = 1;
+	numM = 0;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -162,7 +162,10 @@ bool cGame::Process()
 		else Scene.setMoseOverTile(buff[3]);
 	}
 	
-	if(cdAi>0) cdAi--;
+	if(cdAi>0){
+		cdAi--;
+		
+	}
 	else {
 		cdAi=CD_IA_M;
 		if(cdSpawnM == 0){
@@ -181,7 +184,6 @@ bool cGame::Process()
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){
 			vidas--;
-			//monsters[i].SetErase(true);
 			Scene.BorraMonstre(iter->first);
 		}
 	}
@@ -377,7 +379,6 @@ void cGame::printTurretInfo()
 GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 {
 	GLint hits, view[4];
-	int id;
 
 	glSelectBuffer(SELECT_BUF_SIZE,*buff);
 

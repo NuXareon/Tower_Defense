@@ -83,7 +83,6 @@ bool cScene::LoadMonsters(int level) {
 		bb.SetPositionF(pf);
 		bb.setMonsterDl(dl_monstre);
 		for(i=0;i<numMonstres;++i){
-			bb.setID(i);
 			monsters[i]= bb;
 		}
 	}
@@ -184,7 +183,7 @@ void cScene::Draw(cData *Data)
 void cScene::DrawMonsters(cData *Data, int n){
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->second.getID() <n)	iter->second.Draw(Data);
+		if(iter->first <=n)	iter->second.Draw2(Data);
 	}
 }
 void cScene::DrawContainer(cData *Data)
@@ -342,7 +341,7 @@ void cScene::AI(int *map, int n)
 {
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
-		if(iter->second.getID() <n) iter->second.AI(map);
+		if(iter->first <=n) iter->second.AI(map);
 	}
 }
 void cScene::addTurret(int type, int pos)
@@ -363,20 +362,6 @@ std::map<int,cMonstre> cScene::GetMonsters()
 {
 	return monsters;
 }
-
-/*cMonstre cScene::GetMonsters(int i)
-{
-	return monsters[i];
-}
-bool eraseCondition(cMonstre m)
-{
-	return m.GetErase();
-}*/
 void cScene::BorraMonstre(int id){
 	monsters.erase(id);
-	//int n1 = monsters.size();
-	//bool b1 = monsters[i].GetErase();
-	//monsters.erase(std::remove_if(monsters.begin(), monsters.end(),eraseCondition),monsters.end());
-	//int n2 = monsters.size();
-	//int zzz=1;
 }
