@@ -196,6 +196,8 @@ bool cGame::Process()
 		}
 	}
 
+	Scene.turretLogic();
+
 	return res;
 }
 

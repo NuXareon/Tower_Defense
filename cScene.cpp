@@ -91,6 +91,16 @@ bool cScene::LoadMonsters(int level) {
 	return res;
 }
 
+void cScene::printTurret(int r)
+{
+	glPushMatrix();
+		glTranslatef(TILE_SIZE/2.0f,1.0f+TILE_SIZE,-TILE_SIZE/2.0f);
+		glRotatef(r,0.0f,1.0f,0.0f);
+		glTranslatef(-TILE_SIZE/2.0f,-1.0f-TILE_SIZE,+TILE_SIZE/2.0f);
+		glCallList(dl_turret);
+	glPopMatrix();
+}
+
 
 void cScene::Draw(cData *Data)
 {
@@ -109,29 +119,25 @@ void cScene::Draw(cData *Data)
 			glPushMatrix();
 				glTranslatef(x,0,-z);
 				glLoadName(i*SCENE_WIDTH+j);	// Name for render_mode(GL_SELECT) = position in map array. (clicking)
+				// Print Turret Preview
 				if (i*SCENE_WIDTH+j == mouseOverTile && selected == SCENE_WIDTH*SCENE_DEPTH+1 && map[i*SCENE_WIDTH+j] == 0)
 				{
 					glColor3f(0.5f,0.50f,1.5f);
 					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 					glCallList(dl_turret);
 				}
-				if (i*SCENE_WIDTH+j == selected) 
-				{
-					if (map[(i*SCENE_WIDTH)+j] == 0)
-					{/*
-						glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-						glCallList(dl_turret);*/
-						//map[(i*SCENE_WIDTH)+j] = 5;
-					}
-					glColor3f(0.5f,1.0f,0.5f);
-				}
+				// Set color for selected tile
+				if (i*SCENE_WIDTH+j == selected) glColor3f(0.5f,1.0f,0.5f);
 				else glColor3f(1.0f,1.0f,1.0f);
 
+				// Pintar tile
 				switch(map[(i*SCENE_WIDTH)+j])
 				{
+					// Terra
 					case 0:	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
 							glCallList(dl_floor);
 							break;
+					// Walls
 					case 1: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL1));
 							glCallList(dl_cube);
 							break;
@@ -141,8 +147,10 @@ void cScene::Draw(cData *Data)
 					case 3: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 							glCallList(dl_cube);
 							break;
+					// Turret
 					case 9: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-							glCallList(dl_turret);
+							int rotate = turrets[i*SCENE_WIDTH+j].getRotationY();
+							printTurret(rotate);
 							glColor3f(1.0f,0.2f,0.2f);
 							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
 							glCallList(dl_floor);
@@ -343,6 +351,13 @@ void cScene::AI(int *map, int n)
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
 		if(iter->first <=n) iter->second.AI(map);
+	}
+}
+void cScene::turretLogic()
+{
+	std::map<int,cTurret>::iterator iter2;
+	for(iter2=turrets.begin(); iter2 != turrets.end(); ++iter2){
+		iter2->second.AI(monsters, iter2->first, SCENE_WIDTH);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta
 	}
 }
 void cScene::addTurret(int type, int pos)

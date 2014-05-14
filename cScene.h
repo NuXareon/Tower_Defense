@@ -39,6 +39,7 @@ public:
 	void updateMap(int pos, int value);
 	void setDlMonstre(int mons);
 	void AI(int *map, int n);
+	void turretLogic();
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
 	std::map<int,cMonstre> GetMonsters();
@@ -53,6 +54,7 @@ private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);
 	void MakeFloorDL(float w,float d,float tw,float td);
 	void MakeTurretDL(float w,float h,float d);
+	void printTurret(int r);
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
