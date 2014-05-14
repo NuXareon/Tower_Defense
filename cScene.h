@@ -43,6 +43,7 @@ public:
 	void destroyTurret(int pos);
 	std::map<int,cMonstre> GetMonsters();
 	void BorraMonstre(int id);
+	void treuVida(int id, int v);
 
 	int mouseOverTile;
 	

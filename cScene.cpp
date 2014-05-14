@@ -83,6 +83,7 @@ bool cScene::LoadMonsters(int level) {
 		bb.SetPositionF(pf);
 		bb.setMonsterDl(dl_monstre);
 		for(i=0;i<numMonstres;++i){
+			bb.SetID(i);
 			monsters[i]= bb;
 		}
 	}
@@ -364,4 +365,11 @@ std::map<int,cMonstre> cScene::GetMonsters()
 }
 void cScene::BorraMonstre(int id){
 	monsters.erase(id);
+}
+void cScene::treuVida(int id, int v)
+{
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
+		if(iter->first ==id) iter->second.treuVida(v);
+	}
 }

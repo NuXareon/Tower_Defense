@@ -26,18 +26,21 @@ public:
 	void SetPositionF(int p);
 	int GetPositionF();
 	int GetPositionAct();
+	void SetID(int i);
+	void setMonsterDl(int dl);
+	void treuVida(int i);
+	float GetVida();
 
 	void Draw(cData *Data);
+	void ColorVida();
 	void Draw2(cData *Data);
 	void AI(int *map);
 	int* BFS(int *map, int pos,int pI);
 	int* inimap(int length, int x);
 	void render_string(void* font, const char* string);
 	void printPos();
-	void setMonsterDl(int dl);
-	void printVida();
-
 	
+	void printVida();
 
 private:
 	int MakeMonstreDL(float w,float h,float d,float tw,float th,float td);
@@ -48,12 +51,11 @@ private:
 	int pi,pf;	// posició inicial d'on surten monstres, posició final
 	int oldPos;
 	int pos;
-	int posFi;
 	int distAct;
 	int distR;
 	int distL;
 	int distUp;
 	int distDown;
 	int id;
-	int vida;
+	float vida;
 };

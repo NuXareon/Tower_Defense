@@ -16,7 +16,7 @@ using namespace std;
 #define SELECT_BUF_SIZE	16
 #define TOWER_ID_1		9
 #define COST_TURRET_1	100
-#define CD_IA_M			15
+#define CD_IA_M			5
 #define CD_MONSTER		10
 
 class cGame
@@ -61,7 +61,7 @@ private:
 	int cdCursorTile;
 
 	int gold;
-	int vidas;
+	int vidasP;
 	int numM;	//numero de monstres "instanciats"
 	int cdSpawnM;
 

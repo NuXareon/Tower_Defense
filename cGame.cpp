@@ -23,7 +23,7 @@ bool cGame::Init()
 	cdCursorTile = 5;
 	cdAi = 3;
 	gold = 1000;
-	vidas = 5;
+	vidasP = 5;
 	cdSpawnM = 3;
 	numM = 0;
 
@@ -135,6 +135,7 @@ void cGame::UpdateCursorPosition(int x, int y)
 bool cGame::Process()
 {
 	bool res=true;
+	bool z=false;
 	
 	//Process Input
 	if(keys[27])	res=false;	
@@ -142,7 +143,7 @@ bool cGame::Process()
 	if(keys['2'])	camera = 2;
 	if(keys['3'])	camera = 3;
 	if(keys['4'])	camera = 4;
-
+	if(keys['z'])   z = true;
 	// F1 to show debug info.
 	if(keys[GLUT_KEY_F1] && releaseF1)	
 	{
@@ -182,9 +183,16 @@ bool cGame::Process()
 	std::map<int,cMonstre> monsters = Scene.GetMonsters();
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){
-			vidas--;
+		if(iter->second.GetVida() == 0){	// si el monstre no te vida borra
 			Scene.BorraMonstre(iter->first);
+		}
+		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
+			vidasP--;
+			Scene.BorraMonstre(iter->first);
+		}
+		if(z) {			// Per veure si funciona treure vida a un monstre. 
+			Scene.treuVida(0,1);
+			z = false;
 		}
 	}
 
@@ -235,7 +243,7 @@ void cGame::printGameInfo()
 
 	char buffg[10], buffl[10];
 	_itoa_s(gold,buffg,10 );
-	_itoa_s(vidas,buffl,10 );
+	_itoa_s(vidasP,buffl,10 );
 	char *s[]={	"Gold: ", buffg,
 				"Life: ", buffl
 				};
@@ -463,5 +471,5 @@ void cGame::Render()
 }
 
 int cGame::GetVida(){
-	return vidas;
+	return vidasP;
 }

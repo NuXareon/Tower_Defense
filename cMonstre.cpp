@@ -5,7 +5,6 @@
 cMonstre::cMonstre() {
 	pos = 16;
 	oldPos = 16;
-	posFi = 61;
 	distAct = -1;
 	distR = -1;
 	distL = -1;
@@ -34,7 +33,6 @@ void cMonstre::GetPositionI(int *p)
 void cMonstre::SetPositionF(int p)
 {
 	pf = p;
-	posFi = p;
 
 }
 int cMonstre::GetPositionF()
@@ -45,11 +43,22 @@ int cMonstre::GetPositionAct()
 {
 	return pos;
 }
+void cMonstre::SetID(int i)
+{
+	id = i;
+}
+float cMonstre::GetVida()
+{
+	return vida;
+}
+
 void cMonstre::setMonsterDl(int dl)
 {
 	dl_monstre=dl;
 }
-
+void cMonstre::treuVida(int i){
+	vida -= i;
+}
 void cMonstre::Draw(cData *Data)
 {	
 
@@ -82,6 +91,13 @@ void cMonstre::Draw(cData *Data)
 	//printPos();
 	glDisable(GL_TEXTURE_2D);
 }
+void cMonstre::ColorVida()
+{
+	float fv = float(vida/10);
+	glColor3f(1.0f,fv,fv);
+
+}
+
 void cMonstre::Draw2(cData *Data)
 {
 	int i,j,x,z;
@@ -93,17 +109,16 @@ void cMonstre::Draw2(cData *Data)
 	z = i * TILE_SIZE;
 	glPushMatrix();
 		glTranslatef(x,0,-z);
-		//glColor3f(1.0f,0.0f,0.0f);
+		ColorVida();
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 		glCallList(dl_monstre);
-		//printVida();
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
 
 void cMonstre::AI(int *map)
 {
-	int *dist = BFS(map,posFi,pos);
+	int *dist = BFS(map,pf,pos);
 	//pos adjacent mes propera
 	oldPos = pos;
 	int aux = pos;
