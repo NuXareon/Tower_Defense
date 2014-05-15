@@ -178,10 +178,10 @@ void cScene::DrawShots(cData *Data)
 	}
 	glDisable(GL_TEXTURE_2D);
 }
-void cScene::DrawMonsters(cData *Data, int n){
+void cScene::DrawMonsters(cData *Data, int n,int inc){
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->first <=n)	iter->second.Draw2(Data);
+		if(iter->first <=n)	iter->second.Draw2(Data,inc,map);
 	}
 }
 void cScene::DrawContainer(cData *Data)
@@ -243,6 +243,10 @@ void cScene::DrawInfoPanel(cData* Data)
 int* cScene::GetMap()
 {
 	return map;
+}
+int* cScene::GetMap2()
+{
+	return map2;
 }
 void cScene::setDlMonstre(int mons)
 {

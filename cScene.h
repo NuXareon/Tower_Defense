@@ -27,13 +27,14 @@ public:
 	bool LoadLevel(int level);
 	bool LoadMonsters(int level);
 	void Draw(cData *Data);
-	void DrawMonsters(cData *Data,int n);
+	void DrawMonsters(cData *Data,int n, int inc);
 	void DrawTurretPanel(cData *Data);
 	void DrawLifePanel(cData *Data);
 	void DrawContainer(cData *Data);
 	void DrawInfoPanel(cData *Data);
 	void DrawShots(cData *Data);
 	int *GetMap();
+	int *GetMap2();
 	void setSelected(int s);
 	int getSelected();
 	void setMoseOverTile(int s);
@@ -66,6 +67,7 @@ private:
 	int dl_shot;
 	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
+	int map2[SCENE_WIDTH * SCENE_DEPTH * TILE_SIZE];	
 	std::map<int,cMonstre> monsters;		//monster vector for each level
 	std::map<int,cTurret> turrets;			//Turret map, pos->turret
 	std::vector<cShot> shots;			//vector de dispars

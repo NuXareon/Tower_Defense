@@ -33,7 +33,9 @@ public:
 
 	void Draw(cData *Data);
 	void ColorVida();
-	void Draw2(cData *Data);
+	void Draw2(cData *Data, int inc,int *map);
+	int  NextMov(int *map);
+	int  PosAdj(int *dist,int i);
 	void AI(int *map);
 	int* BFS(int *map, int pos,int pI);
 	int* inimap(int length, int x);

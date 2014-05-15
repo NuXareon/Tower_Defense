@@ -98,7 +98,7 @@ void cMonstre::ColorVida()
 
 }
 
-void cMonstre::Draw2(cData *Data)
+void cMonstre::Draw2(cData *Data,int inc,int *map)
 {
 	int i,j,x,z;
 
@@ -108,18 +108,61 @@ void cMonstre::Draw2(cData *Data)
 	x = j * TILE_SIZE;
 	z = i * TILE_SIZE;
 	glPushMatrix();
-		glTranslatef(x,0,-z);
+		int dir = NextMov(map);
+		if(dir==1) glTranslatef(x+inc,0,-z);
+		if(dir==2) glTranslatef(x-inc,0,-z);
+		if(dir==3) glTranslatef(x,0,-z-inc);
+		if(dir==4) glTranslatef(x,0,-z+inc);
+		//glTranslatef(x,0,-z);
 		ColorVida();
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 		glCallList(dl_monstre);
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
-
-void cMonstre::AI(int *map)
+int cMonstre::NextMov(int *map)
 {
-	int *dist = BFS(map,pf,pos);
-	//pos adjacent mes propera
+	int dir;	// 1=R, 2=L, 3=Up, 4=Down
+	int *dist = BFS(map,pf,pos);	
+	//pos = PosAdj(dist,1); // pos adjacent mes propera distancia 1
+	//pos = PosAdj( BFS(map,pf,pos),1);
+	oldPos = pos;
+	int aux = pos;
+	int dmin = dist[pos];
+	distAct = dist[pos];
+	distR = dist[pos+1];
+	distL = dist[pos-1];
+	distUp = dist[pos+SCENE_WIDTH];
+	distDown = dist[pos-SCENE_WIDTH];
+
+	if(dmin > distR && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) // R
+	{
+		dmin = dist[pos+1]; 
+		aux = pos+1;
+		dir = 1;
+	} 	
+	if(dmin > distL && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1 ) // L
+	{
+		dmin = dist[pos-1]; 
+		aux = pos-1;
+		dir = 2;
+	} 
+	if(dmin > distUp && aux+SCENE_WIDTH<64) //UP
+	{
+		dmin = dist[pos+SCENE_WIDTH]; 
+		aux = pos+SCENE_WIDTH;
+		dir = 3;
+	}
+	if(dmin > distDown && aux+SCENE_WIDTH>-1) //DOWN
+	{
+		dmin = dist[pos-SCENE_WIDTH]; 
+		aux = pos-SCENE_WIDTH;
+		dir = 4;
+	}
+	return dir;
+}
+int cMonstre::PosAdj(int *dist, int i)
+{
 	oldPos = pos;
 	int aux = pos;
 	int dmin = dist[pos];
@@ -149,7 +192,42 @@ void cMonstre::AI(int *map)
 		dmin = dist[pos-SCENE_WIDTH]; 
 		aux = pos-SCENE_WIDTH;
 	}
+	return aux;
+}
+void cMonstre::AI(int *map)
+{
+	int *dist = BFS(map,pf,pos);	
+	//pos = PosAdj(dist,1); // pos adjacent mes propera distancia 1
+	//pos = PosAdj( BFS(map,pf,pos),1);
+	oldPos = pos;
+	int aux = pos;
+	int dmin = dist[pos];
+	distAct = dist[pos];
+	distR = dist[pos+1];
+	distL = dist[pos-1];
+	distUp = dist[pos+SCENE_WIDTH];
+	distDown = dist[pos-SCENE_WIDTH];
 
+	if(dmin > distR && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) // R
+	{
+		dmin = dist[pos+1]; 
+		aux = pos+1;
+	} 	
+	if(dmin > distL && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1 ) // L
+	{
+		dmin = dist[pos-1]; 
+		aux = pos-1;
+	} 
+	if(dmin > distUp && aux+SCENE_WIDTH<64) //UP
+	{
+		dmin = dist[pos+SCENE_WIDTH]; 
+		aux = pos+SCENE_WIDTH;
+	}
+	if(dmin > distDown && aux+SCENE_WIDTH>-1) //DOWN
+	{
+		dmin = dist[pos-SCENE_WIDTH]; 
+		aux = pos-SCENE_WIDTH;
+	}
 	pos = aux;
 }
 

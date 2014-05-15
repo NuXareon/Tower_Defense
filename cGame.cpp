@@ -26,6 +26,7 @@ bool cGame::Init()
 	vidasP = 5;
 	cdSpawnM = 3;
 	numM = 0;
+	inc = 0;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -165,7 +166,7 @@ bool cGame::Process()
 	
 	if(cdAi>0){
 		cdAi--;
-		
+		inc++;
 	}
 	else {
 		cdAi=CD_IA_M;
@@ -176,6 +177,7 @@ bool cGame::Process()
 			}
 		}
 		else cdSpawnM--;
+		inc = 0;
 		Scene.AI(Scene.GetMap(),numM);
 	}
 	
@@ -455,7 +457,7 @@ void cGame::Render()
 
 	Scene.Draw(&Data);
 	//Monstre.Draw(&Data);
-	Scene.DrawMonsters(&Data,numM);
+	Scene.DrawMonsters(&Data,numM,inc);
 	Scene.DrawShots(&Data);
 
 	if (debug) 
