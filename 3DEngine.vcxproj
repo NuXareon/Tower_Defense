@@ -82,11 +82,13 @@
     <ClInclude Include="cMonstre.h" />
     <ClInclude Include="corona.h" />
     <ClInclude Include="cScene.h" />
+    <ClInclude Include="cShot.h" />
     <ClInclude Include="cTexture.h" />
     <ClInclude Include="cTurret.h" />
     <ClInclude Include="Globals.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cShot.cpp" />
     <ClCompile Include="cBicho.cpp" />
     <ClCompile Include="cData.cpp" />
     <ClCompile Include="cGame.cpp" />

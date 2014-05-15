@@ -456,6 +456,7 @@ void cGame::Render()
 	Scene.Draw(&Data);
 	//Monstre.Draw(&Data);
 	Scene.DrawMonsters(&Data,numM);
+	Scene.DrawShots(&Data);
 
 	if (debug) 
 	{

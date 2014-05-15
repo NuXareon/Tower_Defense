@@ -3,6 +3,7 @@
 #include "cData.h"
 #include "cMonstre.h"
 #include "cTurret.h"
+#include "cShot.h"
 #include <vector>
 #include <iostream>
 #include <map>
@@ -31,6 +32,7 @@ public:
 	void DrawLifePanel(cData *Data);
 	void DrawContainer(cData *Data);
 	void DrawInfoPanel(cData *Data);
+	void DrawShots(cData *Data);
 	int *GetMap();
 	void setSelected(int s);
 	int getSelected();
@@ -55,14 +57,18 @@ private:
 	void MakeFloorDL(float w,float d,float tw,float td);
 	void MakeTurretDL(float w,float h,float d);
 	void printTurret(int r);
+	void MakeShotDL(float w, float h, float d);
+	void addShot(int x, int y, int z, int target);
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
 	int dl_monstre;
+	int dl_shot;
 	int selected;
 	int map[SCENE_WIDTH * SCENE_DEPTH];		//scene
 	std::map<int,cMonstre> monsters;		//monster vector for each level
 	std::map<int,cTurret> turrets;			//Turret map, pos->turret
+	std::vector<cShot> shots;			//vector de dispars
 	int numMonstres;
 	
 };

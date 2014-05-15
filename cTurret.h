@@ -11,9 +11,9 @@ public:
 	cTurret(void);
 	virtual ~cTurret(void);
 	void Init(int type);
-	void adquireTarget(int* monsters);
 	int getRotationY();
-	void AI(map<int,cMonstre> monsters, int pos, int w);
+	int getTarget();
+	bool AI(map<int,cMonstre> monsters, int pos, int w);
 
 private:
 	int type;
@@ -25,5 +25,9 @@ private:
 	int attackCd;
 	int rotationY;
 	int range;
+	void adquireTarget(map<int,cMonstre> monsters, int pos, int w);
+	bool shootTarget(int pos, int w);
 	int euclideanDist(int x1, int y1, int x2, int y2);
+	void updateTarget(int mpos, int x, int z, int w, int targetId);
+	void updateRotationY(int mpos, int x, int z, int w);
 };

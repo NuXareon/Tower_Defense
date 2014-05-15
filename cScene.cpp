@@ -11,6 +11,7 @@ void cScene::Init()
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
+	MakeShotDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 }
 void cScene::updateMap(int pos, int value)
 {
@@ -160,33 +161,21 @@ void cScene::Draw(cData *Data)
 			x += TILE_SIZE;
 		}
 	}
-	/*
-	tw = (float)SCENE_WIDTH;
-	td = (float)SCENE_DEPTH;
-	w  = (float)SCENE_WIDTH*TILE_SIZE;
-	d  = (float)SCENE_DEPTH*TILE_SIZE;
-	*/
-	//Floor
-	/*
-	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
-	glBegin(GL_QUADS);
-		// Bottom Face
-		glTexCoord2f(  tw,   td); glVertex3f(0, 0, 0);
-		glTexCoord2f(0.0f,   td); glVertex3f(w, 0, 0);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0,-d);
-		glTexCoord2f(  tw, 0.0f); glVertex3f(0, 0,-d);
-	glEnd();
-	*/
-	//Roof
-	/*glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-	glBegin(GL_QUADS);
-		// Top Face
-		glTexCoord2f(0.0f,   td); glVertex3f(0, TILE_SIZE, 0);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(0, TILE_SIZE,-d);
-		glTexCoord2f(  tw, 0.0f); glVertex3f(w, TILE_SIZE,-d);
-		glTexCoord2f(  tw,   td); glVertex3f(w, TILE_SIZE, 0);
-	glEnd();*/
-
+	glDisable(GL_TEXTURE_2D);
+}
+void cScene::DrawShots(cData *Data)
+{
+	glEnable(GL_TEXTURE_2D);
+	for (int i = 0; i < shots.size(); ++i)
+	{
+		int x,y,z;
+		glPushMatrix();
+			shots[i].getCoord(x,y,z);
+			glTranslatef(x*TILE_SIZE,y*TILE_SIZE,z*TILE_SIZE);
+			glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
+			glCallList(dl_shot);
+		glPopMatrix();
+	}
 	glDisable(GL_TEXTURE_2D);
 }
 void cScene::DrawMonsters(cData *Data, int n){
@@ -330,6 +319,20 @@ void cScene::MakeTurretDL(float w,float h,float d)
 	glEndList();
 }
 
+void cScene::MakeShotDL(float w, float h, float d)
+{
+	dl_shot = glGenLists(1);
+	glNewList(dl_shot,GL_COMPILE);
+		glPushMatrix();
+			glTranslatef(w/2.0f,h,-d/2.0f);
+			GLUquadricObj *q = gluNewQuadric();
+			gluQuadricTexture (q, GL_TRUE);
+			gluSphere(q, 0.8,16,16);
+			gluDeleteQuadric(q);
+		glPopMatrix();
+	glEndList();
+}
+
 void cScene::setSelected(int s) 
 {
 	selected = s;
@@ -357,8 +360,23 @@ void cScene::turretLogic()
 {
 	std::map<int,cTurret>::iterator iter2;
 	for(iter2=turrets.begin(); iter2 != turrets.end(); ++iter2){
-		iter2->second.AI(monsters, iter2->first, SCENE_WIDTH);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta
+		bool shoot = iter2->second.AI(monsters, iter2->first, SCENE_WIDTH);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta, retorna true si pot disparar.
+		if (shoot) 
+		{
+			int x = iter2->first%SCENE_WIDTH;
+			int y = 1;
+			int z = -iter2->first/SCENE_WIDTH;
+			int target = iter2->second.getTarget();
+			addShot(x,y,z,target);
+		}
 	}
+}
+void cScene::addShot(int x, int y, int z, int target)
+{
+	cShot* s = new cShot();
+	cShot ss = *s;
+	ss.Init(x,y,z,target);
+	shots.push_back(ss);
 }
 void cScene::addTurret(int type, int pos)
 {
