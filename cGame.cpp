@@ -166,7 +166,7 @@ bool cGame::Process()
 	
 	if(cdAi>0){
 		cdAi--;
-		inc++;
+		inc += (float)TILE_SIZE/(float)CD_IA_M;
 	}
 	else {
 		cdAi=CD_IA_M;
@@ -198,7 +198,7 @@ bool cGame::Process()
 		}
 	}
 
-	Scene.turretLogic();
+	Scene.turretLogic(inc);
 
 	return res;
 }

@@ -30,10 +30,11 @@ public:
 	void setMonsterDl(int dl);
 	void treuVida(int i);
 	float GetVida();
+	int GetDir();
 
 	void Draw(cData *Data);
 	void ColorVida();
-	void Draw2(cData *Data, int inc,int *map);
+	void Draw2(cData *Data, float inc,int *map);
 	int  NextMov(int *map);
 	int  PosAdj(int *dist,int i);
 	void AI(int *map);
@@ -59,5 +60,6 @@ private:
 	int distUp;
 	int distDown;
 	int id;
+	int dir;
 	float vida;
 };

@@ -27,7 +27,7 @@ public:
 	bool LoadLevel(int level);
 	bool LoadMonsters(int level);
 	void Draw(cData *Data);
-	void DrawMonsters(cData *Data,int n, int inc);
+	void DrawMonsters(cData *Data,int n, float inc);
 	void DrawTurretPanel(cData *Data);
 	void DrawLifePanel(cData *Data);
 	void DrawContainer(cData *Data);
@@ -42,7 +42,7 @@ public:
 	void updateMap(int pos, int value);
 	void setDlMonstre(int mons);
 	void AI(int *map, int n);
-	void turretLogic();
+	void turretLogic(float inc);
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
 	std::map<int,cMonstre> GetMonsters();

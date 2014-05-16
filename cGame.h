@@ -16,7 +16,7 @@ using namespace std;
 #define SELECT_BUF_SIZE	16
 #define TOWER_ID_1		9
 #define COST_TURRET_1	100
-#define CD_IA_M			4
+#define CD_IA_M			8
 #define CD_MONSTER		10
 
 class cGame
@@ -68,5 +68,5 @@ private:
 	void printGameInfo();
 	void printTurretInfo();
 
-	int inc;
+	float inc;
 };

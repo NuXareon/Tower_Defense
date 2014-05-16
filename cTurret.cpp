@@ -22,12 +22,12 @@ int cTurret::getRotationY()
 {
 	return rotationY;
 }
-bool cTurret::AI(map<int,cMonstre> monsters, int pos, int w)
+bool cTurret::AI(map<int,cMonstre> monsters, int pos, int w, int s, float inc)
 {
-	adquireTarget(monsters, pos, w);
+	adquireTarget(monsters, pos, w, s, inc);
 	return shootTarget(pos, w);
 }
-void cTurret::adquireTarget(map<int,cMonstre> monsters, int pos, int w)
+void cTurret::adquireTarget(map<int,cMonstre> monsters, int pos, int w, int s, float inc)
 {
 	int x = pos%w;
 	int z = pos/w;
@@ -45,7 +45,8 @@ void cTurret::adquireTarget(map<int,cMonstre> monsters, int pos, int w)
 		if (distTarget != -1) 
 		{
 			int mpos = monsters[target].GetPositionAct();
-			updateRotationY(mpos,x,z,w);
+			int dir = monsters[target].GetDir();
+			updateRotationY(mpos,x,z,w,s,inc,dir);
 		}
 	}
 }
@@ -74,10 +75,20 @@ void cTurret::updateTarget(int mpos, int x, int z, int w, int targetId)
 		distTarget = dist;
 	}
 }
-void cTurret::updateRotationY(int mpos, int x, int z, int w)
+void cTurret::updateRotationY(int mpos, int x, int z, int w, int s, float inc, int dir)
 {
-	int xm = x-mpos%w;
-	int zm = z-mpos/w;
+
+	x *= s;
+	z *= s;
+
+	float xm = x-(mpos%w)*s;
+	float zm = z-(mpos/w)*s;
+
+	if (dir == 1) xm -= inc;
+	else if (dir == 2) xm += inc;
+	else if (dir == 3) zm -= inc;
+	else if (dir == 4) zm += inc;
+
 	float dotTM = z*zm;
 	float magTM = sqrt((float)z*z)*sqrt((float)xm*xm+(float)zm*zm);
 	float angle = acos((float)dotTM/magTM);

@@ -178,7 +178,7 @@ void cScene::DrawShots(cData *Data)
 	}
 	glDisable(GL_TEXTURE_2D);
 }
-void cScene::DrawMonsters(cData *Data, int n,int inc){
+void cScene::DrawMonsters(cData *Data, int n,float inc){
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->first <=n)	iter->second.Draw2(Data,inc,map);
@@ -360,11 +360,11 @@ void cScene::AI(int *map, int n)
 		if(iter->first <=n) iter->second.AI(map);
 	}
 }
-void cScene::turretLogic()
+void cScene::turretLogic(float inc)
 {
 	std::map<int,cTurret>::iterator iter2;
 	for(iter2=turrets.begin(); iter2 != turrets.end(); ++iter2){
-		bool shoot = iter2->second.AI(monsters, iter2->first, SCENE_WIDTH);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta, retorna true si pot disparar.
+		bool shoot = iter2->second.AI(monsters, iter2->first, SCENE_WIDTH, TILE_SIZE, inc);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta, retorna true si pot disparar.
 		if (shoot) 
 		{
 			int x = iter2->first%SCENE_WIDTH;

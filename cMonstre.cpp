@@ -98,7 +98,7 @@ void cMonstre::ColorVida()
 
 }
 
-void cMonstre::Draw2(cData *Data,int inc,int *map)
+void cMonstre::Draw2(cData *Data,float inc,int *map)
 {
 	int i,j,x,z;
 
@@ -122,7 +122,7 @@ void cMonstre::Draw2(cData *Data,int inc,int *map)
 }
 int cMonstre::NextMov(int *map)
 {
-	int dir;	// 1=R, 2=L, 3=Up, 4=Down
+	dir;	// 1=R, 2=L, 3=Up, 4=Down
 	int *dist = BFS(map,pf,pos);	
 	//pos = PosAdj(dist,1); // pos adjacent mes propera distancia 1
 	//pos = PosAdj( BFS(map,pf,pos),1);
@@ -426,4 +426,9 @@ void cMonstre::printVida()
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+}
+
+int cMonstre::GetDir()
+{
+	return dir;
 }
