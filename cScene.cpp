@@ -169,10 +169,10 @@ void cScene::DrawShots(cData *Data)
 	glEnable(GL_TEXTURE_2D);
 	for (int i = 0; i < shots.size(); ++i)
 	{
-		int x,y,z;
+		float x,y,z;
 		glPushMatrix();
 			shots[i].getCoord(x,y,z);
-			glTranslatef(x*TILE_SIZE,y*TILE_SIZE,z*TILE_SIZE);
+			glTranslatef(x,y,z);
 			glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 			glCallList(dl_shot);
 		glPopMatrix();
@@ -332,7 +332,7 @@ void cScene::MakeShotDL(float w, float h, float d)
 			glTranslatef(w/2.0f,h,-d/2.0f);
 			GLUquadricObj *q = gluNewQuadric();
 			gluQuadricTexture (q, GL_TRUE);
-			gluSphere(q, 0.8,16,16);
+			gluSphere(q, 0.4,16,16);
 			gluDeleteQuadric(q);
 		glPopMatrix();
 	glEndList();
@@ -368,15 +368,31 @@ void cScene::turretLogic(float inc)
 		bool shoot = iter2->second.AI(monsters, iter2->first, SCENE_WIDTH, TILE_SIZE, inc);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta, retorna true si pot disparar.
 		if (shoot) 
 		{
-			int x = iter2->first%SCENE_WIDTH;
-			int y = 1;
-			int z = -iter2->first/SCENE_WIDTH;
+			float x = (iter2->first%SCENE_WIDTH)*TILE_SIZE;
+			float y = 0.3*TILE_SIZE;
+			float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
 			int target = iter2->second.getTarget();
 			addShot(x,y,z,target);
 		}
 	}
 }
-void cScene::addShot(int x, int y, int z, int target)
+void cScene::shotLogic(float inc)
+{
+	for(int i = 0; i < shots.size(); ++i)
+	{
+		int target = shots[i].getTarget();
+		if (monsters.count(target) > 0)
+		{
+			int mpos = monsters[target].GetPositionAct();
+			int dir = monsters[target].GetDir();
+			shots[i].IA(mpos, SCENE_WIDTH, TILE_SIZE, dir, inc);
+		} else
+		{
+			//remove shot
+		}
+	}
+}
+void cScene::addShot(float x, float y, float z, int target)
 {
 	cShot* s = new cShot();
 	cShot ss = *s;

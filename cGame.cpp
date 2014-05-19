@@ -181,6 +181,7 @@ bool cGame::Process()
 		if (hits == 0) Scene.setMoseOverTile(-1);
 		else Scene.setMoseOverTile(buff[3]);
 	}
+
 	
 	if(cdAi>0){
 		cdAi--;
@@ -217,6 +218,8 @@ bool cGame::Process()
 	}
 
 	Scene.turretLogic(inc);
+
+	Scene.shotLogic(inc);
 
 	return res;
 }

@@ -43,6 +43,7 @@ public:
 	void setDlMonstre(int mons);
 	void AI(int *map, int n);
 	void turretLogic(float inc);
+	void shotLogic(float inc);
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
 	std::map<int,cMonstre> GetMonsters();
@@ -61,7 +62,7 @@ private:
 	void MakeTurretDL(float w,float h,float d);
 	void printTurret(int r);
 	void MakeShotDL(float w, float h, float d);
-	void addShot(int x, int y, int z, int target);
+	void addShot(float x, float y, float z, int target);
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
@@ -72,7 +73,7 @@ private:
 	int map2[SCENE_WIDTH * SCENE_DEPTH * TILE_SIZE];	
 	std::map<int,cMonstre> monsters;		//monster vector for each level
 	std::map<int,cTurret> turrets;			//Turret map, pos->turret
-	std::vector<cShot> shots;			//vector de dispars
+	std::vector<cShot> shots;				//vector de dispars
 	int numMonstres;
 	int start,end;
 	
