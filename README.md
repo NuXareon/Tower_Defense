@@ -17,4 +17,19 @@ Setmana del 12:
 	- Torres: animació disparar
 	- Diners, cost de torre, upgrades
 	- Descripció torre
+	- Pause
 	
+Setmana del 19:
+	- Animació disparar torre
+	- Fer mal als monstres (donar or, bla bla bla)
+	- Turret upgrade
+	- Evitar bloquejar cami amb torres
+	- Fer mapa gran
+	- Sincronitzacio Loop (glutGetTime abans i despres...)
+	- IA: racalcular tile desti quan acaba l'animacio
+	//
+	- Canviar de level (i fer un parell de levels)
+	- Fer un parell de tipus de torres/monstres
+	- Models monstre
+	- Canviar textures
+	- Ficar musica

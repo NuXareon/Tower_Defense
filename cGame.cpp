@@ -27,12 +27,13 @@ bool cGame::Init()
 	cdSpawnM = 3;
 	numM = 0;
 	inc = 0;
+	pause = false;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0,(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,0.1,100);	// Si es modifica s'ha de modificar tambe a la funcio PrintCursorTile()
+	gluPerspective(45.0,(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,0.1,200);	// Si es modifica s'ha de modificar tambe a la funcio PrintCursorTile()
 	glMatrixMode(GL_MODELVIEW);
 	
 	glEnable(GL_DEPTH_TEST);
@@ -65,11 +66,12 @@ bool cGame::Init()
 
 bool cGame::Loop()
 {
+	//glutGetTime()
 	bool res=true;
-
+	if (!pause){
 	res = Process();
 	if(res) Render();
-
+	}
 	return res;
 }
 
@@ -83,6 +85,7 @@ void cGame::ReadKeyboard(unsigned char key, int x, int y, bool press)
 	keys[key] = press;
 	if (key == GLUT_KEY_F1 && !press) releaseF1 = true;
 	if (key == 't' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+1);
+	if (key == 'p' && press) pause=!pause;
 }
 
 void cGame::ReadMouse(int button, int state, int x, int y)
@@ -407,7 +410,7 @@ GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 		glLoadIdentity();
 
 		gluPickMatrix(x,y,1.0,1.0,view);
-		gluPerspective(45.0,(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,0.1,100);
+		gluPerspective(45.0,(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,0.1,200);
 
 		glMatrixMode(GL_MODELVIEW);
 
