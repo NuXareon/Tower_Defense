@@ -11,6 +11,7 @@
 #include <iostream>
 using namespace std;
 
+#define TIME_FRAME		33	//30 FPS
 #define SCREEN_WIDTH	800
 #define SCREEN_HEIGHT	600
 #define SELECT_BUF_SIZE	16

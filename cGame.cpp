@@ -66,11 +66,17 @@ bool cGame::Init()
 
 bool cGame::Loop()
 {
-	//glutGetTime()
+	int initialTime = glutGet(GLUT_ELAPSED_TIME);
 	bool res=true;
 	if (!pause){
-	res = Process();
-	if(res) Render();
+		res = Process();
+		if(res) Render();
+	}
+	int finalTime = glutGet(GLUT_ELAPSED_TIME);
+	int deltaTime = finalTime-initialTime;
+	if (deltaTime < TIME_FRAME) 
+	{
+		Sleep(TIME_FRAME-deltaTime);
 	}
 	return res;
 }
