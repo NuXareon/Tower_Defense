@@ -105,9 +105,18 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 		{
 			if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1 && Scene.GetMap()[buff[3]] == 0 && gold >= COST_TURRET_1) 
 			{
-				Scene.updateMap(buff[3],TOWER_ID_1);
-				Scene.addTurret(1,buff[3]);
-				gold -= COST_TURRET_1;
+				int pi = Scene.getStart();
+				int pf = Scene.getEnd();
+				int *map = Scene.GetMap();
+				map[buff[3]]=TOWER_ID_1;
+				if(hihaCami(map,pi,pf)){
+					Scene.updateMap(buff[3],TOWER_ID_1);
+					Scene.addTurret(1,buff[3]);
+					gold -= COST_TURRET_1;
+				}
+				else{
+					map[buff[3]]=0;
+				}
 			}
 			Scene.setSelected(buff[3]);
 		}
@@ -486,4 +495,14 @@ void cGame::Render()
 
 int cGame::GetVida(){
 	return vidasP;
+}
+
+bool cGame::hihaCami(int* map,int pi,int pf)
+{
+	bool b;
+	int *dist =Monstre.BFS(map,pf,pi);
+	int d = dist[pi];
+	if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH) b=false;
+	else b=true;
+	return b;
 }

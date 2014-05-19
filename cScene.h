@@ -48,6 +48,8 @@ public:
 	std::map<int,cMonstre> GetMonsters();
 	void BorraMonstre(int id);
 	void treuVida(int id, int v);
+	int getStart();
+	int getEnd();
 
 	int mouseOverTile;
 	
@@ -72,5 +74,6 @@ private:
 	std::map<int,cTurret> turrets;			//Turret map, pos->turret
 	std::vector<cShot> shots;			//vector de dispars
 	int numMonstres;
+	int start,end;
 	
 };

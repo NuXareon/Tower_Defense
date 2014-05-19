@@ -75,7 +75,8 @@ bool cScene::LoadMonsters(int level) {
 		int b1 = fscanf_s(fd,"%d",&pi); // read position inicial
 		int c1 = fscanf_s(fd,"%d",&pf); // read y position final
 		
-		
+		start = pi;
+		end = pf;
 
 		cMonstre* b = new cMonstre();
 		cMonstre bb = *b;
@@ -409,4 +410,12 @@ void cScene::treuVida(int id, int v)
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
 		if(iter->first ==id) iter->second.treuVida(v);
 	}
+}
+int cScene::getStart()
+{
+	return start;
+}
+int cScene::getEnd()
+{
+	return end;
 }
