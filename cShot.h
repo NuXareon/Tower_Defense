@@ -14,8 +14,11 @@ public:
 	void IA(int mpos, int w, int s, int dir, float inc);
 
 	int getTarget();
+	void setErase();
+	bool getErase();
 
 private:
 	float x,y,z;
 	int target;
+	bool erase;
 };

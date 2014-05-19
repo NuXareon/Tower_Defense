@@ -10,6 +10,7 @@ void cShot::Init(float a, float b, float c, int t)
 	y = b;
 	z = c;
 	target = t;
+	erase = false;
 }
 void cShot::getCoord(float &xcoord, float &ycoord, float &zcoord)
 {
@@ -60,8 +61,17 @@ void cShot::IA(int mpos, int w, int s, int dir, float inc)
 		y = yaux;
 		z = zaux;
 	}
+	else erase = true;
 }
 int cShot::getTarget()
 {
 	return target;
+}
+void cShot::setErase()
+{
+	erase = true;
+}
+bool cShot::getErase()
+{
+	return erase;
 }

@@ -376,6 +376,10 @@ void cScene::turretLogic(float inc)
 		}
 	}
 }
+bool RemoveShotCondition(cShot s)
+{
+	return s.getErase();
+}
 void cScene::shotLogic(float inc)
 {
 	for(int i = 0; i < shots.size(); ++i)
@@ -388,9 +392,10 @@ void cScene::shotLogic(float inc)
 			shots[i].IA(mpos, SCENE_WIDTH, TILE_SIZE, dir, inc);
 		} else
 		{
-			//remove shot
+			shots[i].setErase();
 		}
 	}
+	shots.erase(std::remove_if(shots.begin(), shots.end(), RemoveShotCondition),shots.end());
 }
 void cScene::addShot(float x, float y, float z, int target)
 {
