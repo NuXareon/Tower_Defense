@@ -390,6 +390,12 @@ void cScene::shotLogic(float inc)
 			int mpos = monsters[target].GetPositionAct();
 			int dir = monsters[target].GetDir();
 			shots[i].IA(mpos, SCENE_WIDTH, TILE_SIZE, dir, inc);
+			float x,y,z;
+			shots[i].getCoord(x,y,z);
+			float xm = (mpos%SCENE_WIDTH)*TILE_SIZE;
+			float ym = -0.2*TILE_SIZE;
+			float zm = -(mpos/SCENE_WIDTH)*TILE_SIZE;
+			if (x == xm && y == ym && z == zm) monsters[target].treuVida(2);
 		} else
 		{
 			shots[i].setErase();

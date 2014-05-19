@@ -40,7 +40,7 @@ void cShot::IA(int mpos, int w, int s, int dir, float inc)
 	if (vxm*vxm+vym*vym+vzm*vzm != 0)
 	{
 	
-	float magvm = sqrt(vxm*vxm+vym*vym+vzm*vzm);
+		float magvm = sqrt(vxm*vxm+vym*vym+vzm*vzm);
 
 		vxm /= magvm;
 		vym /= magvm;
