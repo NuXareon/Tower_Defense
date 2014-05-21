@@ -35,6 +35,7 @@ public:
 	void Draw(cData *Data);
 	void ColorVida();
 	void Draw2(cData *Data, float inc,int *map);
+	int  Direction();
 	int  NextMov(int *map);
 	int  PosAdj(int *dist,int i);
 	void AI(int *map);
@@ -62,4 +63,5 @@ private:
 	int id;
 	int dir;
 	float vida;
+	int NextPos;
 };

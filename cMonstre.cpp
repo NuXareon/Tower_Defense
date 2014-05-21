@@ -25,6 +25,7 @@ void cMonstre::SetPositionI(int p)
 {
 	pi = p;
 	pos = p;
+	NextPos = p+1;
 }
 void cMonstre::GetPositionI(int *p)
 {
@@ -108,17 +109,27 @@ void cMonstre::Draw2(cData *Data,float inc,int *map)
 	x = j * TILE_SIZE;
 	z = i * TILE_SIZE;
 	glPushMatrix();
-		int dir = NextMov(map);
-		if(dir==1) glTranslatef(x+inc,0,-z);
-		if(dir==2) glTranslatef(x-inc,0,-z);
-		if(dir==3) glTranslatef(x,0,-z-inc);
-		if(dir==4) glTranslatef(x,0,-z+inc);
+		//int dir = NextMov(map);
+		int dir = Direction();
+		if(dir==1)	glTranslatef(x+inc,0,-z);
+		if(dir==2)	glTranslatef(x-inc,0,-z);
+		if(dir==3)	glTranslatef(x,0,-z-inc);
+		if(dir==4)	glTranslatef(x,0,-z+inc);
 		//glTranslatef(x,0,-z);
 		ColorVida();
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
 		glCallList(dl_monstre);
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
+}
+int cMonstre::Direction(){
+	int dir;
+	if(pos+1 == NextPos) dir = 1;
+	else if(pos-1 == NextPos) dir = 2;
+	else if(pos+SCENE_WIDTH == NextPos) dir = 3;
+	else if(pos-SCENE_WIDTH == NextPos) dir = 4;
+	else dir=5;//error
+	return dir;
 }
 int cMonstre::NextMov(int *map)
 {
@@ -159,7 +170,7 @@ int cMonstre::NextMov(int *map)
 		aux = pos-SCENE_WIDTH;
 		dir = 4;
 	}
-	return dir;
+	return aux;
 }
 int cMonstre::PosAdj(int *dist, int i)
 {
@@ -228,7 +239,13 @@ void cMonstre::AI(int *map)
 		dmin = dist[pos-SCENE_WIDTH]; 
 		aux = pos-SCENE_WIDTH;
 	}
-	pos = aux;
+	if(aux != NextPos){
+		int fail=0;
+		pos = NextPos;
+	}else{
+		pos = aux;
+	}
+	NextPos = NextMov(map);
 }
 
 int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
@@ -304,8 +321,6 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 	while(!q.empty()){
 		int aux = q.front();
 		q.pop();
-
-		//if(aux == pI) return dist;
 		if(map[aux] == 0 && mapbool[aux] < 4){
 			mapbool[aux] += 1;
 			//en creu
