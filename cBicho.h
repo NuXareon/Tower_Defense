@@ -10,26 +10,11 @@
 #define JUMP_HEIGHT		96
 #define JUMP_STEP		4
 
-// Left
-#define STATE_LOOKLEFT		0
-#define STATE_WALKLEFT		1
-#define STATE_JUMPINGL		2
-#define STATE_CAUREL		3
-// Right
-#define STATE_LOOKRIGHT		4
-#define STATE_WALKRIGHT		5
-#define STATE_JUMPINGR		6
-#define STATE_CAURER		7
-// Freeze Left
-#define	STATE_FREEZE_L1		8
-#define STATE_FREEZE_L2		9
-#define STATE_FREEZE_L3		10
-#define STATE_FREEZE_L4		11
-// Freeze Right
-#define	STATE_FREEZE_R1		12
-#define STATE_FREEZE_R2		13
-#define STATE_FREEZE_R3		14
-#define STATE_FREEZE_R4		15
+
+#define STATE_WALKLEFT		0
+#define STATE_WALKRIGHT		1
+#define STATE_WALKUP		2
+#define STATE_WALKDOWN		3
 
 
 #define STATE_DEATH			16

@@ -330,8 +330,8 @@ int cMonstre::MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,
 			// Front Face
 			glTexCoord2f(xo,yo); glVertex3f(0, 0,  0);
 			glTexCoord2f(xf,yo); glVertex3f(w, 0,  0);
-			glTexCoord2f(xf,yf); glVertex3f(w, h,  0);
-			glTexCoord2f(xo,yf); glVertex3f(0, h,  0);
+			glTexCoord2f(xf,yf); glVertex3f(w, h+1.5f,  0);
+			glTexCoord2f(xo,yf); glVertex3f(0, h+1.5f,  0);
 		glEnd();
 	glEndList();
 	return dl_monstre2;
