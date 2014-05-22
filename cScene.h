@@ -51,6 +51,7 @@ public:
 	void treuVida(int id, int v);
 	int getStart();
 	int getEnd();
+	int getNumMonstres();
 
 	int mouseOverTile;
 	

@@ -192,7 +192,7 @@ bool cGame::Process()
 	else {
 		cdAi=CD_IA_M;
 		if(cdSpawnM == 0){
-			if(Scene.GetMonsters().size()>numM){
+			if(Scene.getNumMonstres()>numM){
 				numM++;
 				cdSpawnM = 3;
 			}
@@ -206,7 +206,8 @@ bool cGame::Process()
 	std::map<int,cMonstre> monsters = Scene.GetMonsters();
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->second.GetVida() == 0){	// si el monstre no te vida borra
+		if(iter->second.GetVida() <= 0){	// si el monstre no te vida borra
+			gold += 20;
 			Scene.BorraMonstre(iter->first);
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
