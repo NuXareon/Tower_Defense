@@ -28,6 +28,7 @@ bool cGame::Init()
 	numM = 0;
 	inc = 0;
 	pause = false;
+	cdBadPos = 0;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -109,13 +110,14 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 				int pf = Scene.getEnd();
 				int *map = Scene.GetMap();
 				map[buff[3]]=TOWER_ID_1;
-				if(hihaCami(map,pi,pf)){
+				if(hihaCami(map,pi,pf) && TurretNextPosM(buff[3])){ //hi ha cami && no es on anira algun monstre
 					Scene.updateMap(buff[3],TOWER_ID_1);
 					Scene.addTurret(1,buff[3]);
 					gold -= COST_TURRET_1;
 				}
 				else{
 					map[buff[3]]=0;
+					cdBadPos = 10;	// temps de printar printTurretBadPos
 				}
 			}
 			Scene.setSelected(buff[3]);
@@ -408,6 +410,35 @@ void cGame::printTurretInfo()
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 }
+void cGame::printTurretBadPos()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	char *s[]={	"I can't build here!"
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			glRasterPos2f(-0.95f,0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
 
 GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 {
@@ -492,7 +523,12 @@ void cGame::Render()
 		printUI();
 		if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo();
 	}
-	
+	if( cdBadPos>0)
+	{
+		printTurretBadPos();
+		--cdBadPos;
+	}
+
 	glutSwapBuffers();
 }
 
@@ -507,5 +543,17 @@ bool cGame::hihaCami(int* map,int pi,int pf)
 	int d = dist[pi];
 	if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH) b=false;
 	else b=true;
+	return b;
+}
+bool cGame::TurretNextPosM(int p)
+{
+	bool b = true;
+	std::map<int,cMonstre> monsters = Scene.GetMonsters();
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
+		if(iter->second.GetNextPos() == p){	
+			b = false;
+		}
+	}
 	return b;
 }

@@ -31,6 +31,7 @@ public:
 	void treuVida(int i);
 	float GetVida();
 	int GetDir();
+	int GetNextPos();
 
 	void Draw(cData *Data);
 	void ColorVida();

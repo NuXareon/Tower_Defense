@@ -47,6 +47,7 @@ public:
 	int getSelected();
 	int GetVida();
 	bool hihaCami(int* map,int pi,int pf);
+	bool TurretNextPosM(int p);
 
 private:
 	unsigned char keys[256];
@@ -68,8 +69,10 @@ private:
 
 	void printGameInfo();
 	void printTurretInfo();
+	void printTurretBadPos();
 
 	float inc;
 
 	bool pause;
+	int cdBadPos;
 };

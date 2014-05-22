@@ -447,3 +447,7 @@ int cMonstre::GetDir()
 {
 	return dir;
 }
+int cMonstre::GetNextPos()
+{
+	return NextPos;
+}
