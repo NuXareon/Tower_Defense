@@ -70,9 +70,11 @@ private:
 	void printGameInfo();
 	void printTurretInfo();
 	void printTurretBadPos();
+	void printTurretNoGold();
 
 	float inc;
 
 	bool pause;
 	int cdBadPos;
+	int cdNoGold;
 };
