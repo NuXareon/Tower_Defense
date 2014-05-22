@@ -446,3 +446,7 @@ int cScene::getEnd()
 {
 	return end;
 }
+int cScene::getNumMonstres()
+{
+	return numMonstres;
+}

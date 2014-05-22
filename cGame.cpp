@@ -22,13 +22,14 @@ bool cGame::Init()
 	showUI = true;
 	cdCursorTile = 5;
 	cdAi = 3;
-	gold = 1000;
+	gold = 200;
 	vidasP = 5;
 	cdSpawnM = 3;
 	numM = 0;
 	inc = 0;
 	pause = false;
-	cdBadPos = 0;
+	cdBadPos = cdNoGold = 0;
+
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -119,9 +120,10 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 				}
 				else{
 					map[buff[3]]=0;
-					cdBadPos = 10;	// temps de printar printTurretBadPos
+					cdBadPos = 15;	// temps de printar printTurretBadPos
 				}
 			}
+			else if (gold < COST_TURRET_1) cdNoGold = 15;
 			Scene.setSelected(buff[3]);
 		}
 	}
@@ -194,7 +196,7 @@ bool cGame::Process()
 	else {
 		cdAi=CD_IA_M;
 		if(cdSpawnM == 0){
-			if(Scene.GetMonsters().size()>numM){
+			if(Scene.getNumMonstres()>numM){
 				numM++;
 				cdSpawnM = 3;
 			}
@@ -208,7 +210,8 @@ bool cGame::Process()
 	std::map<int,cMonstre> monsters = Scene.GetMonsters();
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->second.GetVida() == 0){	// si el monstre no te vida borra
+		if(iter->second.GetVida() <= 0){	// si el monstre no te vida borra
+			gold += 20;
 			Scene.BorraMonstre(iter->first);
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
@@ -442,6 +445,36 @@ void cGame::printTurretBadPos()
 	glPopMatrix();
 }
 
+void cGame::printTurretNoGold()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	char *s[]={	"Not enought gold!"
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			glRasterPos2f(-0.95f,0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
 GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 {
 	GLint hits, view[4];
@@ -524,6 +557,12 @@ void cGame::Render()
 	{
 		printUI();
 		if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo();
+	}
+
+	if (cdNoGold>0)
+	{
+		printTurretNoGold();
+		--cdNoGold;
 	}
 	if( cdBadPos>0)
 	{
