@@ -17,8 +17,8 @@ cMonstre::~cMonstre(){}
 
 int cMonstre::Init()
 {
-	return MakeMonstreDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
-	//MakeMonstre2DL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+	//return MakeMonstreDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+	return MakeMonstre2DL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f,1.0f);
 }
 
 void cMonstre::SetPositionI(int p)
@@ -117,17 +117,29 @@ void cMonstre::Draw2(cData *Data,float inc,int *map)
 		if(dir==4)	glTranslatef(x,0,-z+inc);
 		//glTranslatef(x,0,-z);
 		ColorVida();
-		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-		glCallList(dl_monstre);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_MONSTRE));
+		animacio();
+		glCallList(dl_monstre2);
 	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
 }
 int cMonstre::Direction(){
 	int dir;
-	if(pos+1 == NextPos) dir = 1;
-	else if(pos-1 == NextPos) dir = 2;
-	else if(pos+SCENE_WIDTH == NextPos) dir = 3;
-	else if(pos-SCENE_WIDTH == NextPos) dir = 4;
+	if(pos+1 == NextPos){
+		dir = 1;
+		SetState(STATE_WALKLEFT);
+	}
+	else if(pos-1 == NextPos){
+		dir = 2;
+		SetState(STATE_WALKRIGHT);
+	}
+	else if(pos+SCENE_WIDTH == NextPos){
+		dir = 3;
+		SetState(STATE_WALKUP);
+	}
+	else if(pos-SCENE_WIDTH == NextPos){
+		dir = 4;
+		SetState(STATE_WALKDOWN);
+	}
 	else dir=5;//error
 	return dir;
 }
@@ -253,6 +265,7 @@ int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
 	dl_monstre = glGenLists(1);
 	glNewList(dl_monstre,GL_COMPILE);
 		glBegin(GL_QUADS);
+			
 			// Front Face
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 0,  0);
 			glTexCoord2f(  tw, 0.0f); glVertex3f(w, 0,  0);
@@ -272,12 +285,7 @@ int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 0, -d);
 			glTexCoord2f(  td, 0.0f); glVertex3f(0, 0,  0);
 			glTexCoord2f(  td,   th); glVertex3f(0, h,  0);
-			glTexCoord2f(0.0f,   th); glVertex3f(0, h, -d);
-			// Bottom Face
-			/*glTexCoord2f(  tw,   td); glVertex3f(0, 0, -d);
-			glTexCoord2f(0.0f,   td); glVertex3f(w, 0, -d);
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0,  0);
-			glTexCoord2f(  tw, 0.0f); glVertex3f(0, 0,  0);*/
+			glTexCoord2f(0.0f,   th); glVertex3f(0, h, -d);			
 			// Top Face
 			glTexCoord2f(0.0f,   td); glVertex3f(0, h, -d);
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(0, h,  0);
@@ -286,24 +294,63 @@ int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
 		glEnd();
 	glEndList();
 	return dl_monstre;
+	
 }
 
-void cMonstre::MakeMonstre2DL(float w,float h,float d,float tw,float th,float td)
+void cMonstre::animacio(){
+	float xo,yo,xf,yf;
+	int state = GetState();
+	switch(state)
+	{
+		case STATE_WALKDOWN:	xo = 0.0f + (GetFrame()*0.25f);yo = 0.25f;
+								NextFrame(4);
+								break;
+		case STATE_WALKRIGHT:	xo = 0.0f + (GetFrame()*0.25f);yo = 0.50f;
+								NextFrame(4);
+								break;
+		case STATE_WALKLEFT:	xo = 0.0f + (GetFrame()*0.25f); yo = 0.75f;
+								NextFrame(4);
+								break;
+		case STATE_WALKUP:	xo = 0.0f + (GetFrame()*0.25f);yo = 1.00f;
+								NextFrame(4);
+								break;
+	}
+	xf = xo + 0.25f;
+	yf = yo - 0.25f;
+	int ok = MakeMonstre2DL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,xo,yo,xf,yf);
+}
+
+int cMonstre::MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,float yf)
 {
 	dl_monstre2 = glGenLists(1);
 	glNewList(dl_monstre2,GL_COMPILE);
+		glTranslatef(0.0f,0.2f,-1.0f);
+		glRotatef(-45,1.0f,0.0f,0.0f);
+		glBegin(GL_QUADS);			
+			// Front Face
+			glTexCoord2f(xo,yo); glVertex3f(0, 0,  0);
+			glTexCoord2f(xf,yo); glVertex3f(w, 0,  0);
+			glTexCoord2f(xf,yf); glVertex3f(w, h,  0);
+			glTexCoord2f(xo,yf); glVertex3f(0, h,  0);
+		glEnd();
+	glEndList();
+	return dl_monstre2;
+	/*
+	dl_monstre = glGenLists(1);
+	glNewList(dl_monstre,GL_COMPILE);
 			glPushMatrix();
-				glTranslatef(w/2.0f,3.0f,-d/2.0f);
+				glTranslatef(w/2.0f,2.0f,-d/2.0f);
 				//glRotatef(90,1.0f,0.0f,0.0f);
 				GLUquadricObj *q = gluNewQuadric();
 				gluQuadricTexture (q, GL_TRUE);
 				//gluCylinder(q, 0.3,0.95,5,16,16);
 				gluSphere(q, 2.0,16,16);
-				//glRotatef(-90,1.0f,0.0f,0.0f);
-				//gluCylinder(q, 0.2,0.2,1.5,16,16);
+				glRotatef(-90,1.0f,0.0f,0.0f);
+				//gluCylinder(q, 1.2,1.2,3.5,16,16);
 				gluDeleteQuadric(q);
 			glPopMatrix();
 		glEndList();
+		return dl_monstre;*/
 }
 int* cMonstre::BFS(int *map, int pF,int pI){
 	int dist[SCENE_WIDTH * SCENE_DEPTH];

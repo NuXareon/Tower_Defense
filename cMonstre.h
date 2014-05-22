@@ -43,13 +43,14 @@ public:
 	int* BFS(int *map, int pos,int pI);
 	int* inimap(int length, int x);
 	void render_string(void* font, const char* string);
-	void printPos();
-	
+	void printPos();	
 	void printVida();
+
+	void animacio();
 
 private:
 	int MakeMonstreDL(float w,float h,float d,float tw,float th,float td);
-	void MakeMonstre2DL(float w,float h,float d,float tw,float th,float td);
+	int MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,float yf);
 	int dl_monstre;
 	int dl_monstre2;
 	int dl_vida;

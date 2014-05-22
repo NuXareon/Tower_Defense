@@ -52,6 +52,8 @@ bool cGame::Init()
 	if(!res) return false;
 	res = Data.LoadImage(IMG_ROOF,"roof.png",GL_RGBA);
 	if(!res) return false;
+	res = Data.LoadImage(IMG_MONSTRE,"robot2iceaxe.png",GL_RGBA);
+	if(!res) return false;
 	res = Data.LoadImage(IMG_COR,"cor.png",GL_RGBA);
 	if(!res) return false;
 	Scene.Init();
