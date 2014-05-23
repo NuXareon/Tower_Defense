@@ -238,6 +238,23 @@ void cScene::DrawTurretPanel(cData *Data)
 		glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
+void cScene::DrawUpgradePanel(cData *Data)
+{
+	glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+		glColor3f(0.8f,0.8f,0.8f);
+		glCallList(dl_turret);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
+		if(selected == SCENE_WIDTH*SCENE_DEPTH+1) glColor3f(0.3f,1.0f,0.3f);
+		else glColor3f(1.0f,0.2f,0.2f);
+		glBegin(GL_QUADS);
+			glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
+			glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 6.5, -5);
+			glTexCoord2f(1.0f,   1.0f); glVertex3f(3.5, 6.5, -5);
+			glTexCoord2f(1.0f,   0.0f); glVertex3f(3.5, -0.5, -5);
+		glEnd();
+	glDisable(GL_TEXTURE_2D);
+}
 void cScene::DrawLifePanel(cData *Data){
 	glEnable(GL_TEXTURE_2D);
 		glTranslatef(30.0f,3.0f,0.0f); 	
@@ -490,4 +507,8 @@ int cScene::getEnd()
 int cScene::getNumMonstres()
 {
 	return numMonstres;
+}
+void cScene::upgadeTurret()
+{
+	turrets[selected].upgrade();
 }

@@ -30,6 +30,7 @@ public:
 	void DrawMonsters(cData *Data,int n, float inc);
 	void DrawTurretPanel(cData *Data);
 	void DrawLifePanel(cData *Data);
+	void DrawUpgradePanel(cData *Data);
 	void DrawContainer(cData *Data);
 	void DrawInfoPanel(cData *Data);
 	void DrawShots(cData *Data);
@@ -52,6 +53,7 @@ public:
 	int getStart();
 	int getEnd();
 	int getNumMonstres();
+	void upgadeTurret();
 
 	int mouseOverTile;
 	

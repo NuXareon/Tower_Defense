@@ -119,6 +119,7 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 					Scene.updateMap(buff[3],TOWER_ID_1);
 					Scene.addTurret(1,buff[3]);
 					gold -= COST_TURRET_1;
+					Scene.setSelected(buff[3]);
 				}
 				else{
 					map[buff[3]]=0;
@@ -126,7 +127,13 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 				}
 			}
 			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
-			Scene.setSelected(buff[3]);
+			else if(Scene.GetMap()[Scene.getSelected()] == 9 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+2)
+			{
+				Scene.upgadeTurret();
+			}
+			else {
+				Scene.setSelected(buff[3]);
+			}
 		}
 	}
 	if 	((button == GLUT_RIGHT_BUTTON) && (state == GLUT_DOWN))
@@ -259,6 +266,11 @@ void cGame::printUI()
 
 	printGameInfo();
 
+	if (Scene.GetMap()[Scene.getSelected()] == 9)
+	{
+		glTranslatef(-4.0f,0.0f,0.0f);
+		Scene.DrawUpgradePanel(&Data);
+	}
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 
@@ -520,6 +532,10 @@ GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 		if(posx >= -18.5 && posx <= -15.5 && posy >= -24.0 && posy <= -17.0) 
 		{
 			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+1;
+			hits = -1;
+		}
+		else if (posx >= 7.0 && posx <= 10.0 && posy >= -24.0 && posy <= -17.0){
+			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+2;
 			hits = -1;
 		}
 	}

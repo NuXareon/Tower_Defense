@@ -15,6 +15,7 @@ public:
 	int getTarget();
 	bool AI(map<int,cMonstre> monsters, int pos, int w, int s, float inc);
 	int getDamage();
+	void upgrade();
 
 private:
 	int type;

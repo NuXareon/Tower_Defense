@@ -104,3 +104,7 @@ int cTurret::getDamage()
 {
 	return damage*lvl;
 }
+void cTurret::upgrade()
+{
+	lvl+=1;
+}
