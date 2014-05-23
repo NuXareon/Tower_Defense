@@ -9,7 +9,7 @@ class cShot
 public:
 	cShot(void);
 	virtual ~cShot(void);
-	void Init(float x, float y, float z, int target);
+	void Init(float x, float y, float z, int target, int damage);
 	void getCoord(float &xcoord, float &ycoord, float &zcoord);
 	void IA(int mpos, int w, int s, int dir, float inc);
 
@@ -20,6 +20,7 @@ public:
 	int getExpAnim();
 	bool getExplosion();
 	void incExpAnim();
+	int getDamage();
 
 private:
 	float x,y,z;
@@ -27,4 +28,5 @@ private:
 	bool erase;
 	bool explosion;
 	int expAnim;
+	int damage;
 };

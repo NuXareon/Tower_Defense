@@ -125,7 +125,7 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 					cdBadPos = 15;	// temps de printar printTurretBadPos
 				}
 			}
-			else if (gold < COST_TURRET_1) cdNoGold = 15;
+			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
 			Scene.setSelected(buff[3]);
 		}
 	}

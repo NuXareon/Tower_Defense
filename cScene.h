@@ -63,7 +63,7 @@ private:
 	void MakeTurretDL(float w,float h,float d);
 	void printTurret(int r);
 	void MakeShotDL(float w, float h, float d);
-	void addShot(float x, float y, float z, int target);
+	void addShot(float x, float y, float z, int target, int damage);
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;

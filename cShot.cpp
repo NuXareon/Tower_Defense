@@ -4,7 +4,7 @@
 cShot::cShot(void){}
 cShot::~cShot(void){}
 
-void cShot::Init(float a, float b, float c, int t)
+void cShot::Init(float a, float b, float c, int t, int d)
 {
 	x = a;
 	y = b;
@@ -13,6 +13,7 @@ void cShot::Init(float a, float b, float c, int t)
 	erase = false;
 	explosion = false;
 	expAnim = 0;
+	damage = d;
 }
 void cShot::getCoord(float &xcoord, float &ycoord, float &zcoord)
 {
@@ -93,4 +94,8 @@ void cShot::incExpAnim()
 {
 	expAnim++;
 	erase = (expAnim>=25);
+}
+int cShot::getDamage()
+{
+	return damage;
 }

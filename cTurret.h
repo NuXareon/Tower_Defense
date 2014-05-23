@@ -14,12 +14,14 @@ public:
 	int getRotationY();
 	int getTarget();
 	bool AI(map<int,cMonstre> monsters, int pos, int w, int s, float inc);
+	int getDamage();
 
 private:
 	int type;
 	int dl_turret;
 	int cost;
 	int lvl;
+	int damage;
 	int target;
 	int distTarget;
 	int attackCd;

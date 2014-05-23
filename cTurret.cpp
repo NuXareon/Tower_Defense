@@ -16,6 +16,7 @@ void cTurret::Init(int t)
 	distTarget = -1;
 	attackCd = 0;
 	range = 3;
+	damage=1;
 }
 
 int cTurret::getRotationY()
@@ -54,7 +55,7 @@ bool cTurret::shootTarget(int pos, int w)
 {
 	if (--attackCd <= 0)
 	{
-		attackCd = 15;
+		attackCd = 15-2*lvl;
 		return true;
 	}
 	return false;
@@ -98,4 +99,8 @@ void cTurret::updateRotationY(int mpos, int x, int z, int w, int s, float inc, i
 int cTurret::getTarget()
 {
 	return target;
+}
+int cTurret::getDamage()
+{
+	return damage*lvl;
 }

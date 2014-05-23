@@ -395,7 +395,8 @@ void cScene::turretLogic(float inc)
 			float y = 0.3*TILE_SIZE;
 			float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
 			int target = iter2->second.getTarget();
-			addShot(x,y,z,target);
+			int damage = iter2->second.getDamage();
+			addShot(x,y,z,target,damage);
 		}
 	}
 }
@@ -431,7 +432,8 @@ void cScene::shotLogic(float inc)
 
 				if (x == xm && y == ym && z == zm) 
 				{
-					monsters[target].treuVida(2);
+					int dmg = shots[i].getDamage();
+					monsters[target].treuVida(dmg);
 					shots[i].setExplosion();
 				}
 			} else
@@ -442,11 +444,11 @@ void cScene::shotLogic(float inc)
 	}
 	shots.erase(std::remove_if(shots.begin(), shots.end(), RemoveShotCondition),shots.end());
 }
-void cScene::addShot(float x, float y, float z, int target)
+void cScene::addShot(float x, float y, float z, int target, int damage)
 {
 	cShot* s = new cShot();
 	cShot ss = *s;
-	ss.Init(x,y,z,target);
+	ss.Init(x,y,z,target, damage);
 	shots.push_back(ss);
 }
 void cScene::addTurret(int type, int pos)
