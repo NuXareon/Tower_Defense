@@ -129,8 +129,13 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
 			else if(Scene.GetMap()[Scene.getSelected()] == 9 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+2)
 			{
-				Scene.upgadeTurret();
-			}
+				if (gold>= COST_UPGRADE_1) 
+				{
+					Scene.upgadeTurret();
+					gold -= COST_UPGRADE_1;
+				}
+				else cdNoGold = 15;
+			} 
 			else {
 				Scene.setSelected(buff[3]);
 			}
@@ -220,7 +225,7 @@ bool cGame::Process()
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->second.GetVida() <= 0){	// si el monstre no te vida borra
-			gold += 20;
+			gold += MONSTER_GOLD;
 			Scene.BorraMonstre(iter->first);
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
@@ -574,19 +579,20 @@ void cGame::Render()
 	if (showUI) 
 	{
 		printUI();
-		if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo();
+		if (cdNoGold>0)
+		{
+			printTurretNoGold();
+			--cdNoGold;
+		}
+		else if(cdBadPos>0)
+		{
+			printTurretBadPos();
+			--cdBadPos;
+		} 
+		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo();
 	}
 
-	if (cdNoGold>0)
-	{
-		printTurretNoGold();
-		--cdNoGold;
-	}
-	if( cdBadPos>0)
-	{
-		printTurretBadPos();
-		--cdBadPos;
-	}
+
 
 	glutSwapBuffers();
 }

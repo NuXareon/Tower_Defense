@@ -11,14 +11,16 @@
 #include <iostream>
 using namespace std;
 
-#define TIME_FRAME		33	//30 FPS
+#define TIME_FRAME		28	//40 FPS
 #define SCREEN_WIDTH	800
 #define SCREEN_HEIGHT	600
 #define SELECT_BUF_SIZE	16
 #define TOWER_ID_1		9
 #define COST_TURRET_1	100
+#define COST_UPGRADE_1	200
 #define CD_IA_M			16
 #define CD_MONSTER		10
+#define MONSTER_GOLD	30
 
 class cGame
 {
