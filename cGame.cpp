@@ -57,6 +57,8 @@ bool cGame::Init()
 	if(!res) return false;
 	res = Data.LoadImage(IMG_COR,"cor.png",GL_RGBA);
 	if(!res) return false;
+	res = Data.LoadImage(IMG_EXPLOSION,"explosion512-2.png",GL_RGBA);
+	if(!res) return false;
 	Scene.Init();
 	int dl_mon = Monstre.Init();
 	Scene.setDlMonstre(dl_mon);

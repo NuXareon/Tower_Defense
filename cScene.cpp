@@ -173,8 +173,31 @@ void cScene::DrawShots(cData *Data)
 		glPushMatrix();
 			shots[i].getCoord(x,y,z);
 			glTranslatef(x,y,z);
-			glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-			glCallList(dl_shot);
+			if (shots[i].getExplosion()){
+				int expAnim = shots[i].getExpAnim();
+				int expAnimDiv = expAnim/5+1;
+				int expAnimMod = expAnim%5;
+				float xo,xf,yo,yf;
+				xo = expAnimMod*0.2;
+				yo = expAnimDiv*0.2;
+				xf = xo+0.2;
+				yf = yo-0.2;
+				glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_EXPLOSION));
+				glTranslatef(0.0f,1.4f,0.2f);
+				glRotatef(-45,1.0f,0.0f,0.0f);
+				glTranslatef(TILE_SIZE-2,TILE_SIZE-1,0.2f);
+				glBegin(GL_QUADS);
+					glTexCoord2f(xo,yo); glVertex3f(0, 0,  0);
+					glTexCoord2f(xf,yo); glVertex3f(TILE_SIZE/4, 0,  0);
+					glTexCoord2f(xf,yf); glVertex3f(TILE_SIZE/4, TILE_SIZE/4,  0);
+					glTexCoord2f(xo,yf); glVertex3f(0, TILE_SIZE/4,  0);
+				glEnd();
+				int a = 2;
+			} else
+			{
+				glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
+				glCallList(dl_shot);
+			}
 		glPopMatrix();
 	}
 	glDisable(GL_TEXTURE_2D);
@@ -384,21 +407,37 @@ void cScene::shotLogic(float inc)
 {
 	for(int i = 0; i < shots.size(); ++i)
 	{
-		int target = shots[i].getTarget();
-		if (monsters.count(target) > 0)
+		if (shots[i].getExplosion())
 		{
-			int mpos = monsters[target].GetPositionAct();
-			int dir = monsters[target].GetDir();
-			shots[i].IA(mpos, SCENE_WIDTH, TILE_SIZE, dir, inc);
-			float x,y,z;
-			shots[i].getCoord(x,y,z);
-			float xm = (mpos%SCENE_WIDTH)*TILE_SIZE;
-			float ym = -0.2*TILE_SIZE;
-			float zm = -(mpos/SCENE_WIDTH)*TILE_SIZE;
-			if (x == xm && y == ym && z == zm) monsters[target].treuVida(2);
-		} else
+			shots[i].incExpAnim();
+		} else 
 		{
-			shots[i].setErase();
+			int target = shots[i].getTarget();
+			if (monsters.count(target) > 0)
+			{
+				int mpos = monsters[target].GetPositionAct();
+				int dir = monsters[target].GetDir();
+				shots[i].IA(mpos, SCENE_WIDTH, TILE_SIZE, dir, inc);
+				float x,y,z;
+				shots[i].getCoord(x,y,z);
+				float xm = (mpos%SCENE_WIDTH)*TILE_SIZE;
+				float ym = -0.2*TILE_SIZE;
+				float zm = -(mpos/SCENE_WIDTH)*TILE_SIZE;
+
+				if (dir == 1) xm += inc;
+				else if (dir == 2) xm -= inc;
+				else if (dir == 3) zm -= inc;
+				else if (dir == 4) zm += inc;
+
+				if (x == xm && y == ym && z == zm) 
+				{
+					monsters[target].treuVida(2);
+					shots[i].setExplosion();
+				}
+			} else
+			{
+				shots[i].setErase();
+			}
 		}
 	}
 	shots.erase(std::remove_if(shots.begin(), shots.end(), RemoveShotCondition),shots.end());

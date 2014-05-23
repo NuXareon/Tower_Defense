@@ -11,6 +11,8 @@ void cShot::Init(float a, float b, float c, int t)
 	z = c;
 	target = t;
 	erase = false;
+	explosion = false;
+	expAnim = 0;
 }
 void cShot::getCoord(float &xcoord, float &ycoord, float &zcoord)
 {
@@ -71,7 +73,24 @@ void cShot::setErase()
 {
 	erase = true;
 }
+void cShot::setExplosion()
+{
+	explosion = true;
+}
 bool cShot::getErase()
 {
 	return erase;
+}
+int cShot::getExpAnim()
+{
+	return expAnim;
+}
+bool cShot::getExplosion()
+{
+	return explosion;
+}
+void cShot::incExpAnim()
+{
+	expAnim++;
+	erase = (expAnim>=25);
 }

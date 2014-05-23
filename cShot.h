@@ -15,10 +15,16 @@ public:
 
 	int getTarget();
 	void setErase();
+	void setExplosion();
 	bool getErase();
+	int getExpAnim();
+	bool getExplosion();
+	void incExpAnim();
 
 private:
 	float x,y,z;
 	int target;
 	bool erase;
+	bool explosion;
+	int expAnim;
 };

@@ -54,7 +54,7 @@ bool cTurret::shootTarget(int pos, int w)
 {
 	if (--attackCd <= 0)
 	{
-		attackCd = 20;
+		attackCd = 15;
 		return true;
 	}
 	return false;
