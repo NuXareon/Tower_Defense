@@ -50,7 +50,7 @@ public:
 	void SetWidthHeight(int w,int h);
 	void GetWidthHeight(int *w,int *h);
 	void SetType(int i);
-	void GetType(int *i);
+	int GetType();
 	/*
 	void SetShotCd(int cd);
 	void GetShotCd(int *cd);

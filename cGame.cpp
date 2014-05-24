@@ -55,6 +55,8 @@ bool cGame::Init()
 	if(!res) return false;
 	res = Data.LoadImage(IMG_MONSTRE,"robot2iceaxe.png",GL_RGBA);
 	if(!res) return false;
+	res = Data.LoadImage(IMG_MONSTRE2,"WarriorRobot.png",GL_RGBA);
+	if(!res) return false;
 	res = Data.LoadImage(IMG_COR,"cor.png",GL_RGBA);
 	if(!res) return false;
 	res = Data.LoadImage(IMG_EXPLOSION,"explosion512-2.png",GL_RGBA);
@@ -229,7 +231,8 @@ bool cGame::Process()
 			Scene.BorraMonstre(iter->first);
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
-			vidasP--;
+			if(iter->second.GetType()==1) vidasP -=1;
+			if(iter->second.GetType()==2) vidasP -=2;
 			Scene.BorraMonstre(iter->first);
 		}
 		if(z) {			// Per veure si funciona treure vida a un monstre. 
@@ -604,7 +607,7 @@ int cGame::GetVida(){
 bool cGame::hihaCami(int* map,int pi,int pf)
 {
 	bool b;
-	int *dist =Monstre.BFS(map,pf,pi);
+	int *dist =Monstre.BFS(map,pf,pi,false);
 	int d = dist[pi];
 	if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH) b=false;
 	else b=true;

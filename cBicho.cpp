@@ -59,9 +59,9 @@ void cBicho::SetType(int i)
 {
 	type = i;
 }
-void cBicho::GetType(int *i)
+int cBicho::GetType()
 {
-	*i = type;
+	return type;
 }
 /*
 void cBicho::SetShotCd(int cd)
