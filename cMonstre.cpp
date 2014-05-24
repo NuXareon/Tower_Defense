@@ -52,6 +52,10 @@ float cMonstre::GetVida()
 {
 	return vida;
 }
+void cMonstre::SetVida(float i)
+{
+	vida = i;
+}
 
 void cMonstre::setMonsterDl(int dl)
 {
@@ -60,37 +64,29 @@ void cMonstre::setMonsterDl(int dl)
 void cMonstre::treuVida(int i){
 	vida -= i;
 }
-void cMonstre::Draw(cData *Data)
+void cMonstre::Draw(cData *Data,float inc,int *map)
 {	
 
 	int i,j,x,z;
 
 	glEnable(GL_TEXTURE_2D);
-	
-	//Monster
-	for(i=0;i<SCENE_DEPTH;i++)
-	{
-		x = 0;
-		z = i*TILE_SIZE;
-
-		for(j=0;j<SCENE_WIDTH;j++)
-		{
-			glPushMatrix();
-				glTranslatef(x,0,-z);
-				if (i*SCENE_WIDTH+j == pos) // Posició dels monstres
-				{
-					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-					glCallList(dl_monstre);
-					glColor3f(1.0f,0.0f,0.0f);
-				}
-
-				else glColor3f(1.0f,1.0f,1.0f);
-			glPopMatrix();
-			x += TILE_SIZE;
-		}
-	}
-	//printPos();
-	glDisable(GL_TEXTURE_2D);
+	i = pos/8;
+	j = pos%8;
+	x = j * TILE_SIZE;
+	z = i * TILE_SIZE;
+	glPushMatrix();
+		//int dir = NextMov(map);
+		int dir = Direction();
+		if(dir==1)	glTranslatef(x+inc,0,-z);
+		if(dir==2)	glTranslatef(x-inc,0,-z);
+		if(dir==3)	glTranslatef(x,0,-z-inc);
+		if(dir==4)	glTranslatef(x,0,-z+inc);
+		//glTranslatef(x,0,-z);
+		ColorVida();
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_MONSTRE));
+		animacio();
+		glCallList(dl_monstre2);
+	glPopMatrix();
 }
 void cMonstre::ColorVida()
 {
@@ -117,7 +113,7 @@ void cMonstre::Draw2(cData *Data,float inc,int *map)
 		if(dir==4)	glTranslatef(x,0,-z+inc);
 		//glTranslatef(x,0,-z);
 		ColorVida();
-		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_MONSTRE));
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_MONSTRE2));
 		animacio();
 		glCallList(dl_monstre2);
 	glPopMatrix();
@@ -146,9 +142,7 @@ int cMonstre::Direction(){
 int cMonstre::NextMov(int *map)
 {
 	dir;	// 1=R, 2=L, 3=Up, 4=Down
-	int *dist = BFS(map,pf,pos);	
-	//pos = PosAdj(dist,1); // pos adjacent mes propera distancia 1
-	//pos = PosAdj( BFS(map,pf,pos),1);
+	int *dist = BFS(map,pf,pos,false);
 	oldPos = pos;
 	int aux = pos;
 	int dmin = dist[pos];
@@ -219,9 +213,11 @@ int cMonstre::PosAdj(int *dist, int i)
 }
 void cMonstre::AI(int *map)
 {
-	int *dist = BFS(map,pf,pos);	
-	//pos = PosAdj(dist,1); // pos adjacent mes propera distancia 1
-	//pos = PosAdj( BFS(map,pf,pos),1);
+	bool b =false;
+	if(GetType()==2){
+		b=true;
+	}
+	int *dist = BFS(map,pf,pos,b);
 	oldPos = pos;
 	int aux = pos;
 	int dmin = dist[pos];
@@ -325,7 +321,7 @@ int cMonstre::MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,
 	dl_monstre2 = glGenLists(1);
 	glNewList(dl_monstre2,GL_COMPILE);
 		glTranslatef(0.0f,0.2f,-1.0f);
-		glRotatef(-45,1.0f,0.0f,0.0f);
+		glRotatef(-30,1.0f,0.0f,0.0f);
 		glBegin(GL_QUADS);			
 			// Front Face
 			glTexCoord2f(xo,yo); glVertex3f(0, 0,  0);
@@ -352,7 +348,7 @@ int cMonstre::MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,
 		glEndList();
 		return dl_monstre;*/
 }
-int* cMonstre::BFS(int *map, int pF,int pI){
+int* cMonstre::BFS(int *map, int pF,int pI, bool b){
 	int dist[SCENE_WIDTH * SCENE_DEPTH];
 	for(int i=0;i< SCENE_WIDTH * SCENE_DEPTH;++i){
 		dist[i]=SCENE_WIDTH * SCENE_DEPTH+1;
@@ -368,7 +364,7 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 	while(!q.empty()){
 		int aux = q.front();
 		q.pop();
-		if(map[aux] == 0 && mapbool[aux] < 4){
+		if(map[aux] == 0  && mapbool[aux] < 4){
 			mapbool[aux] += 1;
 			//en creu
 			if(map[aux+1]==0 && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {

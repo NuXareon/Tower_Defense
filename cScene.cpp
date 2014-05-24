@@ -8,6 +8,7 @@ void cScene::Init()
 {
 	selected = -1;
 	mouseOverTile = -1;
+	numMonstres = 0;
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
@@ -57,7 +58,7 @@ bool cScene::LoadMonsters(int level) {
 	bool res;
 	FILE *fd;
 	char file[16];
-	int pi,pf;
+	int pi,pf,vida;
 	int i;
 	int tex;
 
@@ -71,7 +72,7 @@ bool cScene::LoadMonsters(int level) {
 
 	while(fscanf_s(fd,"%d",&tex) > 0) // read texture (type of monster)
 	{ 
-		int a1 = fscanf_s(fd,"%d",&numMonstres);	// read num monstres
+		int a1 = fscanf_s(fd,"%d",&vida);	// read vida monstres
 		int b1 = fscanf_s(fd,"%d",&pi); // read position inicial
 		int c1 = fscanf_s(fd,"%d",&pf); // read y position final
 		
@@ -80,14 +81,14 @@ bool cScene::LoadMonsters(int level) {
 
 		cMonstre* b = new cMonstre();
 		cMonstre bb = *b;
-		//bb.SetType(tex);
+		bb.SetType(tex);
+		bb.SetVida(vida);
 		bb.SetPositionI(pi);
 		bb.SetPositionF(pf);
 		bb.setMonsterDl(dl_monstre);
-		for(i=0;i<numMonstres;++i){
-			bb.SetID(i);
-			monsters[i]= bb;
-		}
+		bb.SetID(numMonstres);
+		monsters[numMonstres]= bb;
+		numMonstres++;
 	}
 
 	return res;
@@ -216,7 +217,10 @@ void cScene::DrawShots(cData *Data)
 void cScene::DrawMonsters(cData *Data, int n,float inc){
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->first <=n)	iter->second.Draw2(Data,inc,map);
+		if(iter->first <=n)	{
+			if(iter->second.GetType()==1) iter->second.Draw(Data,inc,map);
+			if(iter->second.GetType()==2) iter->second.Draw2(Data,inc,map);
+		}
 	}
 }
 void cScene::DrawContainer(cData *Data)
@@ -421,7 +425,10 @@ void cScene::AI(int *map, int n)
 {
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
-		if(iter->first <=n) iter->second.AI(map);
+		if(iter->first <=n){
+			if(iter->second.GetType()==1) iter->second.AI(map);
+			if(iter->second.GetType()==2) iter->second.AI(map);
+		}
 	}
 }
 void cScene::turretLogic(float inc)

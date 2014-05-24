@@ -30,17 +30,18 @@ public:
 	void setMonsterDl(int dl);
 	void treuVida(int i);
 	float GetVida();
+	void  SetVida(float i);
 	int GetDir();
 	int GetNextPos();
 
-	void Draw(cData *Data);
+	void Draw(cData *Data,float inc,int *map);
 	void ColorVida();
 	void Draw2(cData *Data, float inc,int *map);
 	int  Direction();
 	int  NextMov(int *map);
 	int  PosAdj(int *dist,int i);
 	void AI(int *map);
-	int* BFS(int *map, int pos,int pI);
+	int* BFS(int *map, int pos,int pI,bool b);
 	int* inimap(int length, int x);
 	void render_string(void* font, const char* string);
 	void printPos();	
