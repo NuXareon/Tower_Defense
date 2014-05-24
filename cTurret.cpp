@@ -108,3 +108,7 @@ void cTurret::upgrade()
 {
 	lvl+=1;
 }
+int cTurret::getLvl()
+{
+	return lvl;
+}

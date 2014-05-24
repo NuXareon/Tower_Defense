@@ -59,6 +59,8 @@ bool cGame::Init()
 	if(!res) return false;
 	res = Data.LoadImage(IMG_EXPLOSION,"explosion512-2.png",GL_RGBA);
 	if(!res) return false;
+	res = Data.LoadImage(IMG_ARROW,"arrow.png",GL_RGBA);
+	if(!res) return false;
 	Scene.Init();
 	int dl_mon = Monstre.Init();
 	Scene.setDlMonstre(dl_mon);
@@ -434,6 +436,43 @@ void cGame::printTurretInfo()
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 }
+void cGame::printTurretInfo2()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	int lvl = Scene.getSelectedTurretLvl();
+	char bufflvl[10];
+	_itoa_s(lvl,bufflvl,10 );
+	char *s[]={	"Turret type 1",
+				"Lvl: ", bufflvl
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			glRasterPos2f(-0.95f,0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+			glRasterPos2f(-0.95f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[1]);
+			glRasterPos2f(-0.80f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[2]);
+
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
 void cGame::printTurretBadPos()
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -565,10 +604,19 @@ void cGame::Render()
 	glTranslatef(-16.0f,-10.0f,-38.0f); // 8*8
 	glRotatef(60,1.0f,0.0f,0.0f);
 
-	Scene.Draw(&Data);
-	//Monstre.Draw(&Data);
-	Scene.DrawMonsters(&Data,numM,inc);
-	Scene.DrawShots(&Data);
+	
+	// Pintem en ordre diferent depenent de si es el render final o el de clicking per fer que el clicking i les transparencies funcionin correctament.
+	if (showUI)
+	{
+		Scene.DrawMonsters(&Data,numM,inc);
+		Scene.DrawShots(&Data);
+		Scene.Draw(&Data);
+	}
+	else {
+		Scene.Draw(&Data);
+		Scene.DrawMonsters(&Data,numM,inc);
+		Scene.DrawShots(&Data);
+	}
 
 	if (debug) 
 	{
@@ -590,6 +638,7 @@ void cGame::Render()
 			--cdBadPos;
 		} 
 		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo();
+		else if (Scene.GetMap()[Scene.getSelected()] == 9) printTurretInfo2(); 
 	}
 
 

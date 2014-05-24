@@ -121,13 +121,6 @@ void cScene::Draw(cData *Data)
 			glPushMatrix();
 				glTranslatef(x,0,-z);
 				glLoadName(i*SCENE_WIDTH+j);	// Name for render_mode(GL_SELECT) = position in map array. (clicking)
-				// Print Turret Preview
-				if (i*SCENE_WIDTH+j == mouseOverTile && selected == SCENE_WIDTH*SCENE_DEPTH+1 && map[i*SCENE_WIDTH+j] == 0)
-				{
-					glColor3f(0.5f,0.50f,1.5f);
-					glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-					glCallList(dl_turret);
-				}
 				// Set color for selected tile
 				if (i*SCENE_WIDTH+j == selected) glColor3f(0.5f,1.0f,0.5f);
 				else glColor3f(1.0f,1.0f,1.0f);
@@ -150,7 +143,9 @@ void cScene::Draw(cData *Data)
 							glCallList(dl_cube);
 							break;
 					// Turret
-					case 9: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+					case 9: int tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
+							if (i*SCENE_WIDTH+j != selected) glColor3f(1.0f,1.0f,1.0f-0.33*(tLvl-1));
+							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 							int rotate = turrets[i*SCENE_WIDTH+j].getRotationY();
 							printTurret(rotate);
 							glColor3f(1.0f,0.2f,0.2f);
@@ -158,10 +153,26 @@ void cScene::Draw(cData *Data)
 							glCallList(dl_floor);
 							glColor3f(1.0f,1.0f,1.0f);
 				}
+
 			glPopMatrix();
 			x += TILE_SIZE;
 		}
 	}
+	glPushMatrix();
+	// Print Turret Preview
+	if (selected == SCENE_WIDTH*SCENE_DEPTH+1 && mouseOverTile <= SCENE_WIDTH*SCENE_DEPTH && mouseOverTile >= 0 && map[mouseOverTile] == 0)
+	{
+		x = (mouseOverTile%SCENE_WIDTH)*TILE_SIZE;
+		z = (mouseOverTile/SCENE_WIDTH)*TILE_SIZE;
+		glTranslatef(x,0,-z);
+		glEnable (GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(0.5f,0.50f,1.5f,0.7f);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+		glCallList(dl_turret);
+		glDisable(GL_BLEND);
+	}
+	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
 void cScene::DrawShots(cData *Data)
@@ -244,15 +255,27 @@ void cScene::DrawUpgradePanel(cData *Data)
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 		glColor3f(0.8f,0.8f,0.8f);
 		glCallList(dl_turret);
+
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-		if(selected == SCENE_WIDTH*SCENE_DEPTH+1) glColor3f(0.3f,1.0f,0.3f);
-		else glColor3f(1.0f,0.2f,0.2f);
+		glColor3f(1.0f,1.0f,0.6f);
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
 			glTexCoord2f(0.0f,   1.0f); glVertex3f(0.5, 6.5, -5);
 			glTexCoord2f(1.0f,   1.0f); glVertex3f(3.5, 6.5, -5);
 			glTexCoord2f(1.0f,   0.0f); glVertex3f(3.5, -0.5, -5);
 		glEnd();
+
+		glEnable (GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ARROW));
+			glColor4f(1.0f,1.0f,1.0f,0.5f);
+			glBegin(GL_QUADS);
+				glTexCoord2f(0.0f,   0.0f); glVertex3f(2.5, 6.5, 0);
+				glTexCoord2f(0.0f,   1.0f); glVertex3f(2.5, 4.5, 0);
+				glTexCoord2f(1.0f,   1.0f); glVertex3f(3.5, 4.5, 0);
+				glTexCoord2f(1.0f,   0.0f); glVertex3f(3.5, 6.5, 0);
+			glEnd();
+		glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 }
 void cScene::DrawLifePanel(cData *Data){
@@ -511,4 +534,8 @@ int cScene::getNumMonstres()
 void cScene::upgadeTurret()
 {
 	turrets[selected].upgrade();
+}
+int cScene::getSelectedTurretLvl()
+{
+	return turrets[selected].getLvl();
 }

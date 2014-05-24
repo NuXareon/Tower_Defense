@@ -54,6 +54,7 @@ public:
 	int getEnd();
 	int getNumMonstres();
 	void upgadeTurret();
+	int getSelectedTurretLvl();
 
 	int mouseOverTile;
 	

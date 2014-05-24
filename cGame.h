@@ -17,7 +17,7 @@ using namespace std;
 #define SELECT_BUF_SIZE	16
 #define TOWER_ID_1		9
 #define COST_TURRET_1	100
-#define COST_UPGRADE_1	200
+#define COST_UPGRADE_1	150
 #define CD_IA_M			16
 #define CD_MONSTER		10
 #define MONSTER_GOLD	30
@@ -71,6 +71,7 @@ private:
 
 	void printGameInfo();
 	void printTurretInfo();
+	void printTurretInfo2();
 	void printTurretBadPos();
 	void printTurretNoGold();
 
