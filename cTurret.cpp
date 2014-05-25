@@ -112,3 +112,7 @@ int cTurret::getLvl()
 {
 	return lvl;
 }
+int cTurret::getType()
+{
+	return type;
+}

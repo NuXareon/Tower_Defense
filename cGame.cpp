@@ -101,6 +101,7 @@ void cGame::ReadKeyboard(unsigned char key, int x, int y, bool press)
 	keys[key] = press;
 	if (key == GLUT_KEY_F1 && !press) releaseF1 = true;
 	if (key == 't' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+1);
+	if (key == 'y' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+2);
 	if (key == 'p' && press) pause=!pause;
 }
 
@@ -129,9 +130,25 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 					map[buff[3]]=0;
 					cdBadPos = 15;	// temps de printar printTurretBadPos
 				}
+			} else if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+2 && Scene.GetMap()[buff[3]] == 0 && gold >= COST_TURRET_2) 
+			{
+				int pi = Scene.getStart();
+				int pf = Scene.getEnd();
+				int *map = Scene.GetMap();
+				map[buff[3]]=TOWER_ID_2;
+				if(hihaCami(map,pi,pf) && TurretNextPosM(buff[3])){ //hi ha cami && no es on anira algun monstre
+					Scene.updateMap(buff[3],TOWER_ID_2);
+					Scene.addTurret(2,buff[3]);
+					gold -= COST_TURRET_2;
+					Scene.setSelected(buff[3]);
+				}
+				else{
+					map[buff[3]]=0;
+					cdBadPos = 15;	// temps de printar printTurretBadPos
+				}
 			}
 			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
-			else if(Scene.GetMap()[Scene.getSelected()] == 9 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+2)
+			else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
 				if (gold>= COST_UPGRADE_1) 
 				{
@@ -157,6 +174,12 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 				Scene.destroyTurret(buff[3]);
 				gold += COST_TURRET_1/2;
 			}
+			else if(Scene.GetMap()[buff[3]] == TOWER_ID_2)
+			{
+				Scene.updateMap(buff[3],0);
+				Scene.destroyTurret(buff[3]);
+				gold += COST_TURRET_2/2;
+			}
 			Scene.setSelected(-1);
 		}
 	}
@@ -166,12 +189,6 @@ void cGame::UpdateCursorPosition(int x, int y)
 {
 	xx = x;
 	yy = y;
-	/*
-	GLuint buff[SELECT_BUF_SIZE] = {0};
-	GLuint hits = SelectCursorTile(xx,SCREEN_HEIGHT-yy,&buff);
-	if (hits <= 0) Scene.setMoseOverTile(-1);
-	else Scene.setMoseOverTile(buff[3]);
-	*/
 }
 
 //Process
@@ -267,7 +284,8 @@ void cGame::printUI()
 
 	glTranslatef(-19.0f,-23.5f,0.0f);
 
-	Scene.DrawTurretPanel(&Data);
+	Scene.DrawTurretPanel(&Data, 1);
+	Scene.DrawTurretPanel(&Data, 2);
 	//Scene.DrawLifePanel(&Data);
 
 	glTranslatef(29.4f,0.0f,0.0f);
@@ -580,9 +598,13 @@ GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 		{
 			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+1;
 			hits = -1;
+		} 
+		else if (posx >= -14.5 && posx <= 11.5 && posy >= -24.0 && posy <= -17.0){
+			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+2;
+			hits = -1;
 		}
 		else if (posx >= 7.0 && posx <= 10.0 && posy >= -24.0 && posy <= -17.0){
-			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+2;
+			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+10;
 			hits = -1;
 		}
 	}

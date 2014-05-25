@@ -12,6 +12,7 @@ void cScene::Init()
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
+	MakeTurretDL2((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 	MakeShotDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 }
 void cScene::updateMap(int pos, int value)
@@ -94,13 +95,14 @@ bool cScene::LoadMonsters(int level) {
 	return res;
 }
 
-void cScene::printTurret(int r)
+void cScene::printTurret(int r, int t)
 {
 	glPushMatrix();
 		glTranslatef(TILE_SIZE/2.0f,1.0f+TILE_SIZE,-TILE_SIZE/2.0f);
 		glRotatef(r,0.0f,1.0f,0.0f);
 		glTranslatef(-TILE_SIZE/2.0f,-1.0f-TILE_SIZE,+TILE_SIZE/2.0f);
-		glCallList(dl_turret);
+		if (t == 1) glCallList(dl_turret);
+		else if (t == 2) glCallList(dl_turret2);
 	glPopMatrix();
 }
 
@@ -108,6 +110,7 @@ void cScene::printTurret(int r)
 void cScene::Draw(cData *Data)
 {
 	int i,j,x,z;
+	int tLvl;
 
 	glEnable(GL_TEXTURE_2D);
 	
@@ -144,15 +147,25 @@ void cScene::Draw(cData *Data)
 							glCallList(dl_cube);
 							break;
 					// Turret
-					case 9: int tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
+					case 8: tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
 							if (i*SCENE_WIDTH+j != selected) glColor3f(1.0f,1.0f,1.0f-0.33*(tLvl-1));
 							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-							int rotate = turrets[i*SCENE_WIDTH+j].getRotationY();
-							printTurret(rotate);
+							printTurret(0,2);
 							glColor3f(1.0f,0.2f,0.2f);
 							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
 							glCallList(dl_floor);
 							glColor3f(1.0f,1.0f,1.0f);
+							break;
+					case 9: tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
+							if (i*SCENE_WIDTH+j != selected) glColor3f(1.0f,1.0f,1.0f-0.33*(tLvl-1));
+							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+							int rotate = turrets[i*SCENE_WIDTH+j].getRotationY();
+							printTurret(rotate,1);
+							glColor3f(1.0f,0.2f,0.2f);
+							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
+							glCallList(dl_floor);
+							glColor3f(1.0f,1.0f,1.0f);
+							break;
 				}
 
 			glPopMatrix();
@@ -171,6 +184,18 @@ void cScene::Draw(cData *Data)
 		glColor4f(0.5f,0.50f,1.5f,0.7f);
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 		glCallList(dl_turret);
+		glDisable(GL_BLEND);
+	}
+	else if (selected == SCENE_WIDTH*SCENE_DEPTH+2 && mouseOverTile <= SCENE_WIDTH*SCENE_DEPTH && mouseOverTile >= 0 && map[mouseOverTile] == 0)
+	{
+		x = (mouseOverTile%SCENE_WIDTH)*TILE_SIZE;
+		z = (mouseOverTile/SCENE_WIDTH)*TILE_SIZE;
+		glTranslatef(x,0,-z);
+		glEnable (GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(0.5f,0.50f,1.5f,0.7f);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+		glCallList(dl_turret2);
 		glDisable(GL_BLEND);
 	}
 	glPopMatrix();
@@ -236,14 +261,17 @@ void cScene::DrawContainer(cData *Data)
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
-void cScene::DrawTurretPanel(cData *Data)
+void cScene::DrawTurretPanel(cData *Data, int n)
 {
 	glEnable(GL_TEXTURE_2D);
+		glTranslatef(4.0f*(n-1),0.0f,0.0f);
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 		glColor3f(0.8f,0.8f,0.8f);
-		glCallList(dl_turret);
+		if (n == 1) glCallList(dl_turret);
+		else if (n == 2) glCallList(dl_turret2);
+
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
-		if(selected == SCENE_WIDTH*SCENE_DEPTH+1) glColor3f(0.3f,1.0f,0.3f);
+		if(selected == SCENE_WIDTH*SCENE_DEPTH+n) glColor3f(0.3f,1.0f,0.3f);
 		else glColor3f(1.0f,0.2f,0.2f);
 		glBegin(GL_QUADS);
 			glTexCoord2f(0.0f,   0.0f); glVertex3f(0.5, -0.5, -5);
@@ -251,6 +279,7 @@ void cScene::DrawTurretPanel(cData *Data)
 			glTexCoord2f(1.0f,   1.0f); glVertex3f(3.5, 6.5, -5);
 			glTexCoord2f(1.0f,   0.0f); glVertex3f(3.5, -0.5, -5);
 		glEnd();
+		glTranslatef(-4.0f*(n-1),0.0f,0.0f);
 	glDisable(GL_TEXTURE_2D);
 }
 void cScene::DrawUpgradePanel(cData *Data)
@@ -391,6 +420,30 @@ void cScene::MakeTurretDL(float w,float h,float d)
 	glEndList();
 }
 
+void cScene::MakeTurretDL2(float w,float h,float d)
+{
+	dl_turret2 = glGenLists(1);
+	glNewList(dl_turret2,GL_COMPILE);
+		glPushMatrix();
+			glTranslatef(w/2.0f,1.0f+h,-d/2.0f);
+			glRotatef(90,1.0f,0.0f,0.0f);
+			GLUquadricObj *q = gluNewQuadric();
+			gluQuadricTexture (q, GL_TRUE);
+			gluCylinder(q, 0.3,0.95,5,16,16);
+			gluSphere(q, 0.8,16,16);
+			glRotatef(-90,1.0f,0.0f,0.0f);
+			gluCylinder(q, 0.2,0.2,1.5,16,16);
+			glRotatef(90,0.0f,1.0f,0.0f);
+			gluCylinder(q, 0.2,0.2,1.5,16,16);
+			glRotatef(90,0.0f,1.0f,0.0f);
+			gluCylinder(q, 0.2,0.2,1.5,16,16);
+			glRotatef(90,0.0f,1.0f,0.0f);
+			gluCylinder(q, 0.2,0.2,1.5,16,16);
+			gluDeleteQuadric(q);
+		glPopMatrix();
+	glEndList();
+}
+
 void cScene::MakeShotDL(float w, float h, float d)
 {
 	dl_shot = glGenLists(1);
@@ -438,12 +491,24 @@ void cScene::turretLogic(float inc)
 		bool shoot = iter2->second.AI(monsters, iter2->first, SCENE_WIDTH, TILE_SIZE, inc);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta, retorna true si pot disparar.
 		if (shoot) 
 		{
-			float x = (iter2->first%SCENE_WIDTH)*TILE_SIZE;
-			float y = 0.3*TILE_SIZE;
-			float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
-			int target = iter2->second.getTarget();
-			int damage = iter2->second.getDamage();
-			addShot(x,y,z,target,damage);
+			if (iter2->second.getType() == 1)
+			{
+				float x = (iter2->first%SCENE_WIDTH)*TILE_SIZE;
+				float y = 0.3*TILE_SIZE;
+				float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
+				int target = iter2->second.getTarget();
+				int damage = iter2->second.getDamage();
+				addShot(x,y,z,target,damage);
+			}
+			else if (iter2->second.getType() == 2)
+			{
+				float x = (iter2->first%SCENE_WIDTH)*TILE_SIZE;
+				float y = 0.3*TILE_SIZE;
+				float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
+				int target = iter2->second.getTarget();
+				int damage = iter2->second.getDamage();
+				addShot(x,y,z,target,damage);
+			}
 		}
 	}
 }

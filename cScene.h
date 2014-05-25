@@ -28,7 +28,7 @@ public:
 	bool LoadMonsters(int level);
 	void Draw(cData *Data);
 	void DrawMonsters(cData *Data,int n, float inc);
-	void DrawTurretPanel(cData *Data);
+	void DrawTurretPanel(cData *Data, int n);
 	void DrawLifePanel(cData *Data);
 	void DrawUpgradePanel(cData *Data);
 	void DrawContainer(cData *Data);
@@ -64,12 +64,14 @@ private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);
 	void MakeFloorDL(float w,float d,float tw,float td);
 	void MakeTurretDL(float w,float h,float d);
-	void printTurret(int r);
+	void MakeTurretDL2(float w, float h, float d);
+	void printTurret(int r, int t);
 	void MakeShotDL(float w, float h, float d);
 	void addShot(float x, float y, float z, int target, int damage);
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
+	int dl_turret2;
 	int dl_monstre;
 	int dl_shot;
 	int selected;

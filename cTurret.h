@@ -17,6 +17,7 @@ public:
 	int getDamage();
 	void upgrade();
 	int getLvl();
+	int getType();
 
 private:
 	int type;

@@ -16,7 +16,9 @@ using namespace std;
 #define SCREEN_HEIGHT	600
 #define SELECT_BUF_SIZE	16
 #define TOWER_ID_1		9
+#define TOWER_ID_2		8
 #define COST_TURRET_1	100
+#define COST_TURRET_2	150
 #define COST_UPGRADE_1	150
 #define CD_IA_M			16
 #define CD_MONSTER		10
