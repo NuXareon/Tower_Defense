@@ -22,7 +22,7 @@ bool cGame::Init()
 	showUI = true;
 	cdCursorTile = 5;
 	cdAi = 3;
-	gold = 200;
+	gold = 500;
 	vidasP = 5;
 	cdSpawnM = 3;
 	numM = 0;
@@ -150,10 +150,18 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
 			else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
-				if (gold>= COST_UPGRADE_1) 
+				if (gold>= COST_UPGRADE_1*Scene.getSelectedTurretLvl()) 
 				{
 					Scene.upgadeTurret();
 					gold -= COST_UPGRADE_1;
+				}
+				else cdNoGold = 15;
+			} else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_2 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
+			{
+				if (gold>= COST_UPGRADE_2*Scene.getSelectedTurretLvl()) 
+				{
+					Scene.upgadeTurret();
+					gold -= COST_UPGRADE_2;
 				}
 				else cdNoGold = 15;
 			} 
@@ -302,7 +310,7 @@ void cGame::printUI()
 
 	printGameInfo();
 
-	if (Scene.GetMap()[Scene.getSelected()] == 9)
+	if (Scene.GetMap()[Scene.getSelected()] == 9 || Scene.GetMap()[Scene.getSelected()] == 8)
 	{
 		glTranslatef(-4.0f,0.0f,0.0f);
 		Scene.DrawUpgradePanel(&Data);
@@ -607,7 +615,7 @@ GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+1;
 			hits = -1;
 		} 
-		else if (posx >= -14.5 && posx <= 11.5 && posy >= -24.0 && posy <= -17.0){
+		else if (posx >= -14.5 && posx <= -11.5 && posy >= -24.0 && posy <= -17.0){
 			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+2;
 			hits = -1;
 		}

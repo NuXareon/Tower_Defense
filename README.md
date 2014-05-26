@@ -24,12 +24,15 @@ Setmana del 19:
 	- Fer mal als monstres (donar or, bla bla bla)
 	- Turret upgrade
 	- Evitar bloquejar cami amb torres
-	- Fer mapa gran
 	- Sincronitzacio Loop (glutGetTime abans i despres...)
 	- IA: racalcular tile desti quan acaba l'animacio
-	//
+	- Models monstre
+Setmana del 26:
+	- Fer mapa gran
 	- Canviar de level (i fer un parell de levels)
 	- Fer un parell de tipus de torres/monstres
-	- Models monstre
-	- Canviar textures
+		* Monstre Peta-torres (OP)
+		* Tank
+		* Torreta multi-dispar (falta descripcio + IA)
+	- Canviar textures?
 	- Ficar musica

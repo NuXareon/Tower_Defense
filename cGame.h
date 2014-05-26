@@ -20,6 +20,7 @@ using namespace std;
 #define COST_TURRET_1	100
 #define COST_TURRET_2	150
 #define COST_UPGRADE_1	150
+#define COST_UPGRADE_2	200
 #define CD_IA_M			16
 #define CD_MONSTER		10
 #define MONSTER_GOLD	30
