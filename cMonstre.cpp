@@ -142,7 +142,7 @@ int cMonstre::Direction(){
 int cMonstre::NextMov(int *map)
 {
 	dir;	// 1=R, 2=L, 3=Up, 4=Down
-	int *dist = BFS(map,pf,pos,false);
+	int *dist = BFS(map,pf,pos);
 	oldPos = pos;
 	int aux = pos;
 	int dmin = dist[pos];
@@ -213,11 +213,7 @@ int cMonstre::PosAdj(int *dist, int i)
 }
 void cMonstre::AI(int *map)
 {
-	bool b =false;
-	if(GetType()==2){
-		b=true;
-	}
-	int *dist = BFS(map,pf,pos,b);
+	int *dist = BFS(map,pf,pos);
 	oldPos = pos;
 	int aux = pos;
 	int dmin = dist[pos];
@@ -348,7 +344,7 @@ int cMonstre::MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,
 		glEndList();
 		return dl_monstre;*/
 }
-int* cMonstre::BFS(int *map, int pF,int pI, bool b){
+int* cMonstre::BFS(int *map, int pF,int pI){
 	int dist[SCENE_WIDTH * SCENE_DEPTH];
 	for(int i=0;i< SCENE_WIDTH * SCENE_DEPTH;++i){
 		dist[i]=SCENE_WIDTH * SCENE_DEPTH+1;
@@ -364,22 +360,30 @@ int* cMonstre::BFS(int *map, int pF,int pI, bool b){
 	while(!q.empty()){
 		int aux = q.front();
 		q.pop();
-		if(map[aux] == 0  && mapbool[aux] < 4){
+		int dt=0;
+		if(GetType()==2){
+			dt=9;
+		}
+		
+		if((map[aux] == 0  || map[aux]==dt)&& mapbool[aux] < 4){
 			mapbool[aux] += 1;
+			if(map[45]==9){
+				int zzz=0;
+			}
 			//en creu
-			if(map[aux+1]==0 && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
+			if((map[aux+1]==0 || map[aux+1]==dt) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
 				q.push(aux+1); 
 				if(dist[aux+1]>dist[aux]+1) dist[aux+1]=dist[aux]+1;
 			}
-			if(map[aux-1]==0 && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
+			if((map[aux-1]==0 || map[aux-1]==dt) && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
 				q.push(aux-1);
 				if(dist[aux-1]>dist[aux]+1)dist[aux-1]=dist[aux]+1;
 			}
-			if(map[aux+SCENE_WIDTH]==0 && aux+SCENE_WIDTH<64 ) {
+			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==dt) && aux+SCENE_WIDTH<64 ) {
 				q.push(aux+SCENE_WIDTH); 
 				if(dist[aux+SCENE_WIDTH]>dist[aux]+1)dist[aux+SCENE_WIDTH]=dist[aux]+1;
 			}
-			if(map[aux-SCENE_WIDTH]==0 && aux-SCENE_WIDTH>-1) {
+			if((map[aux-SCENE_WIDTH]==0 || map[aux-SCENE_WIDTH]==dt) && aux-SCENE_WIDTH>-1) {
 				q.push(aux-SCENE_WIDTH);
 				if(dist[aux-SCENE_WIDTH]>dist[aux]+1) dist[aux-SCENE_WIDTH]=dist[aux]+1;
 			}

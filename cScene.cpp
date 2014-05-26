@@ -229,7 +229,6 @@ void cScene::DrawShots(cData *Data)
 					glTexCoord2f(xf,yf); glVertex3f(TILE_SIZE/4, TILE_SIZE/4,  0);
 					glTexCoord2f(xo,yf); glVertex3f(0, TILE_SIZE/4,  0);
 				glEnd();
-				int a = 2;
 			} else
 			{
 				glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));

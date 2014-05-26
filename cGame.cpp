@@ -242,6 +242,7 @@ bool cGame::Process()
 	}
 	
 	//
+	int *map = Scene.GetMap();
 	std::map<int,cMonstre> monsters = Scene.GetMonsters();
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
@@ -257,6 +258,13 @@ bool cGame::Process()
 		if(z) {			// Per veure si funciona treure vida a un monstre. 
 			Scene.treuVida(0,1);
 			z = false;
+		}
+		if(map[iter->second.GetPositionAct()]==9 && iter->second.GetType()==2){ //destroy turret and monster
+			Scene.BorraMonstre(iter->first);
+			Scene.destroyTurret(iter->second.GetPositionAct());
+			Scene.updateMap(iter->second.GetPositionAct(),0);
+
+
 		}
 	}
 
@@ -678,7 +686,7 @@ int cGame::GetVida(){
 bool cGame::hihaCami(int* map,int pi,int pf)
 {
 	bool b;
-	int *dist =Monstre.BFS(map,pf,pi,false);
+	int *dist =Monstre.BFS(map,pf,pi);
 	int d = dist[pi];
 	if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH) b=false;
 	else b=true;
