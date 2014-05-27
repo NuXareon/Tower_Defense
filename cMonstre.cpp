@@ -66,7 +66,7 @@ void cMonstre::setMonsterDl(int dl)
 void cMonstre::treuVida(int i){
 	vida -= i;
 }
-void cMonstre::Draw(cData *Data,float inc,int *map)
+void cMonstre::Draw(cData *Data,float inc,int *map, int img)
 {	
 
 	int i,j,x,z;
@@ -85,7 +85,7 @@ void cMonstre::Draw(cData *Data,float inc,int *map)
 		if(dir==4)	glTranslatef(x,0,-z+inc);
 		//glTranslatef(x,0,-z);
 		ColorVida();
-		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_MONSTRE));
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(img));
 		animacio();
 		glCallList(dl_monstre2);
 	glPopMatrix();
@@ -363,29 +363,31 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 		int aux = q.front();
 		q.pop();
 		int dt=0;
-		if(GetType()==2){
+		int dt2=0;
+		if(GetType()==3){
 			dt=9;
+			dt2=8;
 		}
 		
-		if((map[aux] == 0  || map[aux]==dt)&& mapbool[aux] < 4){
+		if((map[aux] == 0  || map[aux]==dt || map[aux]==dt2)&& mapbool[aux] < 4){
 			mapbool[aux] += 1;
 			if(map[45]==9){
 				int zzz=0;
 			}
 			//en creu
-			if((map[aux+1]==0 || map[aux+1]==dt) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
+			if((map[aux+1]==0 || map[aux+1]==dt || map[aux+1]==dt2) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
 				q.push(aux+1); 
 				if(dist[aux+1]>dist[aux]+1) dist[aux+1]=dist[aux]+1;
 			}
-			if((map[aux-1]==0 || map[aux-1]==dt) && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
+			if((map[aux-1]==0 || map[aux-1]==dt || map[aux-1]==dt2) && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
 				q.push(aux-1);
 				if(dist[aux-1]>dist[aux]+1)dist[aux-1]=dist[aux]+1;
 			}
-			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==dt) && aux+SCENE_WIDTH<64 ) {
+			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==dt || map[aux+SCENE_WIDTH]==dt2) && aux+SCENE_WIDTH<64 ) {
 				q.push(aux+SCENE_WIDTH); 
 				if(dist[aux+SCENE_WIDTH]>dist[aux]+1)dist[aux+SCENE_WIDTH]=dist[aux]+1;
 			}
-			if((map[aux-SCENE_WIDTH]==0 || map[aux-SCENE_WIDTH]==dt) && aux-SCENE_WIDTH>-1) {
+			if((map[aux-SCENE_WIDTH]==0 || map[aux-SCENE_WIDTH]==dt || map[aux-SCENE_WIDTH]==dt2) && aux-SCENE_WIDTH>-1) {
 				q.push(aux-SCENE_WIDTH);
 				if(dist[aux-SCENE_WIDTH]>dist[aux]+1) dist[aux-SCENE_WIDTH]=dist[aux]+1;
 			}

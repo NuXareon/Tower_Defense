@@ -34,7 +34,7 @@ public:
 	int GetDir();
 	int GetNextPos();
 
-	void Draw(cData *Data,float inc,int *map);
+	void Draw(cData *Data,float inc,int *map, int img);
 	void ColorVida();
 	void Draw2(cData *Data, float inc,int *map);
 	int  Direction();

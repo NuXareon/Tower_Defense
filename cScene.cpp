@@ -269,8 +269,9 @@ void cScene::DrawMonsters(cData *Data, int n,float inc){
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->first <=n && !iter->second.getDeath())	{
-			if(iter->second.GetType()==1) iter->second.Draw(Data,inc,map);
-			if(iter->second.GetType()==2) iter->second.Draw2(Data,inc,map);
+			if(iter->second.GetType()==1) iter->second.Draw(Data,inc,map,IMG_MONSTRE);
+			if(iter->second.GetType()==2) iter->second.Draw(Data,inc,map,IMG_MONSTRE2);
+			if(iter->second.GetType()==3) iter->second.Draw(Data,inc,map,IMG_MONSTRE3);
 		}
 	}
 }
@@ -507,6 +508,7 @@ void cScene::AI(int *map, int n)
 		if(iter->first <=n && !iter->second.getDeath()){
 			if(iter->second.GetType()==1) iter->second.AI(map);
 			if(iter->second.GetType()==2) iter->second.AI(map);
+			if(iter->second.GetType()==3) iter->second.AI(map);
 		}
 	}
 }

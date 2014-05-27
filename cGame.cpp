@@ -57,6 +57,8 @@ bool cGame::Init()
 	if(!res) return false;
 	res = Data.LoadImage(IMG_MONSTRE2,"WarriorRobot.png",GL_RGBA);
 	if(!res) return false;
+	res = Data.LoadImage(IMG_MONSTRE3,"SimpleRobot.png",GL_RGBA);
+	if(!res) return false;
 	res = Data.LoadImage(IMG_COR,"cor.png",GL_RGBA);
 	if(!res) return false;
 	res = Data.LoadImage(IMG_EXPLOSION,"explosion512-2.png",GL_RGBA);
@@ -269,7 +271,7 @@ bool cGame::Process()
 			Scene.treuVida(0,1);
 			z = false;
 		}
-		if(map[iter->second.GetPositionAct()]==9 && iter->second.GetType()==2){ //destroy turret and monster
+		if((map[iter->second.GetPositionAct()]==9 || map[iter->second.GetPositionAct()]==8)&& iter->second.GetType()==3){ //destroy turret and monster
 			//Scene.BorraMonstre(iter->first);
 			Scene.DeathMonstre(iter->first);
 			Scene.destroyTurret(iter->second.GetPositionAct());
