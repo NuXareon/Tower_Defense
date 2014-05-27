@@ -46,6 +46,10 @@ public:
 	void render_string(void* font, const char* string);
 	void printPos();	
 	void printVida();
+	void incExpAnim();
+	int  getExpAnim();
+	bool getDeath();
+	void setDeath();
 
 	void animacio();
 
@@ -67,4 +71,6 @@ private:
 	int dir;
 	float vida;
 	int NextPos;
+	int expAnim;
+	bool death;
 };

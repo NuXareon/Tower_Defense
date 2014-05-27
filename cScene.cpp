@@ -201,6 +201,33 @@ void cScene::Draw(cData *Data)
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
+void cScene::DrawExplosion(cData *Data,int id){
+	int expAnim = monsters[id].getExpAnim();
+	int expAnimDiv = expAnim/5+1;
+	int expAnimMod = expAnim%5;
+	float xo,xf,yo,yf;
+	xo = expAnimMod*0.2;
+	yo = expAnimDiv*0.2;
+	xf = xo+0.2;
+	yf = yo-0.2;
+	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_EXPLOSION));
+	//glTranslatef(0.0f,1.4f,0.2f);
+	//glRotatef(-45,1.0f,0.0f,0.0f);
+	//glTranslatef(TILE_SIZE-2,TILE_SIZE-1,0.2f);
+	int pos = monsters[id].GetPositionAct();
+	int i,j,x,z;
+	i = pos/8;
+	j = pos%8;
+	x = j * TILE_SIZE;
+	z = i * TILE_SIZE;
+	glTranslatef(x,0,-z);
+	glBegin(GL_QUADS);
+		glTexCoord2f(xo,yo); glVertex3f(0, 0,  0);
+		glTexCoord2f(xf,yo); glVertex3f(TILE_SIZE, 0,  0);
+		glTexCoord2f(xf,yf); glVertex3f(TILE_SIZE, TILE_SIZE,  0);
+		glTexCoord2f(xo,yf); glVertex3f(0, TILE_SIZE,  0);
+	glEnd();
+}
 void cScene::DrawShots(cData *Data)
 {
 	glEnable(GL_TEXTURE_2D);
@@ -241,7 +268,7 @@ void cScene::DrawShots(cData *Data)
 void cScene::DrawMonsters(cData *Data, int n,float inc){
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->first <=n)	{
+		if(iter->first <=n && !iter->second.getDeath())	{
 			if(iter->second.GetType()==1) iter->second.Draw(Data,inc,map);
 			if(iter->second.GetType()==2) iter->second.Draw2(Data,inc,map);
 		}
@@ -477,7 +504,7 @@ void cScene::AI(int *map, int n)
 {
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
-		if(iter->first <=n){
+		if(iter->first <=n && !iter->second.getDeath()){
 			if(iter->second.GetType()==1) iter->second.AI(map);
 			if(iter->second.GetType()==2) iter->second.AI(map);
 		}
@@ -580,6 +607,20 @@ void cScene::treuVida(int id, int v)
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
 		if(iter->first ==id) iter->second.treuVida(v);
+	}
+}
+void cScene::DeathMonstre(int id)
+{
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
+		if(iter->first ==id) iter->second.setDeath();
+	}
+}
+void cScene::IncExpMonstre(int id)
+{
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
+		if(iter->first ==id) iter->second.incExpAnim();
 	}
 }
 int cScene::getStart()

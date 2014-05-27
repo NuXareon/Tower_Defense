@@ -12,6 +12,8 @@ cMonstre::cMonstre() {
 	distDown = -1;
 	id = -1;
 	vida = 10;
+	death = false;
+	expAnim=0;
 }
 cMonstre::~cMonstre(){}
 
@@ -497,4 +499,22 @@ int cMonstre::GetDir()
 int cMonstre::GetNextPos()
 {
 	return NextPos;
+}
+
+void cMonstre::incExpAnim()
+{
+	expAnim++;
+	//erase = (expAnim>=25);
+}
+int cMonstre::getExpAnim()
+{
+	return expAnim;
+}
+bool cMonstre::getDeath()
+{
+	return death;
+}
+void cMonstre::setDeath()
+{
+	death=true;
 }

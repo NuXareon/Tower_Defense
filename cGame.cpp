@@ -256,7 +256,9 @@ bool cGame::Process()
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->second.GetVida() <= 0){	// si el monstre no te vida borra
 			gold += MONSTER_GOLD;
-			Scene.BorraMonstre(iter->first);
+			//Scene.BorraMonstre(iter->first);
+			Scene.DeathMonstre(iter->first);
+
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
 			if(iter->second.GetType()==1) vidasP -=1;
@@ -268,11 +270,17 @@ bool cGame::Process()
 			z = false;
 		}
 		if(map[iter->second.GetPositionAct()]==9 && iter->second.GetType()==2){ //destroy turret and monster
-			Scene.BorraMonstre(iter->first);
+			//Scene.BorraMonstre(iter->first);
+			Scene.DeathMonstre(iter->first);
 			Scene.destroyTurret(iter->second.GetPositionAct());
 			Scene.updateMap(iter->second.GetPositionAct(),0);
+		}
 
-
+		if(iter->second.getDeath()==true){	// amimacio explosio monstre
+			if(iter->second.getExpAnim()==25){
+				Scene.BorraMonstre(iter->first);
+			}
+			else Scene.IncExpMonstre(iter->first);
 		}
 	}
 
@@ -804,7 +812,11 @@ void cGame::Render()
 		else if (Scene.GetMap()[Scene.getSelected()] == 8) printTurretInfo2(2); 
 	}
 
-
+	std::map<int,cMonstre> monsters = Scene.GetMonsters();
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
+		if(iter->second.getDeath()) Scene.DrawExplosion(&Data,iter->first);
+	}
 
 	glutSwapBuffers();
 }
