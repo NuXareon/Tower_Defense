@@ -15,7 +15,7 @@
 #define STATE_WALKRIGHT		1
 #define STATE_WALKUP		2
 #define STATE_WALKDOWN		3
-
+#define STATE_EXPLOSION		4
 
 #define STATE_DEATH			16
 #define STATE_DEATH_FOC		17

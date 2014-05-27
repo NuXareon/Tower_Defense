@@ -56,6 +56,8 @@ bool cGame::Init()
 	if(!res) return false;
 	res = Data.LoadImage(IMG_MONSTRE2,"WarriorRobot.png",GL_RGBA);
 	if(!res) return false;
+	res = Data.LoadImage(IMG_MONSTRE3,"SimpleRobot.png",GL_RGBA);
+	if(!res) return false;
 	res = Data.LoadImage(IMG_COR,"cor.png",GL_RGBA);
 	if(!res) return false;
 	res = Data.LoadImage(IMG_EXPLOSION,"explosion512-2.png",GL_RGBA);
@@ -254,11 +256,10 @@ bool cGame::Process()
 	std::map<int,cMonstre> monsters = Scene.GetMonsters();
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		if(iter->second.GetVida() <= 0){	// si el monstre no te vida borra
+		if(iter->second.GetVida() <= 0 && !iter->second.getDeath()){	// si el monstre no te vida borra
 			gold += MONSTER_GOLD;
-			Scene.BorraMonstre(iter->first);
-			if (iter->second.GetType() == 1) Scene.soundSystem->playSound(Scene.MonsterDeath1,0,false,&Scene.channel);
-			else if (iter->second.GetType() == 2) Scene.soundSystem->playSound(Scene.MonsterDeath2,0,false,&Scene.channel);
+			//Scene.BorraMonstre(iter->first);
+			Scene.DeathMonstre(iter->first);
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
 			if(iter->second.GetType()==1) vidasP -=1;
@@ -269,12 +270,18 @@ bool cGame::Process()
 			Scene.treuVida(0,1);
 			z = false;
 		}
-		if(map[iter->second.GetPositionAct()]==9 && iter->second.GetType()==2){ //destroy turret and monster
-			Scene.BorraMonstre(iter->first);
+		if((map[iter->second.GetPositionAct()]==9 || map[iter->second.GetPositionAct()]==8)&& iter->second.GetType()==3){ //destroy turret and monster
+			//Scene.BorraMonstre(iter->first);
+			Scene.DeathMonstre(iter->first);
 			Scene.destroyTurret(iter->second.GetPositionAct());
 			Scene.updateMap(iter->second.GetPositionAct(),0);
+		}
 
-
+		if(iter->second.getDeath()==true){	// amimacio explosio monstre
+			if(iter->second.getExpAnim()==25){
+				Scene.BorraMonstre(iter->first);
+			}
+			else Scene.IncExpMonstre(iter->first);
 		}
 	}
 
@@ -806,7 +813,11 @@ void cGame::Render()
 		else if (Scene.GetMap()[Scene.getSelected()] == 8) printTurretInfo2(2); 
 	}
 
-
+	std::map<int,cMonstre> monsters = Scene.GetMonsters();
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
+		if(iter->second.getDeath()) Scene.DrawExplosion(&Data,iter->first);
+	}
 
 	glutSwapBuffers();
 }

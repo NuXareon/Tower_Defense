@@ -34,6 +34,7 @@ public:
 	void DrawUpgradePanel(cData *Data);
 	void DrawContainer(cData *Data);
 	void DrawInfoPanel(cData *Data);
+	void DrawExplosion(cData *Data,int i);
 	void DrawShots(cData *Data);
 	int *GetMap();
 	int *GetMap2();
@@ -51,6 +52,8 @@ public:
 	std::map<int,cMonstre> GetMonsters();
 	void BorraMonstre(int id);
 	void treuVida(int id, int v);
+	void DeathMonstre(int id);
+	void IncExpMonstre(int id);
 	int getStart();
 	int getEnd();
 	int getNumMonstres();

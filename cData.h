@@ -14,9 +14,10 @@
 #define IMG_ROOF	4
 #define IMG_MONSTRE 5
 #define IMG_MONSTRE2 6
-#define IMG_COR		7
-#define IMG_EXPLOSION	8
-#define IMG_ARROW	9
+#define IMG_MONSTRE3 7
+#define IMG_COR		8
+#define IMG_EXPLOSION	9
+#define IMG_ARROW	10
 
 class cData
 {
