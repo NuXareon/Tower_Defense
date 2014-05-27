@@ -4,6 +4,7 @@
 #include "cData.h"
 #include "cBicho.h"
 #include "cMonstre.h"
+#include "fmod.hpp"
 
 #include <map>
 #include <stdio.h>

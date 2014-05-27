@@ -30,7 +30,6 @@ bool cGame::Init()
 	pause = false;
 	cdBadPos = cdNoGold = 0;
 
-
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glMatrixMode(GL_PROJECTION);
@@ -148,20 +147,21 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 				}
 			}
 			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
+			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+2) cdNoGold = 15;
 			else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
 				if (gold>= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1)) 
-				{
-					Scene.upgadeTurret();
+				{					
 					gold -= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1);
+					Scene.upgadeTurret();
 				}
 				else cdNoGold = 15;
 			} else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_2 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
-				if (gold>= COST_UPGRADE_2+50*(Scene.getSelectedTurretLvl()-1)) 
+				if (gold>= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1)) 
 				{
-					Scene.upgadeTurret();
 					gold -= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1);
+					Scene.upgadeTurret();
 				}
 				else cdNoGold = 15;
 			} 
@@ -257,6 +257,8 @@ bool cGame::Process()
 		if(iter->second.GetVida() <= 0){	// si el monstre no te vida borra
 			gold += MONSTER_GOLD;
 			Scene.BorraMonstre(iter->first);
+			if (iter->second.GetType() == 1) Scene.soundSystem->playSound(Scene.MonsterDeath1,0,false,&Scene.channel);
+			else if (iter->second.GetType() == 2) Scene.soundSystem->playSound(Scene.MonsterDeath2,0,false,&Scene.channel);
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
 			if(iter->second.GetType()==1) vidasP -=1;
@@ -466,16 +468,16 @@ void cGame::printTurretInfo(int t)
 	if (t == 1) 
 	{
 		_itoa_s(COST_TURRET_1,buffg,10 );
-		_itoa_s(2+1,buffd,10 );
-		_gcvt(2.07+0.124,3,buffas);
+		_itoa_s(3+1,buffd,10 );
+		_gcvt(1.035+0.124,3,buffas);
 		_itoa_s(3,buffr,10 );
 		aoe = "Single-target";
 	}
 	else if (t == 2) 
 	{
 		_itoa_s(COST_TURRET_2,buffg,10 );
-		_itoa_s(3+1,buffd,10 );
-		_gcvt(1.304+0.124,4,buffas);
+		_itoa_s(5+1,buffd,10 );
+		_gcvt(0.652+0.124,4,buffas);
 		_itoa_s(4,buffr,10 );
 		aoe = "Multi-target";
 	}
@@ -535,12 +537,12 @@ void cGame::printTurretInfo2(int t)
 	_itoa_s(lvl,bufflvl,10 );
 	if (t == 1)
 	{
-		_itoa_s(2+lvl,buffd,10 );
-		_gcvt(2.07+0.124*lvl,3,buffas);
+		_itoa_s(3+lvl,buffd,10 );
+		_gcvt(1.035+0.124*lvl,3,buffas);
 	} else if (t == 2)
 	{
-		_itoa_s(3+lvl,buffd,10 );
-		_gcvt(1.304+0.124*lvl,3,buffas);
+		_itoa_s(5+lvl,buffd,10 );
+		_gcvt(0.652+0.124*lvl,3,buffas);
 	}
 	char *s[]={	"Turret type 1",
 				"Lvl: ", bufflvl,

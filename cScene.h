@@ -4,6 +4,7 @@
 #include "cMonstre.h"
 #include "cTurret.h"
 #include "cShot.h"
+#include "fmod.hpp"
 #include <vector>
 #include <iostream>
 #include <map>
@@ -58,8 +59,13 @@ public:
 	std::map<int,cTurret> GetTowers();
 
 	int mouseOverTile;
-	
-	
+
+	FMOD::System	*soundSystem;
+	FMOD::Sound		*TowerShot1;
+	FMOD::Sound		*TowerShot2;
+	FMOD::Sound		*MonsterDeath1;
+	FMOD::Sound		*MonsterDeath2;
+	FMOD::Channel	*channel;
 
 private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);
@@ -69,6 +75,7 @@ private:
 	void printTurret(int r, int t);
 	void MakeShotDL(float w, float h, float d);
 	void addShot(float x, float y, float z, int target, int damage);
+	void InitSoundSystem();
 	int dl_cube;
 	int dl_floor;
 	int dl_turret;
@@ -83,5 +90,4 @@ private:
 	std::vector<cShot> shots;				//vector de dispars
 	int numMonstres;
 	int start,end;
-	
 };

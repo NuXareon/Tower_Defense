@@ -14,6 +14,19 @@ void cScene::Init()
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 	MakeTurretDL2((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 	MakeShotDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
+	InitSoundSystem();
+}
+void cScene::InitSoundSystem()
+{
+	// FMOD sound API init
+	FMOD::System_Create(&soundSystem);
+
+	soundSystem->init(512, FMOD_INIT_NORMAL, 0);
+
+	soundSystem->createSound("audio\\Tower_Shot1.wav",FMOD_DEFAULT,0,&TowerShot1);
+	soundSystem->createSound("audio\\Tower_Shot2.wav",FMOD_DEFAULT,0,&TowerShot2);
+	soundSystem->createSound("audio\\Monster_Death1.wav",FMOD_DEFAULT,0,&MonsterDeath1);
+	soundSystem->createSound("audio\\Monster_Death2.wav",FMOD_DEFAULT,0,&MonsterDeath2);
 }
 void cScene::updateMap(int pos, int value)
 {
@@ -499,7 +512,11 @@ void cScene::turretLogic(float inc)
 			{
 				addShot(x,y,z,target[i],damage);
 			}
-
+			if (!target.empty())
+			{
+				if (iter2->second.getType() == 1) soundSystem->playSound(TowerShot2,0,false,&channel);
+				else if (iter2->second.getType() == 2) soundSystem->playSound(TowerShot1,0,false,&channel);
+			}
 		}
 	}
 }

@@ -16,14 +16,14 @@ void cTurret::Init(int t)
 		cost = 100;
 		attackCd = 0;
 		range = 3;
-		damage = 2;
+		damage = 3;
 	}
 	else if (type == 2)
 	{
 		cost = 150;
 		attackCd = 0;
 		range = 4;
-		damage = 3;
+		damage = 5;
 	}
 }
 
@@ -65,8 +65,8 @@ bool cTurret::shootTarget(int pos, int w)
 	if (--attackCd <= 0)
 	{
 		int baseCd = 60;
-		if (type == 1) baseCd = 15;
-		else if (type == 2) baseCd = 25;
+		if (type == 1) baseCd = 30;
+		else if (type == 2) baseCd = 50;
 		attackCd = baseCd-2*lvl;
 		return true;
 	}
