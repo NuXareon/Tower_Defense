@@ -103,6 +103,8 @@ void cGame::ReadKeyboard(unsigned char key, int x, int y, bool press)
 	if (key == GLUT_KEY_F1 && !press) releaseF1 = true;
 	if (key == 't' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+1);
 	if (key == 'y' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+2);
+	if (key == 'm' && press) Scene.pauseMusic();
+	if (key == 's' && press) Scene.pauseSound();
 	if (key == 'p' && press) pause=!pause;
 }
 

@@ -60,6 +60,8 @@ public:
 	void upgadeTurret();
 	int getSelectedTurretLvl();
 	std::map<int,cTurret> GetTowers();
+	void pauseMusic();
+	void pauseSound();
 
 	int mouseOverTile;
 
@@ -68,8 +70,11 @@ public:
 	FMOD::Sound		*TowerShot2;
 	FMOD::Sound		*MonsterDeath1;
 	FMOD::Sound		*MonsterDeath2;
+	FMOD::Sound		*MonsterDeath3;
+	FMOD::Sound		*Background;
 	FMOD::Sound		*TurretExplosion;
 	FMOD::Channel	*channel;
+	FMOD::Channel	*channelBackground;
 
 private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);
@@ -94,4 +99,5 @@ private:
 	std::vector<cShot> shots;				//vector de dispars
 	int numMonstres;
 	int start,end;
+	bool soundPaused;
 };

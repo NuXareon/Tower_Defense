@@ -9,12 +9,14 @@ void cScene::Init()
 	selected = -1;
 	mouseOverTile = -1;
 	numMonstres = 0;
+	soundPaused = false;
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 	MakeTurretDL2((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 	MakeShotDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 	InitSoundSystem();
+	soundSystem->playSound(Background,0,false,&channelBackground);
 }
 void cScene::InitSoundSystem()
 {
@@ -27,7 +29,9 @@ void cScene::InitSoundSystem()
 	soundSystem->createSound("audio\\Tower_Shot2.wav",FMOD_DEFAULT,0,&TowerShot2);
 	soundSystem->createSound("audio\\Monster_Death1.wav",FMOD_DEFAULT,0,&MonsterDeath1);
 	soundSystem->createSound("audio\\Monster_Death2.wav",FMOD_DEFAULT,0,&MonsterDeath2);
+	soundSystem->createSound("audio\\Monster_Death3.wav",FMOD_DEFAULT,0,&MonsterDeath3);
 	soundSystem->createSound("audio\\Explosio1.wav",FMOD_DEFAULT,0,&TurretExplosion);
+	soundSystem->createSound("audio\\Background.wav",FMOD_LOOP_NORMAL,0,&Background);
 }
 void cScene::updateMap(int pos, int value)
 {
@@ -544,8 +548,12 @@ void cScene::turretLogic(float inc)
 			}
 			if (!target.empty())
 			{
-				if (iter2->second.getType() == 1) soundSystem->playSound(TowerShot2,0,false,&channel);
-				else if (iter2->second.getType() == 2) soundSystem->playSound(TowerShot1,0,false,&channel);
+				if(!soundPaused)
+				{
+					if (iter2->second.getType() == 1) soundSystem->playSound(TowerShot2,0,false,&channel);
+					else if (iter2->second.getType() == 2) soundSystem->playSound(TowerShot1,0,false,&channel);
+					soundSystem->update();
+				}
 			}
 		}
 	}
@@ -612,7 +620,11 @@ void cScene::addTurret(int type, int pos)
 }
 void cScene::destroyTurret(int pos)
 {
-	soundSystem->playSound(TurretExplosion,0,false,&channel);
+	if (!soundPaused)
+	{
+		soundSystem->playSound(TurretExplosion,0,false,&channel);
+		soundSystem->update();
+	}
 	turrets.erase(pos);
 }
 
@@ -636,8 +648,13 @@ void cScene::DeathMonstre(int id)
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
 		if(iter->first ==id) 
 		{
-			if (iter->second.GetType() == 1) soundSystem->playSound(MonsterDeath1,0,false,&channel);
-			else if (iter->second.GetType() == 2) soundSystem->playSound(MonsterDeath2,0,false,&channel);
+			if (!soundPaused)
+			{
+				if (iter->second.GetType() == 1) soundSystem->playSound(MonsterDeath1,0,false,&channel);
+				else if (iter->second.GetType() == 2) soundSystem->playSound(MonsterDeath2,0,false,&channel);
+				else if (iter->second.GetType() == 3) soundSystem->playSound(MonsterDeath3,0,false,&channel);
+				soundSystem->update();
+			}
 			iter->second.setDeath();
 		}
 	}
@@ -672,4 +689,18 @@ int cScene::getSelectedTurretLvl()
 map<int,cTurret> cScene::GetTowers()
 {
 	return turrets;
+}
+void cScene::pauseMusic()
+{
+	bool paused;
+	channelBackground->getPaused(&paused);
+	channelBackground->setPaused(!paused);
+	soundSystem->update();
+}
+void cScene::pauseSound()
+{
+	channel->getMute(&soundPaused);
+	soundPaused=!soundPaused;
+	channel->setMute(soundPaused);
+	soundSystem->update();
 }
