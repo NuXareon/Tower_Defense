@@ -68,6 +68,7 @@ public:
 	FMOD::Sound		*TowerShot2;
 	FMOD::Sound		*MonsterDeath1;
 	FMOD::Sound		*MonsterDeath2;
+	FMOD::Sound		*TurretExplosion;
 	FMOD::Channel	*channel;
 
 private:

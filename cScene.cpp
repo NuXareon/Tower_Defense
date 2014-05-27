@@ -27,6 +27,7 @@ void cScene::InitSoundSystem()
 	soundSystem->createSound("audio\\Tower_Shot2.wav",FMOD_DEFAULT,0,&TowerShot2);
 	soundSystem->createSound("audio\\Monster_Death1.wav",FMOD_DEFAULT,0,&MonsterDeath1);
 	soundSystem->createSound("audio\\Monster_Death2.wav",FMOD_DEFAULT,0,&MonsterDeath2);
+	soundSystem->createSound("audio\\Explosio1.wav",FMOD_DEFAULT,0,&TurretExplosion);
 }
 void cScene::updateMap(int pos, int value)
 {
@@ -611,6 +612,7 @@ void cScene::addTurret(int type, int pos)
 }
 void cScene::destroyTurret(int pos)
 {
+	soundSystem->playSound(TurretExplosion,0,false,&channel);
 	turrets.erase(pos);
 }
 
