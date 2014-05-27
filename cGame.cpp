@@ -150,18 +150,18 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
 			else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
-				if (gold>= COST_UPGRADE_1*Scene.getSelectedTurretLvl()) 
+				if (gold>= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1)) 
 				{
 					Scene.upgadeTurret();
-					gold -= COST_UPGRADE_1;
+					gold -= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1);
 				}
 				else cdNoGold = 15;
 			} else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_2 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
-				if (gold>= COST_UPGRADE_2*Scene.getSelectedTurretLvl()) 
+				if (gold>= COST_UPGRADE_2+50*(Scene.getSelectedTurretLvl()-1)) 
 				{
 					Scene.upgadeTurret();
-					gold -= COST_UPGRADE_2;
+					gold -= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1);
 				}
 				else cdNoGold = 15;
 			} 
@@ -331,11 +331,15 @@ void cGame::printGameInfo()
 	glPushMatrix();
 	glLoadIdentity();
 
-	char buffg[10], buffl[10];
+	char buffg[10], buffl[10], bufft[10], buffm[10];
 	_itoa_s(gold,buffg,10 );
 	_itoa_s(vidasP,buffl,10 );
+	_itoa_s(Scene.GetTowers().size(),bufft,10 );
+	_itoa_s(Scene.GetMonsters().size(),buffm,10 );
 	char *s[]={	"Gold: ", buffg,
-				"Life: ", buffl
+				"Life: ", buffl,
+				"Monters: ", buffm,
+				"Towers: ", bufft
 				};
 
 	glColor3f(1.0f,1.0f,1.0f);
@@ -344,13 +348,23 @@ void cGame::printGameInfo()
 		glDisable(GL_TEXTURE_2D);
 			glRasterPos2f(0.45f,-0.75f);
 			render_string(GLUT_BITMAP_9_BY_15,s[0]);
-			glRasterPos2f(0.60f,-0.75f);
+			glRasterPos2f(0.65f,-0.75f);
 			render_string(GLUT_BITMAP_9_BY_15,s[1]);
 
 			glRasterPos2f(0.45f,-0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[2]);
-			glRasterPos2f(0.60f,-0.80f);
+			glRasterPos2f(0.65f,-0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[3]);
+
+			glRasterPos2f(0.45f,-0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[4]);
+			glRasterPos2f(0.65f,-0.85f);
+			render_string(GLUT_BITMAP_9_BY_15,s[5]);
+
+			glRasterPos2f(0.45f,-0.90f);
+			render_string(GLUT_BITMAP_9_BY_15,s[6]);
+			glRasterPos2f(0.65f,-0.90f);
+			render_string(GLUT_BITMAP_9_BY_15,s[7]);
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 
@@ -437,7 +451,7 @@ void cGame::printSelectedTile()
 	glPopMatrix();
 }
 
-void cGame::printTurretInfo()
+void cGame::printTurretInfo(int t)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -447,23 +461,56 @@ void cGame::printTurretInfo()
 	glPushMatrix();
 	glLoadIdentity();
 
-	char buffg[10];
-	_itoa_s(COST_TURRET_1,buffg,10 );
+	char buffg[10],buffd[10], buffas[10], buffr[10];
+	char* aoe;
+	if (t == 1) 
+	{
+		_itoa_s(COST_TURRET_1,buffg,10 );
+		_itoa_s(2+1,buffd,10 );
+		_gcvt(2.07+0.124,3,buffas);
+		_itoa_s(3,buffr,10 );
+		aoe = "Single-target";
+	}
+	else if (t == 2) 
+	{
+		_itoa_s(COST_TURRET_2,buffg,10 );
+		_itoa_s(3+1,buffd,10 );
+		_gcvt(1.304+0.124,4,buffas);
+		_itoa_s(4,buffr,10 );
+		aoe = "Multi-target";
+	}
 	char *s[]={	"Turret type 1",
-				"Cost: ", buffg
+				"Cost: ", buffg,
+				aoe,
+				"Range :", buffr,
+				"Damage: ", buffd,
+				"Attack Speed: ", buffas
 				};
 
 	glColor3f(1.0f,1.0f,1.0f);
 
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_TEXTURE_2D);
-			glRasterPos2f(-0.95f,0.85f);
+			glRasterPos2f(-0.95f,0.90f);
 			render_string(GLUT_BITMAP_9_BY_15,s[0]);
-			glRasterPos2f(-0.95f,0.75f);
+			glRasterPos2f(-0.95f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[1]);
-			glRasterPos2f(-0.80f,0.75f);
+			glRasterPos2f(-0.78f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[2]);
-
+			glRasterPos2f(-0.95f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[3]);
+			glRasterPos2f(-0.95f,0.70f);
+			render_string(GLUT_BITMAP_9_BY_15,s[4]);
+			glRasterPos2f(-0.78f,0.70f);
+			render_string(GLUT_BITMAP_9_BY_15,s[5]);
+			glRasterPos2f(-0.95f,0.65f);
+			render_string(GLUT_BITMAP_9_BY_15,s[6]);
+			glRasterPos2f(-0.78f,0.65f);
+			render_string(GLUT_BITMAP_9_BY_15,s[7]);
+			glRasterPos2f(-0.95f,0.60f);
+			render_string(GLUT_BITMAP_9_BY_15,s[8]);
+			glRasterPos2f(-0.95f,0.55f);
+			render_string(GLUT_BITMAP_9_BY_15,s[9]);
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 
@@ -473,7 +520,7 @@ void cGame::printTurretInfo()
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 }
-void cGame::printTurretInfo2()
+void cGame::printTurretInfo2(int t)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -484,23 +531,95 @@ void cGame::printTurretInfo2()
 	glLoadIdentity();
 
 	int lvl = Scene.getSelectedTurretLvl();
-	char bufflvl[10];
+	char bufflvl[10],buffd[10],buffas[10];
 	_itoa_s(lvl,bufflvl,10 );
+	if (t == 1)
+	{
+		_itoa_s(2+lvl,buffd,10 );
+		_gcvt(2.07+0.124*lvl,3,buffas);
+	} else if (t == 2)
+	{
+		_itoa_s(3+lvl,buffd,10 );
+		_gcvt(1.304+0.124*lvl,3,buffas);
+	}
 	char *s[]={	"Turret type 1",
-				"Lvl: ", bufflvl
+				"Lvl: ", bufflvl,
+				"Damage: ", buffd,
+				"Attack Speed: ", buffas
 				};
 
 	glColor3f(1.0f,1.0f,1.0f);
 
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_TEXTURE_2D);
-			glRasterPos2f(-0.95f,0.85f);
+			glRasterPos2f(-0.95f,0.90f);
 			render_string(GLUT_BITMAP_9_BY_15,s[0]);
-			glRasterPos2f(-0.95f,0.75f);
+			glRasterPos2f(-0.95f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[1]);
-			glRasterPos2f(-0.80f,0.75f);
+			glRasterPos2f(-0.78f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[2]);
+			glRasterPos2f(-0.95f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[3]);
+			glRasterPos2f(-0.78f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[4]);
+			glRasterPos2f(-0.95f,0.70f);
+			render_string(GLUT_BITMAP_9_BY_15,s[5]);
+			glRasterPos2f(-0.95f,0.65f);
+			render_string(GLUT_BITMAP_9_BY_15,s[6]);
 
+		glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+void cGame::printUpgradeInfo()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	int lvl = Scene.getSelectedTurretLvl();
+	char bufflvl[10],bufflvlp[10],buffup[10];
+	_itoa_s(lvl,bufflvl,10 );
+	_itoa_s(lvl+1,bufflvlp,10 );
+	_itoa_s(COST_UPGRADE_1+50*(lvl-1),buffup,10 );
+	char *s[]={	"Upgrade Lvl",
+				bufflvl, " -> ", bufflvlp,
+				"Cost: ", buffup,
+				"Damage: +1",
+				"Attack Speed:", "+0.124"
+				};
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+			glRasterPos2f(-0.95f,0.90f);
+			render_string(GLUT_BITMAP_9_BY_15,s[0]);
+			glRasterPos2f(-0.95f,0.80f);
+			render_string(GLUT_BITMAP_9_BY_15,s[1]);
+			glRasterPos2f(-0.90f,0.80f);
+			render_string(GLUT_BITMAP_9_BY_15,s[2]);
+			glRasterPos2f(-0.80f,0.80f);
+			render_string(GLUT_BITMAP_9_BY_15,s[3]);
+			glRasterPos2f(-0.95f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[4]);
+			glRasterPos2f(-0.83f,0.75f);
+			render_string(GLUT_BITMAP_9_BY_15,s[5]);
+			glRasterPos2f(-0.95f,0.70f);
+			render_string(GLUT_BITMAP_9_BY_15,s[6]);
+			glRasterPos2f(-0.95f,0.65f);
+			render_string(GLUT_BITMAP_9_BY_15,s[7]);
+			glRasterPos2f(-0.95f,0.60f);
+			render_string(GLUT_BITMAP_9_BY_15,s[8]);
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 
@@ -678,8 +797,11 @@ void cGame::Render()
 			printTurretBadPos();
 			--cdBadPos;
 		} 
-		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo();
-		else if (Scene.GetMap()[Scene.getSelected()] == 9) printTurretInfo2(); 
+		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+10 && (Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 || Scene.GetMap()[Scene.getSelected()] == TOWER_ID_2)) printUpgradeInfo();
+		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo(1);
+		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+2 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+2) printTurretInfo(2);
+		else if (Scene.GetMap()[Scene.getSelected()] == 9) printTurretInfo2(1); 
+		else if (Scene.GetMap()[Scene.getSelected()] == 8) printTurretInfo2(2); 
 	}
 
 

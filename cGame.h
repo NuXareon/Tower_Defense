@@ -73,8 +73,9 @@ private:
 	int cdSpawnM;
 
 	void printGameInfo();
-	void printTurretInfo();
-	void printTurretInfo2();
+	void printTurretInfo(int t);
+	void printTurretInfo2(int t);
+	void printUpgradeInfo();
 	void printTurretBadPos();
 	void printTurretNoGold();
 

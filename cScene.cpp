@@ -490,24 +490,16 @@ void cScene::turretLogic(float inc)
 		bool shoot = iter2->second.AI(monsters, iter2->first, SCENE_WIDTH, TILE_SIZE, inc);	// Assigna un target i la variable Rotation = angle amb el target, per cada torreta, retorna true si pot disparar.
 		if (shoot) 
 		{
-			if (iter2->second.getType() == 1)
+			float x = (iter2->first%SCENE_WIDTH)*TILE_SIZE;
+			float y = 0.3*TILE_SIZE;
+			float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
+			vector<int> target = iter2->second.getTarget();
+			int damage = iter2->second.getDamage();
+			for (unsigned int i = 0; i < target.size(); ++i)
 			{
-				float x = (iter2->first%SCENE_WIDTH)*TILE_SIZE;
-				float y = 0.3*TILE_SIZE;
-				float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
-				int target = iter2->second.getTarget();
-				int damage = iter2->second.getDamage();
-				addShot(x,y,z,target,damage);
+				addShot(x,y,z,target[i],damage);
 			}
-			else if (iter2->second.getType() == 2)
-			{
-				float x = (iter2->first%SCENE_WIDTH)*TILE_SIZE;
-				float y = 0.3*TILE_SIZE;
-				float z = -(iter2->first/SCENE_WIDTH*TILE_SIZE);
-				int target = iter2->second.getTarget();
-				int damage = iter2->second.getDamage();
-				addShot(x,y,z,target,damage);
-			}
+
 		}
 	}
 }
@@ -609,4 +601,8 @@ void cScene::upgadeTurret()
 int cScene::getSelectedTurretLvl()
 {
 	return turrets[selected].getLvl();
+}
+map<int,cTurret> cScene::GetTowers()
+{
+	return turrets;
 }

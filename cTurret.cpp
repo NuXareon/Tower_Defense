@@ -8,15 +8,23 @@ cTurret::~cTurret(void){}
 void cTurret::Init(int t)
 {
 	type = t;
-	// switch type
-	cost = 100;
 	lvl = 1;
 	rotationY = 0;
-	target = -1;
 	distTarget = -1;
-	attackCd = 0;
-	range = 3;
-	damage=1;
+	if (type == 1)
+	{
+		cost = 100;
+		attackCd = 0;
+		range = 3;
+		damage = 2;
+	}
+	else if (type == 2)
+	{
+		cost = 150;
+		attackCd = 0;
+		range = 4;
+		damage = 3;
+	}
 }
 
 int cTurret::getRotationY()
@@ -32,21 +40,22 @@ void cTurret::adquireTarget(map<int,cMonstre> monsters, int pos, int w, int s, f
 {
 	int x = pos%w;
 	int z = pos/w;
-	target = -1;
+	target.clear();
 	distTarget = -1;
 	rotationY = 0;
-	if (monsters.size() > 0)
+	if (!monsters.empty())
 	{
 		std::map<int,cMonstre>::iterator iter;
 		for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
 			int mpos = iter->second.GetPositionAct();
-			updateTarget(mpos,x,z,w,iter->first);
+			if (type == 1) updateTarget(mpos,x,z,w,iter->first);
+			else if (type == 2) updateTarget2(mpos,x,z,w,iter->first);
 		}
 
-		if (distTarget != -1) 
+		if (distTarget != -1 && !target.empty()) 
 		{
-			int mpos = monsters[target].GetPositionAct();
-			int dir = monsters[target].GetDir();
+			int mpos = monsters[target[0]].GetPositionAct();
+			int dir = monsters[target[0]].GetDir();
 			updateRotationY(mpos,x,z,w,s,inc,dir);
 		}
 	}
@@ -55,7 +64,10 @@ bool cTurret::shootTarget(int pos, int w)
 {
 	if (--attackCd <= 0)
 	{
-		attackCd = 15-2*lvl;
+		int baseCd = 60;
+		if (type == 1) baseCd = 15;
+		else if (type == 2) baseCd = 25;
+		attackCd = baseCd-2*lvl;
 		return true;
 	}
 	return false;
@@ -72,8 +84,19 @@ void cTurret::updateTarget(int mpos, int x, int z, int w, int targetId)
 	int dist = euclideanDist(x,z,xm,zm);
 	if (dist < range && (dist < distTarget || distTarget == -1))
 	{
-		target = targetId;
+		target.clear();
+		target.push_back(targetId);
 		distTarget = dist;
+	}
+}
+void cTurret::updateTarget2(int mpos, int x, int z, int w, int targetId)
+{
+	int xm = mpos%w;
+	int zm = mpos/w;
+	int dist = euclideanDist(x,z,xm,zm);
+	if (dist < range)
+	{
+		target.push_back(targetId);
 	}
 }
 void cTurret::updateRotationY(int mpos, int x, int z, int w, int s, float inc, int dir)
@@ -96,13 +119,13 @@ void cTurret::updateRotationY(int mpos, int x, int z, int w, int s, float inc, i
 	rotationY = angle*180/M_PI;
 	if (xm > 0) rotationY = -rotationY;
 }
-int cTurret::getTarget()
+vector<int> cTurret::getTarget()
 {
 	return target;
 }
 int cTurret::getDamage()
 {
-	return damage*lvl;
+	return damage+lvl;
 }
 void cTurret::upgrade()
 {

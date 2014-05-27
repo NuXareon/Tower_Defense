@@ -55,6 +55,7 @@ public:
 	int getNumMonstres();
 	void upgadeTurret();
 	int getSelectedTurretLvl();
+	std::map<int,cTurret> GetTowers();
 
 	int mouseOverTile;
 	

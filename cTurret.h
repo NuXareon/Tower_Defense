@@ -12,7 +12,7 @@ public:
 	virtual ~cTurret(void);
 	void Init(int type);
 	int getRotationY();
-	int getTarget();
+	vector<int> getTarget();
 	bool AI(map<int,cMonstre> monsters, int pos, int w, int s, float inc);
 	int getDamage();
 	void upgrade();
@@ -25,7 +25,7 @@ private:
 	int cost;
 	int lvl;
 	int damage;
-	int target;
+	vector<int> target;
 	int distTarget;
 	int attackCd;
 	int rotationY;
@@ -34,5 +34,6 @@ private:
 	bool shootTarget(int pos, int w);
 	int euclideanDist(int x1, int y1, int x2, int y2);
 	void updateTarget(int mpos, int x, int z, int w, int targetId);
+	void updateTarget2(int mpos, int x, int z, int w, int targetId);
 	void updateRotationY(int mpos, int x, int z, int w, int s, float inc, int dir);
 };
