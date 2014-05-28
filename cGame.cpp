@@ -29,6 +29,7 @@ bool cGame::Init()
 	inc = 0;
 	pause = false;
 	cdBadPos = cdNoGold = 0;
+	lvl=2;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -47,6 +48,8 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_WALL2,"wall2.png",GL_RGBA);
 	if(!res) return false;
 	res = Data.LoadImage(IMG_WALL3,"wall3.png",GL_RGBA);
+	if(!res) return false;
+	res = Data.LoadImage(IMG_FINISH,"Finish256.png",GL_RGBA);
 	if(!res) return false;
 	res = Data.LoadImage(IMG_FLOOR,"floor.png",GL_RGBA);
 	if(!res) return false;
@@ -67,9 +70,9 @@ bool cGame::Init()
 	Scene.Init();
 	int dl_mon = Monstre.Init();
 	Scene.setDlMonstre(dl_mon);
-	res = Scene.LoadLevel(3);
+	res = Scene.LoadLevel(lvl);
 	if(!res) return false;
-	res = Scene.LoadMonsters(2);
+	res = Scene.LoadMonsters(lvl);
 	if(!res) return false;
 
 	return res;
@@ -285,6 +288,15 @@ bool cGame::Process()
 			}
 			else Scene.IncExpMonstre(iter->first);
 		}
+	}
+
+	//Panasr de nivell
+	if(Scene.GetMonsters().size() == 0){
+		++lvl;
+		Scene.LoadLevel(lvl);
+		Scene.LoadMonsters(lvl);
+		if(gold<300) gold = 300;
+		Scene.destroyAllTurret();
 	}
 
 	Scene.turretLogic(inc);

@@ -154,6 +154,7 @@ void cScene::Draw(cData *Data)
 					case 0:	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
 							glCallList(dl_floor);
 							break;
+					
 					// Walls
 					case 1: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL1));
 							glCallList(dl_cube);
@@ -163,6 +164,9 @@ void cScene::Draw(cData *Data)
 							break;
 					case 3: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
 							glCallList(dl_cube);
+							break;
+					case 5:	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FINISH));
+							glCallList(dl_floor);
 							break;
 					// Turret
 					case 8: tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
@@ -617,7 +621,6 @@ void cScene::addTurret(int type, int pos)
 	cTurret tt = *t;
 
 	tt.Init(type);
-
 	turrets[pos] = tt;
 }
 void cScene::destroyTurret(int pos)
@@ -628,6 +631,19 @@ void cScene::destroyTurret(int pos)
 		soundSystem->update();
 	}
 	turrets.erase(pos);
+}
+void cScene::destroyAllTurret()
+{
+	std::map<int,int> vec;
+	std::map<int,cTurret>::iterator iter;
+	std::map<int,int>::iterator iter2;
+	int i=0;
+	for(iter=turrets.begin(); iter != turrets.end(); ++iter){	
+		vec[i]=iter->first;
+		++i;
+	}
+	for(iter2=vec.begin(); iter2 != vec.end(); ++iter2) turrets.erase(iter2->second);
+
 }
 
 std::map<int,cMonstre> cScene::GetMonsters()

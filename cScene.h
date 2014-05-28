@@ -49,6 +49,7 @@ public:
 	void shotLogic(float inc);
 	void addTurret(int type, int pos);
 	void destroyTurret(int pos);
+	void destroyAllTurret();
 	std::map<int,cMonstre> GetMonsters();
 	void BorraMonstre(int id);
 	void treuVida(int id, int v);

@@ -85,4 +85,5 @@ private:
 	bool pause;
 	int cdBadPos;
 	int cdNoGold;
+	int lvl;
 };

@@ -294,7 +294,7 @@ void cMonstre::animacio(){
 	float xo,yo,xf,yf;
 	int state;
 	state = GetState();
-	state = STATE_WALKDOWN;
+	//state = STATE_WALKDOWN;
 	switch(state)
 	{
 		case STATE_WALKDOWN:	xo = 0.0f + (GetFrame()*0.25f);yo = 0.25f;
@@ -354,22 +354,24 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 			dt2=8;
 		}
 		
-		if((map[aux] == 0  || map[aux]==dt || map[aux]==dt2)&& mapbool[aux] < 4){
+		if((map[aux] == 0 || map[aux]==5 || map[aux]==dt || map[aux]==dt2)&& mapbool[aux] < 4){
 			mapbool[aux] += 1;
 			//en creu
-			if((map[aux+1]==0 || map[aux+1]==dt || map[aux+1]==dt2) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
+			if((map[aux+1]==0 || map[aux+1]==5 || map[aux+1]==dt || map[aux+1]==dt2) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
 				q.push(aux+1); 
 				if(dist[aux+1]>dist[aux]+1) dist[aux+1]=dist[aux]+1;
 			}
-			if((map[aux-1]==0 || map[aux-1]==dt || map[aux-1]==dt2) && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
+			if((map[aux-1]==0 || map[aux-1]==5 || map[aux-1]==dt || map[aux-1]==dt2) && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
 				q.push(aux-1);
 				if(dist[aux-1]>dist[aux]+1)dist[aux-1]=dist[aux]+1;
 			}
-			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==dt || map[aux+SCENE_WIDTH]==dt2) && aux+SCENE_WIDTH<SCENE_WIDTH*SCENE_DEPTH ) {
+			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==5 || map[aux+SCENE_WIDTH]==dt || map[aux+SCENE_WIDTH]==dt2) 
+					&& aux+SCENE_WIDTH<SCENE_WIDTH*SCENE_DEPTH ) {
 				q.push(aux+SCENE_WIDTH); 
 				if(dist[aux+SCENE_WIDTH]>dist[aux]+1)dist[aux+SCENE_WIDTH]=dist[aux]+1;
 			}
-			if((map[aux-SCENE_WIDTH]==0 || map[aux-SCENE_WIDTH]==dt || map[aux-SCENE_WIDTH]==dt2) && aux-SCENE_WIDTH>-1) {
+			if((map[aux-SCENE_WIDTH]==0 || map[aux-SCENE_WIDTH]==5 || map[aux-SCENE_WIDTH]==dt || map[aux-SCENE_WIDTH]==dt2) 
+					&& aux-SCENE_WIDTH>-1) {
 				q.push(aux-SCENE_WIDTH);
 				if(dist[aux-SCENE_WIDTH]>dist[aux]+1) dist[aux-SCENE_WIDTH]=dist[aux]+1;
 			}
