@@ -9,8 +9,8 @@
 #include <iostream>
 #include <map>
 
-#define SCENE_WIDTH		8	//#tiles
-#define SCENE_DEPTH		8
+#define SCENE_WIDTH		16	//#tiles
+#define SCENE_DEPTH		16
 
 #define TILE_SIZE		4	//space units
 

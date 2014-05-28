@@ -40,7 +40,7 @@ public:
 	void Draw2(cData *Data, float inc,int *map);
 	int  Direction();
 	int  NextMov(int *map);
-	int  PosAdj(int *dist,int i);
+	//int  PosAdj(int *dist,int i);
 	void AI(int *map);
 	int* BFS(int *map, int pos,int pI);
 	int* inimap(int length, int x);

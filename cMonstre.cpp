@@ -72,12 +72,11 @@ void cMonstre::Draw(cData *Data,float inct,int *map, int img)
 	int i,j,x,z;
 	inc = inct;
 	glEnable(GL_TEXTURE_2D);
-	i = pos/8;
-	j = pos%8;
+	i = pos/SCENE_WIDTH;
+	j = pos%SCENE_DEPTH;
 	x = j * TILE_SIZE;
 	z = i * TILE_SIZE;
 	glPushMatrix();
-		//int dir = NextMov(map);
 		dir = Direction();
 		if(dir==1)	glTranslatef(x+inc,0,-z);
 		if(dir==2)	glTranslatef(x-inc,0,-z);
@@ -166,7 +165,7 @@ int cMonstre::NextMov(int *map)
 		aux = pos-1;
 		dir = 2;
 	} 
-	if(dmin > distUp && aux+SCENE_WIDTH<64) //UP
+	if(dmin > distUp && aux+SCENE_WIDTH<SCENE_WIDTH*SCENE_DEPTH) //UP
 	{
 		dmin = dist[pos+SCENE_WIDTH]; 
 		aux = pos+SCENE_WIDTH;
@@ -180,7 +179,7 @@ int cMonstre::NextMov(int *map)
 	}
 	return aux;
 }
-int cMonstre::PosAdj(int *dist, int i)
+/*int cMonstre::PosAdj(int *dist, int i)
 {
 	oldPos = pos;
 	int aux = pos;
@@ -201,7 +200,7 @@ int cMonstre::PosAdj(int *dist, int i)
 		dmin = dist[pos-1]; 
 		aux = pos-1;
 	} 
-	if(dmin > distUp && aux+SCENE_WIDTH<64) //UP
+	if(dmin > distUp && aux+SCENE_WIDTH<SCENE_WIDTH*SCENE_DEPTH) //UP
 	{
 		dmin = dist[pos+SCENE_WIDTH]; 
 		aux = pos+SCENE_WIDTH;
@@ -212,7 +211,7 @@ int cMonstre::PosAdj(int *dist, int i)
 		aux = pos-SCENE_WIDTH;
 	}
 	return aux;
-}
+}*/
 void cMonstre::AI(int *map)
 {
 	int *dist = BFS(map,pf,pos);
@@ -235,7 +234,7 @@ void cMonstre::AI(int *map)
 		dmin = dist[pos-1]; 
 		aux = pos-1;
 	} 
-	if(dmin > distUp && aux+SCENE_WIDTH<64) //UP
+	if(dmin > distUp && aux+SCENE_WIDTH<SCENE_WIDTH*SCENE_DEPTH) //UP
 	{
 		dmin = dist[pos+SCENE_WIDTH]; 
 		aux = pos+SCENE_WIDTH;
@@ -293,7 +292,9 @@ int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
 
 void cMonstre::animacio(){
 	float xo,yo,xf,yf;
-	int state = GetState();
+	int state;
+	state = GetState();
+	state = STATE_WALKDOWN;
 	switch(state)
 	{
 		case STATE_WALKDOWN:	xo = 0.0f + (GetFrame()*0.25f);yo = 0.25f;
@@ -329,22 +330,6 @@ int cMonstre::MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,
 		glEnd();
 	glEndList();
 	return dl_monstre2;
-	/*
-	dl_monstre = glGenLists(1);
-	glNewList(dl_monstre,GL_COMPILE);
-			glPushMatrix();
-				glTranslatef(w/2.0f,2.0f,-d/2.0f);
-				//glRotatef(90,1.0f,0.0f,0.0f);
-				GLUquadricObj *q = gluNewQuadric();
-				gluQuadricTexture (q, GL_TRUE);
-				//gluCylinder(q, 0.3,0.95,5,16,16);
-				gluSphere(q, 2.0,16,16);
-				glRotatef(-90,1.0f,0.0f,0.0f);
-				//gluCylinder(q, 1.2,1.2,3.5,16,16);
-				gluDeleteQuadric(q);
-			glPopMatrix();
-		glEndList();
-		return dl_monstre;*/
 }
 int* cMonstre::BFS(int *map, int pF,int pI){
 	int dist[SCENE_WIDTH * SCENE_DEPTH];
@@ -371,9 +356,6 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 		
 		if((map[aux] == 0  || map[aux]==dt || map[aux]==dt2)&& mapbool[aux] < 4){
 			mapbool[aux] += 1;
-			if(map[45]==9){
-				int zzz=0;
-			}
 			//en creu
 			if((map[aux+1]==0 || map[aux+1]==dt || map[aux+1]==dt2) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
 				q.push(aux+1); 
@@ -383,7 +365,7 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 				q.push(aux-1);
 				if(dist[aux-1]>dist[aux]+1)dist[aux-1]=dist[aux]+1;
 			}
-			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==dt || map[aux+SCENE_WIDTH]==dt2) && aux+SCENE_WIDTH<64 ) {
+			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==dt || map[aux+SCENE_WIDTH]==dt2) && aux+SCENE_WIDTH<SCENE_WIDTH*SCENE_DEPTH ) {
 				q.push(aux+SCENE_WIDTH); 
 				if(dist[aux+SCENE_WIDTH]>dist[aux]+1)dist[aux+SCENE_WIDTH]=dist[aux]+1;
 			}

@@ -229,15 +229,12 @@ void cScene::DrawExplosion(cData *Data,int id){
 	xf = xo+0.2;
 	yf = yo-0.2;
 	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_EXPLOSION));
-	//glTranslatef(0.0f,1.4f,0.2f);
-	//glRotatef(-45,1.0f,0.0f,0.0f);
-	//glTranslatef(TILE_SIZE-2,TILE_SIZE-1,0.2f);
 	int pos = monsters[id].GetPositionAct();
 	int dir = monsters[id].GetDir();
 	int inc = monsters[id].GetInc();
 	int i,j,x,z;
-	i = pos/8;
-	j = pos%8;
+	i = pos/SCENE_WIDTH;
+	j = pos%SCENE_DEPTH;
 	x = j * TILE_SIZE;
 	z = i * TILE_SIZE;
 	if(dir==1)	glTranslatef(x+inc,0,-z);

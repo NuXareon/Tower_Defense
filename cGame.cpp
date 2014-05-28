@@ -67,9 +67,9 @@ bool cGame::Init()
 	Scene.Init();
 	int dl_mon = Monstre.Init();
 	Scene.setDlMonstre(dl_mon);
-	res = Scene.LoadLevel(1);
+	res = Scene.LoadLevel(3);
 	if(!res) return false;
-	res = Scene.LoadMonsters(1);
+	res = Scene.LoadMonsters(2);
 	if(!res) return false;
 
 	return res;
@@ -771,8 +771,8 @@ void cGame::Render()
 	else if(camera == 3) gluLookAt(40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
 	else if(camera == 4) gluLookAt(-40.0,0.0,-20.0, 0.0,0.0,-40.0, 0.0,1.0,0.0);
 	
-	//glTranslatef(-25.0f,-20.0f,-80.0f); // 16*16
-	glTranslatef(-16.0f,-10.0f,-38.0f); // 8*8
+	glTranslatef(-25.0f,-20.0f,-80.0f); // 16*16
+	//glTranslatef(-16.0f,-10.0f,-38.0f); // 8*8
 	glRotatef(60,1.0f,0.0f,0.0f);
 
 	
