@@ -233,12 +233,17 @@ void cScene::DrawExplosion(cData *Data,int id){
 	//glRotatef(-45,1.0f,0.0f,0.0f);
 	//glTranslatef(TILE_SIZE-2,TILE_SIZE-1,0.2f);
 	int pos = monsters[id].GetPositionAct();
+	int dir = monsters[id].GetDir();
+	int inc = monsters[id].GetInc();
 	int i,j,x,z;
 	i = pos/8;
 	j = pos%8;
 	x = j * TILE_SIZE;
 	z = i * TILE_SIZE;
-	glTranslatef(x,0,-z);
+	if(dir==1)	glTranslatef(x+inc,0,-z);
+	if(dir==2)	glTranslatef(x-inc,0,-z);
+	if(dir==3)	glTranslatef(x,0,-z-inc);
+	if(dir==4)	glTranslatef(x,0,-z+inc);
 	glBegin(GL_QUADS);
 		glTexCoord2f(xo,yo); glVertex3f(0, 0,  0);
 		glTexCoord2f(xf,yo); glVertex3f(TILE_SIZE, 0,  0);

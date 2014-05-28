@@ -66,11 +66,11 @@ void cMonstre::setMonsterDl(int dl)
 void cMonstre::treuVida(int i){
 	vida -= i;
 }
-void cMonstre::Draw(cData *Data,float inc,int *map, int img)
+void cMonstre::Draw(cData *Data,float inct,int *map, int img)
 {	
 
 	int i,j,x,z;
-
+	inc = inct;
 	glEnable(GL_TEXTURE_2D);
 	i = pos/8;
 	j = pos%8;
@@ -78,7 +78,7 @@ void cMonstre::Draw(cData *Data,float inc,int *map, int img)
 	z = i * TILE_SIZE;
 	glPushMatrix();
 		//int dir = NextMov(map);
-		int dir = Direction();
+		dir = Direction();
 		if(dir==1)	glTranslatef(x+inc,0,-z);
 		if(dir==2)	glTranslatef(x-inc,0,-z);
 		if(dir==3)	glTranslatef(x,0,-z-inc);
@@ -498,6 +498,10 @@ int cMonstre::GetDir()
 {
 	return dir;
 }
+int cMonstre::GetInc()
+{
+	return inc;
+}
 int cMonstre::GetNextPos()
 {
 	return NextPos;
@@ -506,7 +510,6 @@ int cMonstre::GetNextPos()
 void cMonstre::incExpAnim()
 {
 	expAnim++;
-	//erase = (expAnim>=25);
 }
 int cMonstre::getExpAnim()
 {

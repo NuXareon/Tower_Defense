@@ -32,6 +32,7 @@ public:
 	float GetVida();
 	void  SetVida(float i);
 	int GetDir();
+	int GetInc();
 	int GetNextPos();
 
 	void Draw(cData *Data,float inc,int *map, int img);
@@ -69,6 +70,7 @@ private:
 	int distDown;
 	int id;
 	int dir;
+	int inc;
 	float vida;
 	int NextPos;
 	int expAnim;
