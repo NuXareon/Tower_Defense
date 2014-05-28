@@ -29,7 +29,9 @@ bool cGame::Init()
 	inc = 0;
 	pause = false;
 	cdBadPos = cdNoGold = 0;
-	lvl=2;
+	lvl=1;
+	grup = 1;
+	numgrups = 3;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -72,7 +74,7 @@ bool cGame::Init()
 	Scene.setDlMonstre(dl_mon);
 	res = Scene.LoadLevel(lvl);
 	if(!res) return false;
-	res = Scene.LoadMonsters(lvl);
+	res = Scene.LoadMonsters(grup);
 	if(!res) return false;
 
 	return res;
@@ -289,12 +291,20 @@ bool cGame::Process()
 			else Scene.IncExpMonstre(iter->first);
 		}
 	}
+	//Segent grup
+	if(Scene.GetMonsters().size() == 0){
+		--numgrups;
+		++grup;
+		Scene.LoadMonsters(grup);
+	}
 
 	//Panasr de nivell
-	if(Scene.GetMonsters().size() == 0){
+	if(numgrups==0){
 		++lvl;
+		grup=1;
+		numgrups = 3;
 		Scene.LoadLevel(lvl);
-		Scene.LoadMonsters(lvl);
+		Scene.LoadMonsters(grup);
 		if(gold<300) gold = 300;
 		Scene.destroyAllTurret();
 	}
@@ -354,15 +364,17 @@ void cGame::printGameInfo()
 	glPushMatrix();
 	glLoadIdentity();
 
-	char buffg[10], buffl[10], bufft[10], buffm[10];
+	char buffg[10], buffl[10], bufft[10], buffm[10], buffn[10];
 	_itoa_s(gold,buffg,10 );
 	_itoa_s(vidasP,buffl,10 );
 	_itoa_s(Scene.GetTowers().size(),bufft,10 );
 	_itoa_s(Scene.GetMonsters().size(),buffm,10 );
+	_itoa_s(numgrups,buffn,10 );
 	char *s[]={	"Gold: ", buffg,
 				"Life: ", buffl,
+				"Towers: ", bufft,
 				"Monters: ", buffm,
-				"Towers: ", bufft
+				"Groups: ",buffn 
 				};
 
 	glColor3f(1.0f,1.0f,1.0f);
@@ -388,6 +400,11 @@ void cGame::printGameInfo()
 			render_string(GLUT_BITMAP_9_BY_15,s[6]);
 			glRasterPos2f(0.65f,-0.90f);
 			render_string(GLUT_BITMAP_9_BY_15,s[7]);
+
+			glRasterPos2f(0.45f,-0.95f);
+			render_string(GLUT_BITMAP_9_BY_15,s[8]);
+			glRasterPos2f(0.65f,-0.95f);
+			render_string(GLUT_BITMAP_9_BY_15,s[9]);
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 

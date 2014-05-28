@@ -86,4 +86,6 @@ private:
 	int cdBadPos;
 	int cdNoGold;
 	int lvl;
+	int numgrups;
+	int grup;
 };
