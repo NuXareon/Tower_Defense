@@ -11,6 +11,7 @@ void cScene::Init()
 	numMonstres = 0;
 	soundPaused = false;
 	MakeCubeDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
+	MakeCubeDL2((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f,1.0f);
 	MakeFloorDL((float)TILE_SIZE,(float)TILE_SIZE,1.0f,1.0f);
 	MakeTurretDL((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
 	MakeTurretDL2((float)TILE_SIZE,(float)TILE_SIZE,(float)TILE_SIZE);
@@ -101,7 +102,7 @@ bool cScene::LoadMonsters(int level) {
 		cMonstre* b = new cMonstre();
 		cMonstre bb = *b;
 		bb.SetType(tex);
-		bb.SetVida(vida);
+		bb.SetVida(vida + (grup%10)*3);
 		bb.SetPositionI(pi);
 		bb.SetPositionF(pf);
 		bb.setMonsterDl(dl_monstre);
@@ -157,13 +158,13 @@ void cScene::Draw(cData *Data)
 					
 					// Walls
 					case 1: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL1));
-							glCallList(dl_cube);
+							glCallList(dl_cube2);
 							break;
 					case 2: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL2));
-							glCallList(dl_cube);
+							glCallList(dl_cube2);
 							break;
 					case 3: glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-							glCallList(dl_cube);
+							glCallList(dl_cube2);
 							break;
 					case 5:	glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FINISH));
 							glCallList(dl_floor);
@@ -400,7 +401,6 @@ void cScene::setDlMonstre(int mons)
 {
 	dl_monstre = mons;
 }
-
 void cScene::MakeCubeDL(float w,float h,float d,float tw,float th,float td)
 {
 	dl_cube = glGenLists(1);
@@ -426,16 +426,44 @@ void cScene::MakeCubeDL(float w,float h,float d,float tw,float th,float td)
 			glTexCoord2f(  td, 0.0f); glVertex3f(0, 0,  0);
 			glTexCoord2f(  td,   th); glVertex3f(0, h,  0);
 			glTexCoord2f(0.0f,   th); glVertex3f(0, h, -d);
-			// Bottom Face
-			/*glTexCoord2f(  tw,   td); glVertex3f(0, 0, -d);
-			glTexCoord2f(0.0f,   td); glVertex3f(w, 0, -d);
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0,  0);
-			glTexCoord2f(  tw, 0.0f); glVertex3f(0, 0,  0);*/
 			// Top Face
 			glTexCoord2f(0.0f,   td); glVertex3f(0, h, -d);
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(0, h,  0);
 			glTexCoord2f(  tw, 0.0f); glVertex3f(w, h,  0);
 			glTexCoord2f(  tw,   td); glVertex3f(w, h, -d);
+		glEnd();
+	glEndList();
+}
+void cScene::MakeCubeDL2(float w,float h,float d,float tw,float th,float td)
+{
+	dl_cube2 = glGenLists(1);
+	glNewList(dl_cube2,GL_COMPILE);
+		glBegin(GL_QUADS);
+			// Front Face
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 0,  0);
+			glTexCoord2f(  tw, 0.0f); glVertex3f(w, 0,  0);
+			glTexCoord2f(  tw,   th); glVertex3f(w, h/2,  0);
+			glTexCoord2f(0.0f,   th); glVertex3f(0, h/2,  0);
+			// Back Face
+			glTexCoord2f(  tw, 0.0f); glVertex3f(0, 0, -d);
+			glTexCoord2f(  tw,   th); glVertex3f(0, h/2, -d);
+			glTexCoord2f(0.0f,   th); glVertex3f(w, h/2, -d);
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0, -d);
+			// Right face
+			glTexCoord2f(  td, 0.0f); glVertex3f(w, 0, -d);
+			glTexCoord2f(  td,   th); glVertex3f(w, h/2, -d);
+			glTexCoord2f(0.0f,   th); glVertex3f(w, h/2,  0);
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(w, 0,  0);
+			// Left Face
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 0, -d);
+			glTexCoord2f(  td, 0.0f); glVertex3f(0, 0,  0);
+			glTexCoord2f(  td,   th); glVertex3f(0, h/2,  0);
+			glTexCoord2f(0.0f,   th); glVertex3f(0, h/2, -d);
+			// Top Face
+			glTexCoord2f(0.0f,   td); glVertex3f(0, h/2, -d);
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(0, h/2,  0);
+			glTexCoord2f(  tw, 0.0f); glVertex3f(w, h/2,  0);
+			glTexCoord2f(  tw,   td); glVertex3f(w, h/2, -d);
 		glEnd();
 	glEndList();
 }
@@ -721,4 +749,11 @@ void cScene::pauseSound()
 	soundPaused=!soundPaused;
 	channel->setMute(soundPaused);
 	soundSystem->update();
+}
+void cScene::setGrup(int i){
+	grup = i;
+}
+void cScene::BorraAllMonster()
+{
+	monsters.clear();
 }

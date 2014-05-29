@@ -22,7 +22,7 @@ void cTurret::Init(int t)
 	{
 		cost = 150;
 		attackCd = 0;
-		range = 4;
+		range = 3;
 		damage = 5;
 	}
 }

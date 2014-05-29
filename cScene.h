@@ -63,6 +63,8 @@ public:
 	std::map<int,cTurret> GetTowers();
 	void pauseMusic();
 	void pauseSound();
+	void setGrup(int i);
+	void BorraAllMonster();
 
 	int mouseOverTile;
 
@@ -79,6 +81,7 @@ public:
 
 private:
 	void MakeCubeDL(float w,float h,float d,float tw,float th,float td);
+	void MakeCubeDL2(float w,float h,float d,float tw,float th,float td);
 	void MakeFloorDL(float w,float d,float tw,float td);
 	void MakeTurretDL(float w,float h,float d);
 	void MakeTurretDL2(float w, float h, float d);
@@ -87,6 +90,7 @@ private:
 	void addShot(float x, float y, float z, int target, int damage);
 	void InitSoundSystem();
 	int dl_cube;
+	int dl_cube2;
 	int dl_floor;
 	int dl_turret;
 	int dl_turret2;
@@ -101,4 +105,5 @@ private:
 	int numMonstres;
 	int start,end;
 	bool soundPaused;
+	int grup;
 };

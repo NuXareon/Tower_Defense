@@ -30,7 +30,7 @@ bool cGame::Init()
 	pause = false;
 	cdBadPos = cdNoGold = 0;
 	lvl=1;
-	grup = 1;
+	grup = 1;	Scene.setGrup(grup);
 	numgrups = 3;
 
 	//Graphics initialization
@@ -213,13 +213,14 @@ bool cGame::Process()
 {
 	bool res=true;
 	bool z=false;
-	
+	bool saltalvl=false;
 	//Process Input
 	if(keys[27])	res=false;	
 	if(keys['1'])	camera = 1;
 	if(keys['2'])	camera = 2;
 	if(keys['3'])	camera = 3;
 	if(keys['4'])	camera = 4;
+	if(keys['!'])   saltalvl = true;
 	if(keys['z'])   z = true;
 	// F1 to show debug info.
 	if(keys[GLUT_KEY_F1] && releaseF1)	
@@ -230,6 +231,10 @@ bool cGame::Process()
 
 	//Game Logic
 	//...
+	/*if(saltalvl){
+			Scene.BorraAllMonster();
+			saltalvl = false;
+		}*/
 
 	if (cdCursorTile > 0) cdCursorTile--;
 	else {
@@ -294,14 +299,18 @@ bool cGame::Process()
 	//Segent grup
 	if(Scene.GetMonsters().size() == 0){
 		--numgrups;
-		++grup;
+		++grup;	Scene.setGrup(grup);
 		Scene.LoadMonsters(grup);
 	}
 
 	//Panasr de nivell
-	if(numgrups==0){
+	if(numgrups==0){	// per superar nivells automaticament		
 		++lvl;
-		grup=1;
+		if(grup<10){
+			grup = 11;
+		}
+		else if(grup<20) grup =21;
+			Scene.setGrup(grup);	
 		numgrups = 3;
 		Scene.LoadLevel(lvl);
 		Scene.LoadMonsters(grup);
@@ -516,7 +525,7 @@ void cGame::printTurretInfo(int t)
 		_itoa_s(COST_TURRET_2,buffg,10 );
 		_itoa_s(5+1,buffd,10 );
 		_gcvt(0.652+0.124,4,buffas);
-		_itoa_s(4,buffr,10 );
+		_itoa_s(3,buffr,10 );
 		aoe = "Multi-target";
 	}
 	char *s[]={	"Turret type 1",
