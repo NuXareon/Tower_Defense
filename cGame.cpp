@@ -314,7 +314,7 @@ bool cGame::Process()
 		numgrups = 3;
 		Scene.LoadLevel(lvl);
 		Scene.LoadMonsters(grup);
-		if(gold<300) gold = 300;
+		if(gold<500) gold = 500;
 		Scene.destroyAllTurret();
 	}
 
@@ -868,11 +868,16 @@ int cGame::GetVida(){
 
 bool cGame::hihaCami(int* map,int pi,int pf)
 {
-	bool b;
-	int *dist =Monstre.BFS(map,pf,pi);
-	int d = dist[pi];
-	if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH) b=false;
-	else b=true;
+	bool b = true;
+	std::map<int,cMonstre> monsters = Scene.GetMonsters();
+	std::map<int,cMonstre>::iterator iter;
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
+		int *dist =iter->second.BFS(map,pf,pi);
+		int d = dist[pi];
+		if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH){
+			b=false;
+		}
+	}
 	return b;
 }
 bool cGame::TurretNextPosM(int p)

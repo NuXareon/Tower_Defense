@@ -51,6 +51,8 @@ public:
 	int  getExpAnim();
 	bool getDeath();
 	void setDeath();
+	void setOn(bool b);
+	bool getOn();
 
 	void animacio();
 
@@ -75,4 +77,5 @@ private:
 	int NextPos;
 	int expAnim;
 	bool death;
+	bool on;
 };

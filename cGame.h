@@ -24,7 +24,7 @@ using namespace std;
 #define COST_UPGRADE_2	200
 #define CD_IA_M			16
 #define CD_MONSTER		10
-#define MONSTER_GOLD	30
+#define MONSTER_GOLD	35
 
 class cGame
 {

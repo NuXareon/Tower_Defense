@@ -46,10 +46,12 @@ void cTurret::adquireTarget(map<int,cMonstre> monsters, int pos, int w, int s, f
 	if (!monsters.empty())
 	{
 		std::map<int,cMonstre>::iterator iter;
-		for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
-			int mpos = iter->second.GetPositionAct();
-			if (type == 1) updateTarget(mpos,x,z,w,iter->first);
-			else if (type == 2) updateTarget2(mpos,x,z,w,iter->first);
+		for(iter=monsters.begin(); iter != monsters.end(); ++iter){
+			if(iter->second.getOn()){
+				int mpos = iter->second.GetPositionAct();
+				if (type == 1) updateTarget(mpos,x,z,w,iter->first);
+				else if (type == 2) updateTarget2(mpos,x,z,w,iter->first);
+			}
 		}
 
 		if (distTarget != -1 && !target.empty()) 

@@ -507,3 +507,11 @@ void cMonstre::setDeath()
 {
 	death=true;
 }
+void cMonstre::setOn(bool b)
+{
+	on = b;
+}
+bool cMonstre::getOn()
+{
+	return on;
+}

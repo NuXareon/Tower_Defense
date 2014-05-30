@@ -107,8 +107,10 @@ bool cScene::LoadMonsters(int level) {
 		bb.SetPositionF(pf);
 		bb.setMonsterDl(dl_monstre);
 		bb.SetID(numMonstres);
+		bb.setOn(false);
 		monsters[numMonstres]= bb;
 		numMonstres++;
+	
 	}
 
 	return res;
@@ -294,6 +296,7 @@ void cScene::DrawMonsters(cData *Data, int n,float inc){
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->first <=n && !iter->second.getDeath())	{
+			iter->second.setOn(true);
 			if(iter->second.GetType()==1) iter->second.Draw(Data,inc,map,IMG_MONSTRE);
 			if(iter->second.GetType()==2) iter->second.Draw(Data,inc,map,IMG_MONSTRE2);
 			if(iter->second.GetType()==3) iter->second.Draw(Data,inc,map,IMG_MONSTRE3);
@@ -556,7 +559,7 @@ int cScene::getMouseOverTile()
 void cScene::AI(int *map, int n)
 {
 	std::map<int,cMonstre>::iterator iter;
-	for(iter=monsters.begin(); iter != monsters.end(); ++iter){	
+	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->first <=n && !iter->second.getDeath()){
 			if(iter->second.GetType()==1) iter->second.AI(map);
 			if(iter->second.GetType()==2) iter->second.AI(map);
@@ -702,6 +705,7 @@ void cScene::DeathMonstre(int id)
 				soundSystem->update();
 			}
 			iter->second.setDeath();
+			iter->second.setOn(false);
 		}
 	}
 }
