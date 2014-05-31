@@ -81,6 +81,7 @@
     <ClInclude Include="cBicho.h" />
     <ClInclude Include="cData.h" />
     <ClInclude Include="cGame.h" />
+    <ClInclude Include="cMenu.h" />
     <ClInclude Include="cMonstre.h" />
     <ClInclude Include="corona.h" />
     <ClInclude Include="cScene.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Globals.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cMenu.cpp" />
     <ClCompile Include="cShot.cpp" />
     <ClCompile Include="cBicho.cpp" />
     <ClCompile Include="cData.cpp" />

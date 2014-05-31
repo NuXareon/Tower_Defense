@@ -1,11 +1,14 @@
 
 #include "Globals.h"
 #include "cGame.h"
+#include "cMenu.h"
 
 //Delete console
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 
 cGame Game;
+cMenu Menu;
+bool iniGame;
 
 void AppRender()
 {
@@ -13,19 +16,23 @@ void AppRender()
 }
 void AppKeyboard(unsigned char key, int x, int y)
 {
-	Game.ReadKeyboard(key,x,y,true);
+	if (Menu.GetMenu() == 2) Game.ReadKeyboard(key,x,y,true);
+	else Menu.ReadKeyboard(key,x,y,true);
 }
 void AppKeyboardUp(unsigned char key, int x, int y)
 {
-	Game.ReadKeyboard(key,x,y,false);
+	if (Menu.GetMenu() == 2) Game.ReadKeyboard(key,x,y,false);
+	else Menu.ReadKeyboard(key,x,y,false);
 }
 void AppSpecialKeys(int key, int x, int y)
 {
-	Game.ReadKeyboard(key,x,y,true);
+	if (Menu.GetMenu() == 2) Game.ReadKeyboard(key,x,y,true);
+	else Menu.ReadKeyboard(key,x,y,true);
 }
 void AppSpecialKeysUp(int key, int x, int y)
 {
-	Game.ReadKeyboard(key,x,y,false);
+	if (Menu.GetMenu() == 2) Game.ReadKeyboard(key,x,y,false);
+	else Menu.ReadKeyboard(key,x,y,false);
 }
 void AppMouse(int button, int state, int x, int y)
 {
@@ -38,7 +45,17 @@ void AppMouseMovement(int x, int y)
 
 void AppIdle()
 {
-	if(!Game.Loop()) exit(0);
+	if(Menu.GetMenu() == 2){
+		if (!iniGame)
+		{
+			iniGame=true;
+			Game.Init();
+		}
+		if(!Game.Loop()) exit(0);
+	}
+	else{
+		if(!Menu.Loop()) exit(0);
+	}
 }
 
 void main(int argc, char** argv)
@@ -59,7 +76,7 @@ void main(int argc, char** argv)
 	
 	glutInitWindowPosition(pos_x,pos_y);
 	glutInitWindowSize(SCREEN_WIDTH,SCREEN_HEIGHT);
-	glutCreateWindow("My Awesome 3D Game!");
+	glutCreateWindow("Tower Defense");
 
 	/*glutGameModeString("800x600:32");
 	glutEnterGameMode();*/
@@ -78,7 +95,9 @@ void main(int argc, char** argv)
 	glutPassiveMotionFunc(AppMouseMovement);
 
 	//Game initializations
-	Game.Init();
+	//Game.Init();
+	iniGame = false;
+	Menu.Init();
 
 	//Application loop
 	glutMainLoop();	
