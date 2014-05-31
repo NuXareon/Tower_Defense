@@ -51,4 +51,11 @@ private:
 	int posArrow;
 	int cd;
 	int menu;
+
+	FMOD::System	*menuSoundSystem;
+	FMOD::Sound		*beepUp;
+	FMOD::Sound		*beepDown;
+	FMOD::Sound		*menuBackground;
+	FMOD::Channel	*menuChannel;
+	FMOD::Channel	*menuChannelBackground;
 };

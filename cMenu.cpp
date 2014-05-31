@@ -37,6 +37,17 @@ bool cMenu::Init()
 	res = Data.LoadImage(IMG_WALL3,"wall3.png",GL_RGBA);
 	if(!res) return false;
 
+	// FMOD sound API init
+	FMOD::System_Create(&menuSoundSystem);
+
+	menuSoundSystem->init(512, FMOD_INIT_NORMAL, 0);
+
+	menuSoundSystem->createSound("audio\\Beep_up.wav",FMOD_DEFAULT,0,&beepUp);
+	menuSoundSystem->createSound("audio\\Beep_down.wav",FMOD_DEFAULT,0,&beepDown);
+	menuSoundSystem->createSound("audio\\Menu.wav",FMOD_LOOP_NORMAL,0,&menuBackground);
+
+	menuSoundSystem->playSound(menuBackground,0,false,&menuChannelBackground);
+
 	return res;
 }
 
@@ -57,15 +68,24 @@ bool cMenu::Process()
 	}
 	if(keys[GLUT_KEY_UP] && cd==0){
 		posArrow = (posArrow+1)%3;
+		menuSoundSystem->playSound(beepUp,0,false,&menuChannel);
+		menuSoundSystem->update();
 		cd = 10;
 	}
 	if(keys[GLUT_KEY_DOWN] && cd==0){
 		posArrow = (posArrow+2)%3;
+		menuSoundSystem->playSound(beepDown,0,false,&menuChannel);
+		menuSoundSystem->update();
 		cd = 10;
 	}
 	if(keys[13]){ //intro
 		
-		if(posArrow == ARROW_PLAYER1)	menu = ARROW_PLAYER1;
+		if(posArrow == ARROW_PLAYER1)	
+		{
+			menu = ARROW_PLAYER1;
+			menuChannelBackground->setMute(true);
+			menuSoundSystem->update();
+		}
 		if(posArrow == ARROW_INSTUC)	menu = ARROW_INSTUC;
 		if(posArrow == ARROW_CREDITS)	menu = ARROW_CREDITS;
 
