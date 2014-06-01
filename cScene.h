@@ -76,6 +76,7 @@ public:
 	FMOD::Sound		*MonsterDeath3;
 	FMOD::Sound		*Background;
 	FMOD::Sound		*TurretExplosion;
+	FMOD::Sound		*ShotExplosion;
 	FMOD::Channel	*channel;
 	FMOD::Channel	*channelBackground;
 
