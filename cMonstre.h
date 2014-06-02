@@ -58,6 +58,7 @@ public:
 	void decreaseFreezeCd();
 	int getNoFreeze();
 	void setNoFreeze(int nf);
+	void setMaxVida(int i);
 
 	void animacio();
 
@@ -85,4 +86,5 @@ private:
 	bool on;
 	int freezeCd;
 	int noFreeze;
+	int maxVides;
 };

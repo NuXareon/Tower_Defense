@@ -93,8 +93,9 @@ void cMonstre::Draw(cData *Data,float inct,int *map, int img)
 }
 void cMonstre::ColorVida()
 {
-	float fv = float(vida/10);
+	float fv = float(vida/maxVides);
 	glColor3f(1.0f,fv,fv);
+	if(freezeCd>0) glColor3f(0.5f,1.0,1.0);
 
 }
 
@@ -543,4 +544,8 @@ int cMonstre::getNoFreeze()
 void cMonstre::setNoFreeze(int nf)
 {
 	noFreeze = nf;
+}
+void cMonstre::setMaxVida(int i)
+{
+	maxVides = i;
 }

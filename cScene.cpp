@@ -114,6 +114,7 @@ bool cScene::LoadMonsters(int level) {
 		bb.setMonsterDl(dl_monstre);
 		bb.SetID(numMonstres);
 		bb.setOn(false);
+		bb.setMaxVida(vida);
 		monsters[numMonstres]= bb;
 		numMonstres++;
 	
@@ -692,7 +693,7 @@ void cScene::shotLogic(float inc)
 					{
 						if (monsters[target].getNoFreeze() <= 0 && monsters[target].getFreezeCd() <= 0 && monsters[target].GetVida() > 0)
 						{
-							monsters[target].setFreezeCd(3);
+							monsters[target].setFreezeCd(2);
 							monsters[target].setNoFreeze(10);
 						}
 					}
