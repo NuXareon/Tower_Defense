@@ -90,4 +90,5 @@ private:
 	int numgrups;
 	int grup;
 	bool dead;
+	int cdlvl;
 };
