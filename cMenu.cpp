@@ -17,6 +17,7 @@ bool cMenu::Init()
 	posArrow = 2;
 	cd = 0;
 	menu = -1;
+	for (int i = 0; i<256; ++i) keys[i] = 0;
 
 	res = Data.LoadImage(IMG_MENU_CREDITS,"credits.png",GL_RGBA);
 	if(!res) return false;
@@ -111,7 +112,7 @@ bool cMenu::Loop()
 
 void cMenu::Render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -124,6 +125,7 @@ void cMenu::Render()
 
 	glAlphaFunc(GL_GREATER, 0.05f);
 	glEnable(GL_ALPHA_TEST);
+	glDisable(GL_DEPTH_TEST);
 
 	if(menu == -1){
 		// Random sprites

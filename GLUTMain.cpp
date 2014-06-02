@@ -52,6 +52,11 @@ void AppIdle()
 			Game.Init();
 		}
 		if(!Game.Loop()) exit(0);
+		if(Game.getDead())
+		{
+			Menu.Init();
+			iniGame = false;
+		}
 	}
 	else{
 		if(!Menu.Loop()) exit(0);

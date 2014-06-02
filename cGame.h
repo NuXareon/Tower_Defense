@@ -54,6 +54,7 @@ public:
 	int GetVida();
 	bool hihaCami(int* map,int pi,int pf);
 	bool TurretNextPosM(int p);
+	bool getDead();
 
 private:
 	unsigned char keys[256];
@@ -88,4 +89,5 @@ private:
 	int lvl;
 	int numgrups;
 	int grup;
+	bool dead;
 };

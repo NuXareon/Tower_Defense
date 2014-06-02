@@ -32,6 +32,7 @@ bool cGame::Init()
 	lvl=1;
 	grup = 1;	Scene.setGrup(grup);
 	numgrups = 3;
+	dead = false;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -277,6 +278,7 @@ bool cGame::Process()
 			if(iter->second.GetType()==1) vidasP -=1;
 			if(iter->second.GetType()==2) vidasP -=2;
 			Scene.BorraMonstre(iter->first);
+			if (vidasP <= 0) dead = true;
 		}
 		if(z) {			// Per veure si funciona treure vida a un monstre. 
 			Scene.treuVida(0,1);
@@ -891,4 +893,8 @@ bool cGame::TurretNextPosM(int p)
 		}
 	}
 	return b;
+}
+bool cGame::getDead()
+{
+	return dead;
 }
