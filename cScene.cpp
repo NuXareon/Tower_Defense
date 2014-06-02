@@ -307,6 +307,15 @@ void cScene::DrawMonsters(cData *Data, int n,float inc){
 			if(iter->second.GetType()==2) iter->second.Draw(Data,inc,map,IMG_MONSTRE2);
 			if(iter->second.GetType()==3) iter->second.Draw(Data,inc,map,IMG_MONSTRE3);
 		}
+		/*if(iter != monsters.end()){
+			++iter;
+			if(iter->first <=n+1 && !iter->second.getDeath())	{
+				iter->second.setOn(true);
+				if(iter->second.GetType()==1) iter->second.Draw(Data,inc,map,IMG_MONSTRE);
+				if(iter->second.GetType()==2) iter->second.Draw(Data,inc,map,IMG_MONSTRE2);
+				if(iter->second.GetType()==3) iter->second.Draw(Data,inc,map,IMG_MONSTRE3);
+			}
+		}*/
 	}
 }
 void cScene::DrawContainer(cData *Data)
@@ -571,6 +580,7 @@ void cScene::AI(int *map, int n)
 			if(iter->second.GetType()==2) iter->second.AI(map);
 			if(iter->second.GetType()==3) iter->second.AI(map);
 		}
+		
 	}
 }
 void cScene::turretLogic(float inc)

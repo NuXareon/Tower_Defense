@@ -240,6 +240,11 @@ bool cGame::Process()
 		saltalvl = true;
 		cdlvl = 10;
 	}
+	if(keys['5'] && cdlvl==0)	{
+		lvl = 5;
+		saltalvl = true;
+		cdlvl = 10;
+	}
 	if(keys['z'])   z = true;
 	// F1 to show debug info.
 	if(keys[GLUT_KEY_F1] && releaseF1)	
@@ -273,7 +278,8 @@ bool cGame::Process()
 		cdAi=CD_IA_M;
 		if(cdSpawnM == 0){
 			if(Scene.getNumMonstres()>numM){
-				numM++;
+				if(lvl<=2)numM+=1;
+				else numM+=2;
 				cdSpawnM = 3;
 			}
 		}
@@ -288,13 +294,15 @@ bool cGame::Process()
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->second.GetVida() <= 0 && !iter->second.getDeath()){	// si el monstre no te vida borra
-			gold += MONSTER_GOLD;
+			if(iter->second.GetType()==2)gold += MONSTER_GOLD2;
+			else gold += MONSTER_GOLD;
 			//Scene.BorraMonstre(iter->first);
 			Scene.DeathMonstre(iter->first);
 		}
 		if(iter->second.GetPositionF() == iter->second.GetPositionAct()){	//si arriba al final treu vidaPlayer i borra
 			if(iter->second.GetType()==1) vidasP -=1;
 			if(iter->second.GetType()==2) vidasP -=2;
+			if(iter->second.GetType()==3) vidasP -=1;
 			Scene.BorraMonstre(iter->first);
 			if (vidasP <= 0) 
 			{
@@ -331,16 +339,23 @@ bool cGame::Process()
 	//Panasr de nivell
 	if(numgrups==0 ){	// per superar nivells automaticament		
 		++lvl;
-		if(grup<10){
-			grup = 11;
-		}
-		else if(grup<20) grup =21;
+		Scene.destroyAllTurret();
+		if(lvl == 1) grup = 1;
+		if(lvl == 2) grup = 11;
+		if(lvl == 3) grup = 21;
+		if(lvl == 4) grup = 31;
+		if(lvl == 5) grup = 41;
 		Scene.setGrup(grup);	
 		numgrups = 3;
 		Scene.LoadLevel(lvl);
 		Scene.LoadMonsters(grup);
-		if(gold<500) gold = 500;
-		Scene.destroyAllTurret();
+		int gold2 = 400+lvl*100;
+		if(gold<gold2) gold = gold2;
+		if(lvl == 5) {
+			gold = 0;
+			vidasP = 24;
+		}
+		
 	}
 
 	//saltar nivells
@@ -348,24 +363,20 @@ bool cGame::Process()
 		Scene.destroyAllTurret();
 		Scene.BorraAllMonster();
 		saltalvl = false;
-		if(lvl == 1){
-			grup = 1;
-		}
-		if(lvl == 2){
-			grup = 11;
-
-		}
-		if(lvl == 3){
-			grup = 21;
-		}
-		if(lvl == 4){
-			grup = 31;
-		}
+		if(lvl == 1) grup = 1;
+		if(lvl == 2) grup = 11;
+		if(lvl == 3) grup = 21;
+		if(lvl == 4) grup = 31;
+		if(lvl == 5) grup = 41;
 		Scene.setGrup(grup);
 		Scene.LoadLevel(lvl);
 		Scene.LoadMonsters(grup);
-		if(gold<500) gold = 500;
-		if(lvl = 4) gold = 500;
+		int gold2 = 400+lvl*100;
+		if(gold<gold2) gold = gold2;
+		if(lvl == 5) {
+			gold = 0;
+			vidasP = 24;			
+		}
 		
 	}
 

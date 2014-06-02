@@ -294,7 +294,7 @@ void cMonstre::animacio(){
 	float xo,yo,xf,yf;
 	int state;
 	state = GetState();
-	//state = STATE_WALKDOWN;
+	
 	switch(state)
 	{
 		case STATE_WALKDOWN:	xo = 0.0f + (GetFrame()*0.25f);yo = 0.25f;
@@ -306,7 +306,10 @@ void cMonstre::animacio(){
 		case STATE_WALKLEFT:	xo = 0.0f + (GetFrame()*0.25f); yo = 0.75f;
 								NextFrame(4);
 								break;
-		case STATE_WALKUP:	xo = 0.0f + (GetFrame()*0.25f);yo = 1.00f;
+		case STATE_WALKUP:		xo = 0.0f + (GetFrame()*0.25f);yo = 1.00f;
+								NextFrame(4);
+								break;
+		default:				xo = 0.0f + (GetFrame()*0.25f);yo = 0.50f;
 								NextFrame(4);
 								break;
 	}
