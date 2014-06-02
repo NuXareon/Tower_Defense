@@ -72,6 +72,8 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_ARROW,"arrow.png",GL_RGBA);
 	if(!res) return false;
 	Scene.Init();
+	Scene.destroyAllTurret();
+	Scene.BorraAllMonster();
 	int dl_mon = Monstre.Init();
 	Scene.setDlMonstre(dl_mon);
 	res = Scene.LoadLevel(lvl);
@@ -294,7 +296,12 @@ bool cGame::Process()
 			if(iter->second.GetType()==1) vidasP -=1;
 			if(iter->second.GetType()==2) vidasP -=2;
 			Scene.BorraMonstre(iter->first);
-			if (vidasP <= 0) dead = true;
+			if (vidasP <= 0) 
+			{
+				dead = true;
+				Scene.pauseMusic();
+				Scene.pauseSound();
+			}
 		}
 		if(z) {			// Per veure si funciona treure vida a un monstre. 
 			Scene.treuVida(0,1);
