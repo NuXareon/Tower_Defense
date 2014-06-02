@@ -88,4 +88,5 @@ private:
 	int lvl;
 	int numgrups;
 	int grup;
+	int cdlvl;
 };

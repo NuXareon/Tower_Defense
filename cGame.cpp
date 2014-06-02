@@ -32,6 +32,7 @@ bool cGame::Init()
 	lvl=1;
 	grup = 1;	Scene.setGrup(grup);
 	numgrups = 3;
+	cdlvl = 0;
 
 	//Graphics initialization
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -216,11 +217,26 @@ bool cGame::Process()
 	bool saltalvl=false;
 	//Process Input
 	if(keys[27])	res=false;	
-	if(keys['1'])	camera = 1;
-	if(keys['2'])	camera = 2;
-	if(keys['3'])	camera = 3;
-	if(keys['4'])	camera = 4;
-	if(keys['!'])   saltalvl = true;
+	if(keys['1'] && cdlvl==0)	{
+		lvl = 1;
+		saltalvl = true;
+		cdlvl = 10;
+	}
+	if(keys['2'] && cdlvl==0)	{
+		lvl = 2;
+		saltalvl = true;
+		cdlvl = 10;
+	}
+	if(keys['3'] && cdlvl==0)	{
+		lvl = 3;
+		saltalvl = true;
+		cdlvl = 10;
+	}
+	if(keys['4'] && cdlvl==0)	{
+		lvl = 4;
+		saltalvl = true;
+		cdlvl = 10;
+	}
 	if(keys['z'])   z = true;
 	// F1 to show debug info.
 	if(keys[GLUT_KEY_F1] && releaseF1)	
@@ -235,7 +251,7 @@ bool cGame::Process()
 			Scene.BorraAllMonster();
 			saltalvl = false;
 		}*/
-
+	if(cdlvl>0)--cdlvl;
 	if (cdCursorTile > 0) cdCursorTile--;
 	else {
 		cdCursorTile = 3;
@@ -304,18 +320,44 @@ bool cGame::Process()
 	}
 
 	//Panasr de nivell
-	if(numgrups==0){	// per superar nivells automaticament		
+	if(numgrups==0 ){	// per superar nivells automaticament		
 		++lvl;
 		if(grup<10){
 			grup = 11;
 		}
 		else if(grup<20) grup =21;
-			Scene.setGrup(grup);	
+		Scene.setGrup(grup);	
 		numgrups = 3;
 		Scene.LoadLevel(lvl);
 		Scene.LoadMonsters(grup);
 		if(gold<500) gold = 500;
 		Scene.destroyAllTurret();
+	}
+
+	//saltar nivells
+	if(saltalvl){
+		Scene.destroyAllTurret();
+		Scene.BorraAllMonster();
+		saltalvl = false;
+		if(lvl == 1){
+			grup = 1;
+		}
+		if(lvl == 2){
+			grup = 11;
+
+		}
+		if(lvl == 3){
+			grup = 21;
+		}
+		if(lvl == 4){
+			grup = 31;
+		}
+		Scene.setGrup(grup);
+		Scene.LoadLevel(lvl);
+		Scene.LoadMonsters(grup);
+		if(gold<500) gold = 500;
+		if(lvl = 4) gold = 500;
+		
 	}
 
 	Scene.turretLogic(inc);
@@ -871,8 +913,11 @@ bool cGame::hihaCami(int* map,int pi,int pf)
 	bool b = true;
 	std::map<int,cMonstre> monsters = Scene.GetMonsters();
 	std::map<int,cMonstre>::iterator iter;
+	int pff,pii;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
-		int *dist =iter->second.BFS(map,pf,pi);
+		pff = iter->second.GetPositionF();
+		pii = iter->second.GetPositionI();
+		int *dist =iter->second.BFS(map,pff,pii);
 		int d = dist[pi];
 		if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH){
 			b=false;
