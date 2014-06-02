@@ -11,19 +11,24 @@ void cTurret::Init(int t)
 	lvl = 1;
 	rotationY = 0;
 	distTarget = -1;
+	attackCd = 0;
 	if (type == 1)
 	{
 		cost = 100;
-		attackCd = 0;
 		range = 3;
 		damage = 3;
 	}
 	else if (type == 2)
 	{
-		cost = 150;
-		attackCd = 0;
+		cost = 200;
+		range = 4;
+		damage = 6;
+	}
+	else if (type == 3)
+	{
+		cost = 250;
 		range = 3;
-		damage = 5;
+		damage = 1;
 	}
 }
 
@@ -49,7 +54,7 @@ void cTurret::adquireTarget(map<int,cMonstre> monsters, int pos, int w, int s, f
 		for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 			if(iter->second.getOn()){
 				int mpos = iter->second.GetPositionAct();
-				if (type == 1) updateTarget(mpos,x,z,w,iter->first);
+				if (type == 1 || type == 3) updateTarget(mpos,x,z,w,iter->first);
 				else if (type == 2) updateTarget2(mpos,x,z,w,iter->first);
 			}
 		}
@@ -58,7 +63,8 @@ void cTurret::adquireTarget(map<int,cMonstre> monsters, int pos, int w, int s, f
 		{
 			int mpos = monsters[target[0]].GetPositionAct();
 			int dir = monsters[target[0]].GetDir();
-			updateRotationY(mpos,x,z,w,s,inc,dir);
+			if (monsters[target[0]].getFreezeCd() > 0) updateRotationY(mpos,x,z,w,s,monsters[target[0]].GetInc(),dir);
+			else updateRotationY(mpos,x,z,w,s,inc,dir);
 		}
 	}
 }
@@ -69,6 +75,7 @@ bool cTurret::shootTarget(int pos, int w)
 		int baseCd = 60;
 		if (type == 1) baseCd = 30;
 		else if (type == 2) baseCd = 50;
+		else if (type == 3) baseCd = 60;
 		attackCd = baseCd-2*lvl;
 		return true;
 	}

@@ -112,6 +112,7 @@ void cGame::ReadKeyboard(unsigned char key, int x, int y, bool press)
 	if (key == GLUT_KEY_F1 && !press) releaseF1 = true;
 	if (key == 't' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+1);
 	if (key == 'y' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+2);
+	if (key == 'u' && press) Scene.setSelected(SCENE_WIDTH*SCENE_DEPTH+3);
 	if (key == 'm' && press) Scene.pauseMusic();
 	if (key == 's' && press) Scene.pauseSound();
 	if (key == 'p' && press) pause=!pause;
@@ -158,9 +159,27 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 					map[buff[3]]=0;
 					cdBadPos = 15;	// temps de printar printTurretBadPos
 				}
+			} else if(hits != -1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+3 && Scene.GetMap()[buff[3]] == 0 && gold >= COST_TURRET_3) 
+			{
+				int pi = Scene.getStart();
+				int pf = Scene.getEnd();
+				int *map = Scene.GetMap();
+				map[buff[3]]=TOWER_ID_3;
+				if(hihaCami(map,pi,pf) && TurretNextPosM(buff[3])){ //hi ha cami && no es on anira algun monstre
+					Scene.updateMap(buff[3],TOWER_ID_3);
+					Scene.addTurret(3,buff[3]);
+					gold -= COST_TURRET_3;
+					Scene.setSelected(buff[3]);
+				}
+				else{
+					map[buff[3]]=0;
+					cdBadPos = 15;	// temps de printar printTurretBadPos
+				}
 			}
+			else if (buff[3] == SCENE_WIDTH*SCENE_DEPTH+1 || buff[3] == SCENE_WIDTH*SCENE_DEPTH+2 || buff[3] == SCENE_WIDTH*SCENE_DEPTH+3) Scene.setSelected(buff[3]); 
 			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) cdNoGold = 15;
-			else if (gold < COST_TURRET_1 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+2) cdNoGold = 15;
+			else if (gold < COST_TURRET_2 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+2) cdNoGold = 15;
+			else if (gold < COST_TURRET_3 && Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+3) cdNoGold = 15;
 			else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
 				if (gold>= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1)) 
@@ -171,13 +190,21 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 				else cdNoGold = 15;
 			} else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_2 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
 			{
-				if (gold>= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1)) 
+				if (gold>= COST_UPGRADE_2+50*(Scene.getSelectedTurretLvl()-1)) 
 				{
-					gold -= COST_UPGRADE_1+50*(Scene.getSelectedTurretLvl()-1);
+					gold -= COST_UPGRADE_2+50*(Scene.getSelectedTurretLvl()-1);
 					Scene.upgadeTurret();
 				}
 				else cdNoGold = 15;
-			} 
+			} else if(Scene.GetMap()[Scene.getSelected()] == TOWER_ID_3 && buff[3] == SCENE_WIDTH*SCENE_DEPTH+10)
+			{
+				if (gold>= COST_UPGRADE_3+50*(Scene.getSelectedTurretLvl()-1)) 
+				{
+					gold -= COST_UPGRADE_3+50*(Scene.getSelectedTurretLvl()-1);
+					Scene.upgadeTurret();
+				}
+				else cdNoGold = 15;
+			}
 			else {
 				Scene.setSelected(buff[3]);
 			}
@@ -200,6 +227,12 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 				Scene.updateMap(buff[3],0);
 				Scene.destroyTurret(buff[3]);
 				gold += COST_TURRET_2/2;
+			}
+			else if(Scene.GetMap()[buff[3]] == TOWER_ID_3)
+			{
+				Scene.updateMap(buff[3],0);
+				Scene.destroyTurret(buff[3]);
+				gold += COST_TURRET_3/2;
 			}
 			Scene.setSelected(-1);
 		}
@@ -315,7 +348,7 @@ bool cGame::Process()
 			Scene.treuVida(0,1);
 			z = false;
 		}
-		if((map[iter->second.GetPositionAct()]==9 || map[iter->second.GetPositionAct()]==8)&& iter->second.GetType()==3){ //destroy turret and monster
+		if((map[iter->second.GetPositionAct()]==9 || map[iter->second.GetPositionAct()]==8 || map[iter->second.GetPositionAct()]==7)&& iter->second.GetType()==3){ //destroy turret and monster
 			//Scene.BorraMonstre(iter->first);
 			Scene.DeathMonstre(iter->first);
 			Scene.destroyTurret(iter->second.GetPositionAct());
@@ -406,6 +439,7 @@ void cGame::printUI()
 
 	Scene.DrawTurretPanel(&Data, 1);
 	Scene.DrawTurretPanel(&Data, 2);
+	Scene.DrawTurretPanel(&Data, 3);
 	//Scene.DrawLifePanel(&Data);
 
 	glTranslatef(29.4f,0.0f,0.0f);
@@ -414,7 +448,7 @@ void cGame::printUI()
 
 	printGameInfo();
 
-	if (Scene.GetMap()[Scene.getSelected()] == 9 || Scene.GetMap()[Scene.getSelected()] == 8)
+	if (Scene.GetMap()[Scene.getSelected()] == 9 || Scene.GetMap()[Scene.getSelected()] == 8 || Scene.GetMap()[Scene.getSelected()] == 7)
 	{
 		glTranslatef(-4.0f,0.0f,0.0f);
 		Scene.DrawUpgradePanel(&Data);
@@ -572,25 +606,34 @@ void cGame::printTurretInfo(int t)
 	glPushMatrix();
 	glLoadIdentity();
 
-	char buffg[10],buffd[10], buffas[10], buffr[10];
+	char buffg[10],buffd[10], buffas[10], buffr[10], bufft[10];
+	_itoa_s(t,bufft,10 );
 	char* aoe;
 	if (t == 1) 
 	{
 		_itoa_s(COST_TURRET_1,buffg,10 );
 		_itoa_s(3+1,buffd,10 );
-		_gcvt(1.035+0.124,3,buffas);
+		_gcvt(1.333+0.095,3,buffas);
 		_itoa_s(3,buffr,10 );
 		aoe = "Single-target";
 	}
 	else if (t == 2) 
 	{
 		_itoa_s(COST_TURRET_2,buffg,10 );
-		_itoa_s(5+1,buffd,10 );
-		_gcvt(0.652+0.124,4,buffas);
-		_itoa_s(3,buffr,10 );
+		_itoa_s(6+1,buffd,10 );
+		_gcvt(0.8+0.0333,4,buffas);
+		_itoa_s(4,buffr,10 );
 		aoe = "Multi-target";
 	}
-	char *s[]={	"Turret type 1",
+	else if (t == 3) 
+	{
+		_itoa_s(COST_TURRET_3,buffg,10 );
+		_itoa_s(1+1,buffd,10 );
+		_gcvt(0.666+0.022,4,buffas);
+		_itoa_s(3,buffr,10 );
+		aoe = "Slow";
+	}
+	char *s[]={	"Turret type",bufft,
 				"Cost: ", buffg,
 				aoe,
 				"Range :", buffr,
@@ -604,24 +647,26 @@ void cGame::printTurretInfo(int t)
 		glDisable(GL_TEXTURE_2D);
 			glRasterPos2f(-0.95f,0.90f);
 			render_string(GLUT_BITMAP_9_BY_15,s[0]);
-			glRasterPos2f(-0.95f,0.80f);
+			glRasterPos2f(-0.69f,0.90f);
 			render_string(GLUT_BITMAP_9_BY_15,s[1]);
-			glRasterPos2f(-0.78f,0.80f);
+			glRasterPos2f(-0.95f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[2]);
-			glRasterPos2f(-0.95f,0.75f);
+			glRasterPos2f(-0.78f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[3]);
-			glRasterPos2f(-0.95f,0.70f);
+			glRasterPos2f(-0.95f,0.75f);
 			render_string(GLUT_BITMAP_9_BY_15,s[4]);
-			glRasterPos2f(-0.78f,0.70f);
+			glRasterPos2f(-0.95f,0.70f);
 			render_string(GLUT_BITMAP_9_BY_15,s[5]);
-			glRasterPos2f(-0.95f,0.65f);
+			glRasterPos2f(-0.78f,0.70f);
 			render_string(GLUT_BITMAP_9_BY_15,s[6]);
-			glRasterPos2f(-0.78f,0.65f);
+			glRasterPos2f(-0.95f,0.65f);
 			render_string(GLUT_BITMAP_9_BY_15,s[7]);
-			glRasterPos2f(-0.95f,0.60f);
+			glRasterPos2f(-0.78f,0.65f);
 			render_string(GLUT_BITMAP_9_BY_15,s[8]);
-			glRasterPos2f(-0.95f,0.55f);
+			glRasterPos2f(-0.95f,0.60f);
 			render_string(GLUT_BITMAP_9_BY_15,s[9]);
+			glRasterPos2f(-0.95f,0.55f);
+			render_string(GLUT_BITMAP_9_BY_15,s[10]);
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 
@@ -642,18 +687,23 @@ void cGame::printTurretInfo2(int t)
 	glLoadIdentity();
 
 	int lvl = Scene.getSelectedTurretLvl();
-	char bufflvl[10],buffd[10],buffas[10];
+	char bufflvl[10],buffd[10],buffas[10],bufft[10];
 	_itoa_s(lvl,bufflvl,10 );
+	_itoa_s(t,bufft,10 );
 	if (t == 1)
 	{
 		_itoa_s(3+lvl,buffd,10 );
-		_gcvt(1.035+0.124*lvl,3,buffas);
+		_gcvt(1.333+0.095*lvl,3,buffas);
 	} else if (t == 2)
 	{
-		_itoa_s(5+lvl,buffd,10 );
-		_gcvt(0.652+0.124*lvl,3,buffas);
+		_itoa_s(6+lvl,buffd,10 );
+		_gcvt(0.8+0.0333*lvl,3,buffas);
+	} else if (t == 3)
+	{
+		_itoa_s(1+lvl,buffd,10 );
+		_gcvt(0.666+0.022*lvl,3,buffas);
 	}
-	char *s[]={	"Turret type 1",
+	char *s[]={	"Turret type ",bufft,
 				"Lvl: ", bufflvl,
 				"Damage: ", buffd,
 				"Attack Speed: ", buffas
@@ -665,18 +715,20 @@ void cGame::printTurretInfo2(int t)
 		glDisable(GL_TEXTURE_2D);
 			glRasterPos2f(-0.95f,0.90f);
 			render_string(GLUT_BITMAP_9_BY_15,s[0]);
-			glRasterPos2f(-0.95f,0.80f);
+			glRasterPos2f(-0.69f,0.90f);
 			render_string(GLUT_BITMAP_9_BY_15,s[1]);
-			glRasterPos2f(-0.78f,0.80f);
+			glRasterPos2f(-0.95f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[2]);
-			glRasterPos2f(-0.95f,0.75f);
+			glRasterPos2f(-0.78f,0.80f);
 			render_string(GLUT_BITMAP_9_BY_15,s[3]);
-			glRasterPos2f(-0.78f,0.75f);
+			glRasterPos2f(-0.95f,0.75f);
 			render_string(GLUT_BITMAP_9_BY_15,s[4]);
-			glRasterPos2f(-0.95f,0.70f);
+			glRasterPos2f(-0.78f,0.75f);
 			render_string(GLUT_BITMAP_9_BY_15,s[5]);
-			glRasterPos2f(-0.95f,0.65f);
+			glRasterPos2f(-0.95f,0.70f);
 			render_string(GLUT_BITMAP_9_BY_15,s[6]);
+			glRasterPos2f(-0.95f,0.65f);
+			render_string(GLUT_BITMAP_9_BY_15,s[7]);
 
 		glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
@@ -698,10 +750,13 @@ void cGame::printUpgradeInfo()
 	glLoadIdentity();
 
 	int lvl = Scene.getSelectedTurretLvl();
+	int type = Scene.getSelectedTurretType();
 	char bufflvl[10],bufflvlp[10],buffup[10];
 	_itoa_s(lvl,bufflvl,10 );
 	_itoa_s(lvl+1,bufflvlp,10 );
-	_itoa_s(COST_UPGRADE_1+50*(lvl-1),buffup,10 );
+	if(type == 1)_itoa_s(COST_UPGRADE_1+50*(lvl-1),buffup,10 );
+	else if (type == 2) _itoa_s(COST_UPGRADE_2+50*(lvl-1),buffup,10 );
+	else if (type ==3) _itoa_s(COST_UPGRADE_3+50*(lvl-1),buffup,10 );
 	char *s[]={	"Upgrade Lvl",
 				bufflvl, " -> ", bufflvlp,
 				"Cost: ", buffup,
@@ -849,6 +904,10 @@ GLuint cGame::SelectCursorTile(int x, int y, GLuint (*buff)[SELECT_BUF_SIZE])
 			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+2;
 			hits = -1;
 		}
+		else if (posx >= -10.5 && posx <= -7.5 && posy >= -24.0 && posy <= -17.0){
+			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+3;
+			hits = -1;
+		}
 		else if (posx >= 7.0 && posx <= 10.0 && posy >= -24.0 && posy <= -17.0){
 			(*buff)[3] = SCENE_WIDTH*SCENE_DEPTH+10;
 			hits = -1;
@@ -908,11 +967,13 @@ void cGame::Render()
 			printTurretBadPos();
 			--cdBadPos;
 		} 
-		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+10 && (Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 || Scene.GetMap()[Scene.getSelected()] == TOWER_ID_2)) printUpgradeInfo();
+		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+10 && (Scene.GetMap()[Scene.getSelected()] == TOWER_ID_1 || Scene.GetMap()[Scene.getSelected()] == TOWER_ID_2 || Scene.GetMap()[Scene.getSelected()] == TOWER_ID_3)) printUpgradeInfo();
 		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+1 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+1) printTurretInfo(1);
 		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+2 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+2) printTurretInfo(2);
+		else if (Scene.getMouseOverTile() == SCENE_WIDTH*SCENE_DEPTH+3 || Scene.getSelected() == SCENE_WIDTH*SCENE_DEPTH+3) printTurretInfo(3);
 		else if (Scene.GetMap()[Scene.getSelected()] == 9) printTurretInfo2(1); 
 		else if (Scene.GetMap()[Scene.getSelected()] == 8) printTurretInfo2(2); 
+		else if (Scene.GetMap()[Scene.getSelected()] == 7) printTurretInfo2(3);
 	}
 
 	std::map<int,cMonstre> monsters = Scene.GetMonsters();

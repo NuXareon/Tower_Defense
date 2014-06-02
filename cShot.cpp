@@ -4,6 +4,18 @@
 cShot::cShot(void){}
 cShot::~cShot(void){}
 
+void cShot::Init(float a, float b, float c, int t, int d, bool f)
+{
+	x = a;
+	y = b;
+	z = c;
+	target = t;
+	erase = false;
+	explosion = false;
+	expAnim = 0;
+	damage = d;
+	freeze = f;
+}
 void cShot::Init(float a, float b, float c, int t, int d)
 {
 	x = a;
@@ -14,6 +26,7 @@ void cShot::Init(float a, float b, float c, int t, int d)
 	explosion = false;
 	expAnim = 0;
 	damage = d;
+	freeze = false;
 }
 void cShot::getCoord(float &xcoord, float &ycoord, float &zcoord)
 {
@@ -98,4 +111,8 @@ void cShot::incExpAnim()
 int cShot::getDamage()
 {
 	return damage;
+}
+bool cShot::getFreeze()
+{
+	return freeze;
 }

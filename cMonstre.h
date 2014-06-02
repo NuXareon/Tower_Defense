@@ -30,7 +30,7 @@ public:
 	void setMonsterDl(int dl);
 	void treuVida(int i);
 	float GetVida();
-	void  SetVida(float i);
+	void SetVida(float i);
 	int GetDir();
 	int GetInc();
 	int GetNextPos();
@@ -53,6 +53,11 @@ public:
 	void setDeath();
 	void setOn(bool b);
 	bool getOn();
+	void setFreezeCd(int f);
+	int getFreezeCd();
+	void decreaseFreezeCd();
+	int getNoFreeze();
+	void setNoFreeze(int nf);
 
 	void animacio();
 
@@ -78,4 +83,6 @@ private:
 	int expAnim;
 	bool death;
 	bool on;
+	int freezeCd;
+	int noFreeze;
 };

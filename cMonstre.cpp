@@ -14,6 +14,8 @@ cMonstre::cMonstre() {
 	vida = 10;
 	death = false;
 	expAnim=0;
+	freezeCd=0;
+	noFreeze=0;
 }
 cMonstre::~cMonstre(){}
 
@@ -70,7 +72,7 @@ void cMonstre::Draw(cData *Data,float inct,int *map, int img)
 {	
 
 	int i,j,x,z;
-	inc = inct;
+	if (freezeCd <= 0 || death) inc = inct;
 	glEnable(GL_TEXTURE_2D);
 	i = pos/SCENE_WIDTH;
 	j = pos%SCENE_DEPTH;
@@ -85,7 +87,7 @@ void cMonstre::Draw(cData *Data,float inct,int *map, int img)
 		//glTranslatef(x,0,-z);
 		ColorVida();
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(img));
-		animacio();
+		if (freezeCd <= 0 || death) animacio();
 		glCallList(dl_monstre2);
 	glPopMatrix();
 }
@@ -251,6 +253,7 @@ void cMonstre::AI(int *map)
 		pos = aux;
 	}
 	NextPos = NextMov(map);
+	if (noFreeze > 0) --noFreeze;
 }
 
 int cMonstre::MakeMonstreDL(float w,float h,float d,float tw,float th,float td)
@@ -352,28 +355,30 @@ int* cMonstre::BFS(int *map, int pF,int pI){
 		q.pop();
 		int dt=0;
 		int dt2=0;
+		int dt3=0;
 		if(GetType()==3){
 			dt=9;
 			dt2=8;
+			dt3=7;
 		}
 		
-		if((map[aux] == 0 || map[aux]==5 || map[aux]==dt || map[aux]==dt2)&& mapbool[aux] < 4){
+		if((map[aux] == 0 || map[aux]==5 || map[aux]==dt || map[aux]==dt2 || map[aux]==dt3)&& mapbool[aux] < 4){
 			mapbool[aux] += 1;
 			//en creu
-			if((map[aux+1]==0 || map[aux+1]==5 || map[aux+1]==dt || map[aux+1]==dt2) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
+			if((map[aux+1]==0 || map[aux+1]==5 || map[aux+1]==dt || map[aux+1]==dt2 || map[aux+1]==dt3) && ((aux+1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)+1 ) {
 				q.push(aux+1); 
 				if(dist[aux+1]>dist[aux]+1) dist[aux+1]=dist[aux]+1;
 			}
-			if((map[aux-1]==0 || map[aux-1]==5 || map[aux-1]==dt || map[aux-1]==dt2) && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
+			if((map[aux-1]==0 || map[aux-1]==5 || map[aux-1]==dt || map[aux-1]==dt2 || map[aux-1]==dt3) && ((aux-1)%SCENE_WIDTH)==((aux)%SCENE_WIDTH)-1) {
 				q.push(aux-1);
 				if(dist[aux-1]>dist[aux]+1)dist[aux-1]=dist[aux]+1;
 			}
-			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==5 || map[aux+SCENE_WIDTH]==dt || map[aux+SCENE_WIDTH]==dt2) 
+			if((map[aux+SCENE_WIDTH]==0 || map[aux+SCENE_WIDTH]==5 || map[aux+SCENE_WIDTH]==dt || map[aux+SCENE_WIDTH]==dt2 || map[aux+SCENE_WIDTH]==dt3) 
 					&& aux+SCENE_WIDTH<SCENE_WIDTH*SCENE_DEPTH ) {
 				q.push(aux+SCENE_WIDTH); 
 				if(dist[aux+SCENE_WIDTH]>dist[aux]+1)dist[aux+SCENE_WIDTH]=dist[aux]+1;
 			}
-			if((map[aux-SCENE_WIDTH]==0 || map[aux-SCENE_WIDTH]==5 || map[aux-SCENE_WIDTH]==dt || map[aux-SCENE_WIDTH]==dt2) 
+			if((map[aux-SCENE_WIDTH]==0 || map[aux-SCENE_WIDTH]==5 || map[aux-SCENE_WIDTH]==dt || map[aux-SCENE_WIDTH]==dt2 || map[aux-SCENE_WIDTH]==dt3) 
 					&& aux-SCENE_WIDTH>-1) {
 				q.push(aux-SCENE_WIDTH);
 				if(dist[aux-SCENE_WIDTH]>dist[aux]+1) dist[aux-SCENE_WIDTH]=dist[aux]+1;
@@ -509,6 +514,7 @@ bool cMonstre::getDeath()
 void cMonstre::setDeath()
 {
 	death=true;
+	freezeCd=0;
 }
 void cMonstre::setOn(bool b)
 {
@@ -517,4 +523,24 @@ void cMonstre::setOn(bool b)
 bool cMonstre::getOn()
 {
 	return on;
+}
+void cMonstre::setFreezeCd(int f)
+{
+	freezeCd = f;
+}
+int cMonstre::getFreezeCd()
+{
+	return freezeCd;
+}
+void cMonstre::decreaseFreezeCd()
+{
+	--freezeCd;
+}
+int cMonstre::getNoFreeze()
+{
+	return noFreeze;
+}
+void cMonstre::setNoFreeze(int nf)
+{
+	noFreeze = nf;
 }

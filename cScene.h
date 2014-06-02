@@ -60,6 +60,7 @@ public:
 	int getNumMonstres();
 	void upgadeTurret();
 	int getSelectedTurretLvl();
+	int getSelectedTurretType();
 	std::map<int,cTurret> GetTowers();
 	void pauseMusic();
 	void pauseSound();
@@ -88,7 +89,7 @@ private:
 	void MakeTurretDL2(float w, float h, float d);
 	void printTurret(int r, int t);
 	void MakeShotDL(float w, float h, float d);
-	void addShot(float x, float y, float z, int target, int damage);
+	void addShot(float x, float y, float z, int target, int damage, bool freeze);
 	void InitSoundSystem();
 	int dl_cube;
 	int dl_cube2;

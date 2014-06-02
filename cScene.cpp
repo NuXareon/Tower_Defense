@@ -156,6 +156,7 @@ void cScene::Draw(cData *Data)
 				if (i*SCENE_WIDTH+j == selected) glColor3f(0.5f,1.0f,0.5f);
 				else glColor3f(1.0f,1.0f,1.0f);
 
+				int rotate = 0;
 				// Pintar tile
 				switch(map[(i*SCENE_WIDTH)+j])
 				{
@@ -178,6 +179,16 @@ void cScene::Draw(cData *Data)
 							glCallList(dl_floor);
 							break;
 					// Turret
+					case 7: tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
+							if (i*SCENE_WIDTH+j != selected) glColor3f(0.2f,0.8f,1.0f-0.33*(tLvl-1));
+							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+							rotate = turrets[i*SCENE_WIDTH+j].getRotationY();
+							printTurret(rotate,1);
+							glColor3f(1.0f,0.2f,0.2f);
+							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
+							glCallList(dl_floor);
+							glColor3f(1.0f,1.0f,1.0f);
+							break;
 					case 8: tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
 							if (i*SCENE_WIDTH+j != selected) glColor3f(1.0f,1.0f,1.0f-0.33*(tLvl-1));
 							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
@@ -190,7 +201,7 @@ void cScene::Draw(cData *Data)
 					case 9: tLvl = turrets[i*SCENE_WIDTH+j].getLvl();
 							if (i*SCENE_WIDTH+j != selected) glColor3f(1.0f,1.0f,1.0f-0.33*(tLvl-1));
 							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-							int rotate = turrets[i*SCENE_WIDTH+j].getRotationY();
+							rotate = turrets[i*SCENE_WIDTH+j].getRotationY();
 							printTurret(rotate,1);
 							glColor3f(1.0f,0.2f,0.2f);
 							glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_FLOOR));
@@ -229,6 +240,18 @@ void cScene::Draw(cData *Data)
 		glCallList(dl_turret2);
 		glDisable(GL_BLEND);
 	}
+	else if (selected == SCENE_WIDTH*SCENE_DEPTH+3 && mouseOverTile <= SCENE_WIDTH*SCENE_DEPTH && mouseOverTile >= 0 && map[mouseOverTile] == 0)
+	{
+		x = (mouseOverTile%SCENE_WIDTH)*TILE_SIZE;
+		z = (mouseOverTile/SCENE_WIDTH)*TILE_SIZE;
+		glTranslatef(x,0,-z);
+		glEnable (GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(0.5f,0.50f,1.5f,0.7f);
+		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
+		glCallList(dl_turret);
+		glDisable(GL_BLEND);
+	}
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 }
@@ -250,6 +273,7 @@ void cScene::DrawExplosion(cData *Data,int id){
 	j = pos%SCENE_DEPTH;
 	x = j * TILE_SIZE;
 	z = i * TILE_SIZE;
+
 	if(dir==1)	glTranslatef(x+inc,0,-z);
 	if(dir==2)	glTranslatef(x-inc,0,-z);
 	if(dir==3)	glTranslatef(x,0,-z-inc);
@@ -336,8 +360,9 @@ void cScene::DrawTurretPanel(cData *Data, int n)
 	glEnable(GL_TEXTURE_2D);
 		glTranslatef(4.0f*(n-1),0.0f,0.0f);
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_WALL3));
-		glColor3f(0.8f,0.8f,0.8f);
-		if (n == 1) glCallList(dl_turret);
+		if (n == 3) glColor3f(0.1,0.7,0.9);
+		else glColor3f(0.8f,0.8f,0.8f);
+		if (n == 1 || n == 3) glCallList(dl_turret);
 		else if (n == 2) glCallList(dl_turret2);
 
 		glBindTexture(GL_TEXTURE_2D,Data->GetID(IMG_ROOF));
@@ -576,9 +601,16 @@ void cScene::AI(int *map, int n)
 	std::map<int,cMonstre>::iterator iter;
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		if(iter->first <=n && !iter->second.getDeath()){
-			if(iter->second.GetType()==1) iter->second.AI(map);
-			if(iter->second.GetType()==2) iter->second.AI(map);
-			if(iter->second.GetType()==3) iter->second.AI(map);
+			if (iter->second.getFreezeCd() > 0) 
+			{
+				iter->second.decreaseFreezeCd();
+			}
+			else
+			{
+				if(iter->second.GetType()==1) iter->second.AI(map);
+				if(iter->second.GetType()==2) iter->second.AI(map);
+				if(iter->second.GetType()==3) iter->second.AI(map);
+			}
 		}
 		
 	}
@@ -597,13 +629,14 @@ void cScene::turretLogic(float inc)
 			int damage = iter2->second.getDamage();
 			for (unsigned int i = 0; i < target.size(); ++i)
 			{
-				addShot(x,y,z,target[i],damage);
+				if (iter2->second.getType() == 3) addShot(x,y,z,target[i],damage,true);
+				addShot(x,y,z,target[i],damage,false);
 			}
 			if (!target.empty())
 			{
 				if(!soundPaused)
 				{
-					if (iter2->second.getType() == 1) 
+					if (iter2->second.getType() == 1 || iter2->second.getType() == 3) 
 					{
 						soundSystem->playSound(TowerShot2,0,true,&channel);
 						channel->setVolume(0.7f);
@@ -655,6 +688,14 @@ void cScene::shotLogic(float inc)
 				{
 					int dmg = shots[i].getDamage();
 					monsters[target].treuVida(dmg);
+					if (shots[i].getFreeze()) 
+					{
+						if (monsters[target].getNoFreeze() <= 0 && monsters[target].getFreezeCd() <= 0 && monsters[target].GetVida() > 0)
+						{
+							monsters[target].setFreezeCd(3);
+							monsters[target].setNoFreeze(10);
+						}
+					}
 					shots[i].setExplosion();
 					if (!soundPaused)
 					{
@@ -671,11 +712,11 @@ void cScene::shotLogic(float inc)
 	}
 	shots.erase(std::remove_if(shots.begin(), shots.end(), RemoveShotCondition),shots.end());
 }
-void cScene::addShot(float x, float y, float z, int target, int damage)
+void cScene::addShot(float x, float y, float z, int target, int damage, bool freeze)
 {
 	cShot* s = new cShot();
 	cShot ss = *s;
-	ss.Init(x,y,z,target, damage);
+	ss.Init(x,y,z,target, damage, freeze);
 	shots.push_back(ss);
 }
 void cScene::addTurret(int type, int pos)
@@ -784,6 +825,10 @@ void cScene::upgadeTurret()
 int cScene::getSelectedTurretLvl()
 {
 	return turrets[selected].getLvl();
+}
+int cScene::getSelectedTurretType()
+{
+	return turrets[selected].getType();
 }
 map<int,cTurret> cScene::GetTowers()
 {
