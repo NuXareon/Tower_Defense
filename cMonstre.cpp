@@ -29,9 +29,9 @@ void cMonstre::SetPositionI(int p)
 	pos = p;
 	NextPos = p+1;
 }
-void cMonstre::GetPositionI(int *p)
+int cMonstre::GetPositionI()
 {
-	*p = pi;
+	return pi;
 }
 void cMonstre::SetPositionF(int p)
 {

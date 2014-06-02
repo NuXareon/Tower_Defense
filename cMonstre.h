@@ -22,7 +22,7 @@ public:
 
 	int Init();
 	void SetPositionI(int p);
-	void GetPositionI(int *p);
+	int GetPositionI();
 	void SetPositionF(int p);
 	int GetPositionF();
 	int GetPositionAct();

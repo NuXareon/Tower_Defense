@@ -108,7 +108,7 @@ bool cScene::LoadMonsters(int level) {
 		cMonstre* b = new cMonstre();
 		cMonstre bb = *b;
 		bb.SetType(tex);
-		bb.SetVida(vida + (grup%10)*3);
+		bb.SetVida(vida + grup/10+(grup%10)*3);
 		bb.SetPositionI(pi);
 		bb.SetPositionF(pf);
 		bb.setMonsterDl(dl_monstre);
