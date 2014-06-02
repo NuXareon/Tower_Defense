@@ -369,7 +369,7 @@ bool cGame::Process()
 		Scene.LoadMonsters(grup);
 	}
 
-	//Panasr de nivell
+	//Pasar de nivell
 	if(numgrups==0 ){	// per superar nivells automaticament		
 		++lvl;
 		Scene.destroyAllTurret();
@@ -388,6 +388,7 @@ bool cGame::Process()
 			gold = 0;
 			vidasP = 24;
 		}
+		else vidasP++;
 		
 	}
 
