@@ -145,7 +145,7 @@ int cMonstre::Direction(){
 int cMonstre::NextMov(int *map)
 {
 	dir;	// 1=R, 2=L, 3=Up, 4=Down
-	int *dist = BFS(map,pf,pos);
+	int *dist = BFS(map,pf);
 	oldPos = pos;
 	int aux = pos;
 	int dmin = dist[pos];
@@ -216,7 +216,7 @@ int cMonstre::NextMov(int *map)
 }*/
 void cMonstre::AI(int *map)
 {
-	int *dist = BFS(map,pf,pos);
+	int *dist = BFS(map,pf);
 	oldPos = pos;
 	int aux = pos;
 	int dmin = dist[pos];
@@ -337,7 +337,7 @@ int cMonstre::MakeMonstre2DL(float w,float h,float d,float xo,float yo,float xf,
 	glEndList();
 	return dl_monstre2;
 }
-int* cMonstre::BFS(int *map, int pF,int pI){
+int* cMonstre::BFS(int *map, int pF){
 	int dist[SCENE_WIDTH * SCENE_DEPTH];
 	for(int i=0;i< SCENE_WIDTH * SCENE_DEPTH;++i){
 		dist[i]=SCENE_WIDTH * SCENE_DEPTH+1;

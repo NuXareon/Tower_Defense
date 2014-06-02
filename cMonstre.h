@@ -42,7 +42,7 @@ public:
 	int  NextMov(int *map);
 	//int  PosAdj(int *dist,int i);
 	void AI(int *map);
-	int* BFS(int *map, int pos,int pI);
+	int* BFS(int *map, int pos);
 	int* inimap(int length, int x);
 	void render_string(void* font, const char* string);
 	void printPos();	

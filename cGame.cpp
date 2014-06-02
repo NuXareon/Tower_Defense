@@ -999,7 +999,7 @@ bool cGame::hihaCami(int* map,int pi,int pf)
 	for(iter=monsters.begin(); iter != monsters.end(); ++iter){
 		pff = iter->second.GetPositionF();
 		pii = iter->second.GetPositionI();
-		int *dist =iter->second.BFS(map,pff,pii);
+		int *dist =iter->second.BFS(map,pff);
 		int d = dist[pi];
 		if(dist[pi]>= SCENE_WIDTH*SCENE_DEPTH){
 			b=false;
